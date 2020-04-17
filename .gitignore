@@ -1,8 +1,8 @@
 .nextflow*
 packrat/lib*/
 packrat/src/
-logs
-ressources
+logs/*
+ressources/*
 temp_files
 data/*
 !data/RADME.md
