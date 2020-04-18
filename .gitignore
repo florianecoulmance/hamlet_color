@@ -2,6 +2,7 @@
 packrat/lib*/
 packrat/src/
 logs/*
+outputs/*
 ressources/*
 temp_files
 data/*
