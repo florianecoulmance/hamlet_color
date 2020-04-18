@@ -11,8 +11,8 @@
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=01:00:00
 
-INPUT_META=metadata/metadata_gxp_ben_floridae_complete
 BASE_DIR=/user/doau0129/work/chapter1_2/
+INPUT_META=$BASE_DIR/metadata/metadata_gxp_ben_floridae_complete
 
 
 mkdir -p $BASE_DIR/outputs/
