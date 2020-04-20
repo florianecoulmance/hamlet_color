@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=01_mark_adapters
 #SBATCH --partition=carl.p
-#SBATCH --array=1-117
+#SBATCH --array=1-4
 #SBATCH --output=/user/doau0129/work/chapter1_2/logs/01_mark_adapters_%A_%a.out
 #SBATCH --error=/user/doau0129/work/chapter1_2/logs/01_mark_adapters_%A_%a.err
 #SBATCH --nodes=1
@@ -13,13 +13,7 @@
 
 BASE_DIR=/user/doau0129/work/chapter1_2/
 
-
-mkdir $BASE_DIR/outputs/01_adapters/
-mkdir $BASE_DIR/outputs/01_adapters/adapters/
-mkdir $BASE_DIR/outputs/01_adapters/metrics/
-mkdir $BASE_DIR/outputs/listoffiles/
-
-INPUT_UBAMS=$BASE_DIR/outputs/listoffiles/ubams.fofn
+INPUT_UBAMS=$BASE_DIR/outputs/listoffiles/ubams2.fofn
 
 UBAMS=$(cat ${INPUT_UBAMS} | head -n ${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo $UBAMS
