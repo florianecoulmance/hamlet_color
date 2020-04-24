@@ -136,8 +136,21 @@ else:
 #try_mkdir(base_directory+"outputs/04_indexed/")
 #
 os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/ > "+base_directory+"outputs/listoffiles/duplicates.fofn")
-if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/duplicates/"))==117):
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/duplicates/"))<=117):
 	print("----------       index running	----------")
 	os.system("sbatch 04_index.sh")
 else:
 	print("**** index DONE ****")
+
+
+# git0.5
+# Coverage
+
+try_mkdir(base_directory+"outputs/a_coverage/")
+
+os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/*.bam |xargs -n1 basename > "+base_directory+"outputs/listoffiles/duplicates_coverage.fofn")
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/duplicates/"))==234):
+	print("----------     coverage running	    ----------")
+	os.system("sbatch a_coverage.sh")
+else:
+	print("*** coverage DONE ***")
