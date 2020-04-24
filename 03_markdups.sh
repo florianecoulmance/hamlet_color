@@ -2,14 +2,14 @@
 
 #SBATCH --job-name=03_3_markdups
 #SBATCH --partition=carl.p
-#SBATCH --array=1-117
+#SBATCH --array=1-28
 #SBATCH --output=/user/doau0129/work/chapter1_2/logs/03_3_markdups_%A_%a.out
 #SBATCH --error=/user/doau0129/work/chapter1_2/logs/03_3_markdups_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=40G
-#SBATCH --time=2-00:00:00
+#SBATCH --time=05:00:00
 
 BASE_DIR=/user/doau0129/work/chapter1_2/
 
@@ -17,7 +17,7 @@ BASE_DIR=/user/doau0129/work/chapter1_2/
 INPUT_TAGSINTER=$BASE_DIR/outputs/listoffiles/tags_intermediate.fofn
 
 TAGSINTER=$(cat ${INPUT_TAGSINTER} | head -n ${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo $SORTSAM
+echo $TAGSINTER
 
 sample1=${TAGSINTER%.*}
 sample=${sample1%.*}

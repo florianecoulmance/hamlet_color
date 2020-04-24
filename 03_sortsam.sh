@@ -26,7 +26,7 @@ echo $sample
 gatk --java-options "-Xmx30G" \
 		SortSam \
 		-I=$BASE_DIR/outputs/02_merged_map/bam_merge_alignement/${MAPPED_BAM} \
-		-O=$BASE_DIR/outputs/03_mark_duplicates/sort_sam/ \
+		-O=$BASE_DIR/outputs/03_mark_duplicates/sort_sam/${sample}.sorted.sam \
 		--SORT_ORDER="coordinate" \
 		--CREATE_INDEX=false \
 		--CREATE_MD5_FILE=false \

@@ -9,7 +9,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=40G
-#SBATCH --time=2-00:00:00
+#SBATCH --time=10:00:00
 
 BASE_DIR=/user/doau0129/work/chapter1_2/
 
@@ -27,7 +27,7 @@ gatk --java-options "-Xmx30G" \
   SetNmAndUqTags \
   --INPUT=$BASE_DIR/outputs/03_mark_duplicates/sort_sam/${SORTSAM} \
   --OUTPUT=$BASE_DIR/outputs/03_mark_duplicates/tags_intermediate/${sample}.intermediate.bam \
-  --CREATE_INDEX=true \
-  --CREATE_MD5_FILE=true \
+  --CREATE_INDEX=false \
+  --CREATE_MD5_FILE=false \
   -TMP_DIR=$BASE_DIR/temp_files \
   --REFERENCE_SEQUENCE=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz

@@ -9,12 +9,12 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=75G
-#SBATCH --time=2-00:00:00
+#SBATCH --time=05:00:00
 
 BASE_DIR=/user/doau0129/work/chapter1_2/
 
 
-INPUT_ADAPT_BAMS=$BASE_DIR/outputs/listoffiles/samalign.fofn
+INPUT_ADAPT_BAMS=$BASE_DIR/outputs/listoffiles/adapters.bam.fofn
 
 ADAPT_BAM=$(cat ${INPUT_ADAPT_BAMS} | head -n ${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo $ADAPT_BAM
@@ -22,6 +22,10 @@ echo $ADAPT_BAM
 sample1=${ADAPT_BAM%.*}
 sample=${sample1%.*}
 echo $sample
+
+sample2=${sample%.*}
+echo $sample2
+
 
 #gatk --java-options "-Xmx68G" \
 #    SamToFastq \
@@ -36,7 +40,7 @@ gatk --java-options "-Xmx68G" \
     --VALIDATION_STRINGENCY SILENT \
     --EXPECTED_ORIENTATIONS FR \
     --ATTRIBUTES_TO_RETAIN X0 \
-    -ALIGNED_BAM=$BASE_DIR/outputs/02_merged_map/sam_align/${sample}.aligned.sam \
+    -ALIGNED_BAM=$BASE_DIR/outputs/02_merged_map/sam_align/${sample2}.aligned.sam \
     -UNMAPPED_BAM=$BASE_DIR/outputs/00_ubams/${sample}.ubam.bam \
     -OUTPUT=$BASE_DIR/outputs/02_merged_map/bam_merge_alignement/${sample}.mapped.bam \
     --REFERENCE_SEQUENCE=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz \

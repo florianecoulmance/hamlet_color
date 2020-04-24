@@ -73,10 +73,10 @@ else:
   print("**** map & merge sam to fastq DONE ****")
 
 
-os.system("ls -1 "+base_directory+"outputs/02_merged_map/fastq_adapters/ > "+base_directory+"outputs/listoffiles/samtofq.fofn")
+os.system("ls -1 "+base_directory+"outputs/02_merged_map/fatsq_adapters/ > "+base_directory+"outputs/listoffiles/samtofq.fofn")
 
 
-if(len(os.listdir(base_directory+"outputs/02_merged_map/sam_align/"))==0)
+if(len(os.listdir(base_directory+"outputs/02_merged_map/sam_align/"))==0):
 
 	print("----------      map & merge sam align running ----------")
 	os.system("sbatch 02_samalign")
@@ -95,51 +95,49 @@ else:
 
 
 
-
-
 #git0.3
 #Mark duplicates
-# try_mkdir(base_directory+"outputs/03_mark_duplicates/")
-# try_mkdir(base_directory+"outputs/03_mark_duplicates/sort_sam/")
-# try_mkdir(base_directory+"outputs/03_mark_duplicates/tags_intermediate/")
-# try_mkdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/")
-# try_mkdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/")
-# try_mkdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/metrics/")
+try_mkdir(base_directory+"outputs/03_mark_duplicates/")
+try_mkdir(base_directory+"outputs/03_mark_duplicates/sort_sam/")
+try_mkdir(base_directory+"outputs/03_mark_duplicates/tags_intermediate/")
+try_mkdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/")
+try_mkdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/")
+try_mkdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/metrics/")
+
+
+os.system("ls -1 "+base_directory+"outputs/02_merged_map/bam_merge_alignement/ > "+base_directory+"outputs/listoffiles/mapped_bams.fofn")
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/sort_sam/"))==0):
+	print("----------       mark duplicates sort_sam running	----------")
+	os.system("sbatch 03_sortsam.sh")
+else:
+	print("**** mark duplicates sort_sam DONE ****")
+
+
+os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/sort_sam/ > "+base_directory+"outputs/listoffiles/sort_sam.fofn")
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/tags_intermediate/"))==0):
+	print("----------       mark duplicates tags_intermediate running	----------")
+	os.system("sbatch 03_tagsinter.sh")
+else:
+	print("**** mark duplicates tags_intermediate DONE ****")
+
+
+os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/tags_intermediate/*.bam |xargs -n1 basename > "+base_directory+"outputs/listoffiles/tags_intermediate.fofn")
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates"))==0 and len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/metrics"))==0):
+	print("----------       mark duplicates mark_duplicates running	----------")
+	os.system("sbatch 03_markdups.sh")
+else:
+	print("**** mark duplicates mark_duplicates DONE ****")
+
+
+
+# git0.4
+# Index the mapped and mark duplicates bam files
 #
+#try_mkdir(base_directory+"outputs/04_indexed/")
 #
-# os.system("ls -1 "+base_directory+"outputs/02_merged_map/bam_merge_alignement/ > "+base_directory+"outputs/listoffiles/mapped_bams.fofn")
-# if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/sort_sam/"))==0):
-# 	print("----------       mark duplicates sort_sam running	----------")
-# 	os.system("sbatch 03_sortsam.sh")
-# else:
-#   print("**** mark duplicates sort_sam DONE ****")
-#
-#
-# os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/sort_sam/ > "+base_directory+"outputs/listoffiles/sort_sam.fofn")
-# if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/tags_intermediate/"))==0):
-# 	print("----------       mark duplicates tags_intermediate running	----------")
-# 	os.system("sbatch 03_tagsinter.sh")
-# else:
-#   print("**** mark duplicates tags_intermediate DONE ****")
-#
-#
-# os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/tags_intermediate/ > "+base_directory+"outputs/listoffiles/tags_intermediate.fofn")
-# if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates"))==0 and len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/metrics"))==0):
-# 	print("----------       mark duplicates mark_duplicates running	----------")
-# 	os.system("sbatch 03_markdups.sh")
-# else:
-#   print("**** mark duplicates mark_duplicates DONE ****")
-#
-#
-#
-# #git0.4
-# #Index the mapped and mark duplicates bam files
-#
-# try_mkdir(base_directory+"outputs/04_indexed/")
-#
-# os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/ > "+base_directory+"outputs/listoffiles/duplicates.fofn")
-# if(len(os.listdir(base_directory+"outputs/04_indexed/"))==0):
-# 	print("----------       index running	----------")
-# 	os.system("sbatch 04_index.sh")
-# else:
-# 	print("**** index DONE ****")
+os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/ > "+base_directory+"outputs/listoffiles/duplicates.fofn")
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/duplicates/"))==117):
+	print("----------       index running	----------")
+	os.system("sbatch 04_index.sh")
+else:
+	print("**** index DONE ****")
