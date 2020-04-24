@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILES=/Users/fco/Desktop/BREMEN_OP/chapter1_2/test/*
+FILES=/user/doau0129/work/chapter1_2/outputs/a_coverage/*
 
 for f in $FILES
 do
@@ -11,8 +11,8 @@ do
   sample2=${sample1%.*}
   sample=${sample2%.*}
   echo $sample
-  cov=$(cat $f | awk '{if(!($2=="")) print $2}')
+  cov=$(cat $f | awk 'FNR == 8 {print $2}')
   echo $cov
 
-  echo "$sample $cov" >> table.txt
+  echo "$sample $cov" >> coverage_table
 done
