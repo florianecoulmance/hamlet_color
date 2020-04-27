@@ -149,8 +149,32 @@ else:
 try_mkdir(base_directory+"outputs/a_coverage/")
 
 os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/*.bam |xargs -n1 basename > "+base_directory+"outputs/listoffiles/duplicates_coverage.fofn")
-if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/"))==234):
+if(len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/"))==234 and len(os.listdir(base_directory+"outputs/a_coverage/"))==0):
 	print("----------     coverage running	    ----------")
 	os.system("sbatch a_coverage.sh")
+elif(len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/"))==117 and len(os.listdir(base_directory+"outputs/a_coverage/"))==0):
+	print("*** coverage NOT RUNNING : step 0.4 indexing NOT COMPLETE ***")
+elif(len(os.listdir(base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/"))==0 and len(os.listdir(base_directory+"outputs/a_coverage/"))==0):
+	print("*** coverage NOT RUNNING : step 0.3 mark duplicates NOT COMPLETE ***")
+elif(len(os.listdir(base_directory+"outputs/a_coverage/"))==117):
+	print("**** coverage DONE ****")
 else:
-	print("*** coverage DONE ***")
+	print("**** UNKNOWN ****")
+
+
+try_mkdir(base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/AG9RX_47pueboc.1.dedup.bam" base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/AG9RX_47pueboc.1.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_79abepue.3.dedup.bam" base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_79abepue.3.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_101maybel.1.dedup.bam " base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_101maybel.1.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_97indbel.3.dedup.bam" base_directory+"outputs/b_removed_from_analysis/")
+os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_97indbel.3.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
+
+os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/*.bam |xargs -n1 basename > "+base_directory+"outputs/listoffiles/duplicates_hapcaller.fofn")
+if(len(os.listdir(base_directory+"outputs/05_genlikely/"))==0):
+	print("----------     HaplotypeCaller running	    ----------")
+	os.system("sbatch 05_genlikely.sh")
+else:
+	print("*** HaplotypeCaller DONE ***")
