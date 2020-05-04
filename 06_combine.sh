@@ -1,10 +1,9 @@
 #!/bin/bash
 
-#SBATCH --job-name=05_genlikely
+#SBATCH --job-name=06_combine
 #SBATCH --partition=carl.p
-#SBATCH --array=1-113
-#SBATCH --output=/user/doau0129/work/chapter1_2/logs/05_genlikely_%A_%a.out
-#SBATCH --error=/user/doau0129/work/chapter1_2/logs/05_genlikely_%A_%a.err
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/06_combine_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/06_combine_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
