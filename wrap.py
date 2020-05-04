@@ -179,3 +179,14 @@ if(len(os.listdir(base_directory+"outputs/05_genlikely/"))==0):
 	os.system("sbatch 05_genlikely.sh")
 else:
 	print("*** HaplotypeCaller DONE ***")
+
+
+
+#git0.6
+if(len(os.listdir(base_directory+"outputs/05_genlikely/"))==226):
+	print("----------     CombineGVCF running	    ----------")
+	os.system("sbatch 06_combine.sh")
+elif(len(os.listdir(base_directory+"outputs/05_genlikely/"))==228):
+	print("*** CombineGVCF DONE ***")
+else:
+	print("either step 05 not done or other problem")
