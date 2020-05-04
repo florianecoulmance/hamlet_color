@@ -163,15 +163,16 @@ else:
 
 
 try_mkdir(base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/AG9RX_47pueboc.1.dedup.bam" base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/AG9RX_47pueboc.1.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_79abepue.3.dedup.bam" base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_79abepue.3.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_101maybel.1.dedup.bam " base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_101maybel.1.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_97indbel.3.dedup.bam" base_directory+"outputs/b_removed_from_analysis/")
-os.system(mv base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_97indbel.3.dedup.bai" base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/AG9RX_47pueboc.1.dedup.bam "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/AG9RX_47pueboc.1.dedup.bai "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_79abepue.3.dedup.bam "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_79abepue.3.dedup.bai "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_101maybel.1.dedup.bam "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_101maybel.1.dedup.bai "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_98indbel.3.dedup.bam "+base_directory+"outputs/b_removed_from_analysis/")
+os.system("mv "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/PL17_98indbel.3.dedup.bai "+base_directory+"outputs/b_removed_from_analysis/")
 
+try_mkdir(base_directory+"outputs/05_genlikely/")
 os.system("ls -1 "+base_directory+"outputs/03_mark_duplicates/mark_duplicates/duplicates/*.bam |xargs -n1 basename > "+base_directory+"outputs/listoffiles/duplicates_hapcaller.fofn")
 if(len(os.listdir(base_directory+"outputs/05_genlikely/"))==0):
 	print("----------     HaplotypeCaller running	    ----------")

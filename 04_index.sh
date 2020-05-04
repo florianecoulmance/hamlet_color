@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=04_index
 #SBATCH --partition=carl.p
-#SBATCH --array=1-117
+#SBATCH --array=1-4
 #SBATCH --output=/user/doau0129/work/chapter1_2/logs/04_index_%A_%a.out
 #SBATCH --error=/user/doau0129/work/chapter1_2/logs/04_index_%A_%a.err
 #SBATCH --nodes=1
@@ -14,7 +14,7 @@
 BASE_DIR=/user/doau0129/work/chapter1_2/
 
 
-INPUT_DUPLI=$BASE_DIR/outputs/listoffiles/duplicates.fofn
+INPUT_DUPLI=$BASE_DIR/outputs/listoffiles/duplicates2.fofn
 
 DUPLI=$(cat ${INPUT_DUPLI} | head -n ${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo $DUPLI
