@@ -183,6 +183,7 @@ else:
 
 
 #git0.6
+try_mkdir(base_directory+"outputs/06_cohort_genotyping/")
 if(len(os.listdir(base_directory+"outputs/05_genlikely/"))==226):
 	print("----------     CombineGVCF running	    ----------")
 	os.system("sbatch 06_combine.sh")
@@ -190,3 +191,36 @@ elif(len(os.listdir(base_directory+"outputs/05_genlikely/"))==228):
 	print("*** CombineGVCF DONE ***")
 else:
 	print("either step 05 not done or other problem")
+
+#git0.7.1
+try_mkdir(base_directory+"outputs/07_genotyping/")
+try_mkdir(base_directory+"outputs/07_genotyping/07_1_raw_snp/")
+if(len(os.listdir(base_directory+"outputs/07_genotyping/07_1_raw_snp/"))==0):
+	print("----------     GenotypeGVCFs SNP running	    ----------")
+	os.system("sbatch 07_1_snp.sh")
+else:
+	print("*** GenotypeGVCFs SNP DONE ***")
+
+#git0.7.2
+try_mkdir(base_directory+"outputs/07_genotyping/07_2_all_sites/")
+if(len(os.listdir(base_directory+"outputs/07_genotyping/07_2_all_sites/"))==0):
+	print("----------     GenotypeGVCFs ALL SITES running	    ----------")
+	os.system("sbatch 07_2_all.sh")
+else:
+	print("*** GenotypeGVCFs ALL SITES DONE ***")
+
+#git0.8.1
+try_mkdir(base_directory+"outputs/08_1_variants_metrics/")
+if(len(os.listdir(base_directory+"outputs/08_1_variants_metrics/"))==0):
+	print("----------     VariantsToTable SNP running	    ----------")
+	os.system("sbatch 08_1_snp.sh")
+else:
+	print("*** VariantsToTable SNP DONE ***")
+
+#git0.8.2
+try_mkdir(base_directory+"outputs/08_2_merge/")
+if(len(os.listdir(base_directory+"outputs/08_2_merge/"))==0):
+	print("----------     GatherVcfs ALL SITES running	    ----------")
+	os.system("sbatch 08_2_all.sh")
+else:
+	print("*** GatherVcfs ALL SITES DONE ***")
