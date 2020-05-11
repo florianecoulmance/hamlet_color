@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 
 import os
@@ -183,6 +184,7 @@ else:
 
 
 #git0.6
+try_mkdir(base_directory+"outputs/06_cohort_genotyping/")
 if(len(os.listdir(base_directory+"outputs/05_genlikely/"))==226):
 	print("----------     CombineGVCF running	    ----------")
 	os.system("sbatch 06_combine.sh")
