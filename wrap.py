@@ -225,3 +225,19 @@ if(len(os.listdir(base_directory+"outputs/08_2_merge/"))==0):
 	os.system("sbatch 08_2_all.sh")
 else:
 	print("*** GatherVcfs ALL SITES DONE ***")
+
+#git0.9.1
+try_mkdir(base_directory+"outputs/09_1_snpfiltration/")
+if(len(os.listdir(base_directory+"outputs/09_1_snpfiltration/"))==0):
+	print("----------     Filtration SNP running	    ----------")
+	os.system("sbatch 09_1_snpfiltration.sh")
+else:
+	print("*** Filtration SNP DONE ***")
+
+#git0.9.2
+try_mkdir(base_directory+"outputs/09_2_allfiltration/")
+if(len(os.listdir(base_directory+"outputs/09_2_allfiltration/"))==0):
+	print("----------     Filtration ALL SITES running	    ----------")
+	os.system("sbatch 09_1_allfiltration.sh")
+else:
+	print("*** Filtration ALL SITES DONE ***")
