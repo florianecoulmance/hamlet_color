@@ -18,7 +18,7 @@ gatk --java-options "-Xmx75G" \
        -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
        -V=$BASE_DIR/outputs/07_genotyping/07_1_raw_snp/raw_var_sites.vcf.gz \
        -O=$BASE_DIR/outputs/09_1_snpfiltration/intermediate.vcf.gz \
-       --filter-expression "QD < 4" \
+       --filter-expression "QD < 4.0" \
        --filter-name "filter_QD" \
        --filter-expression "FS > 60.0" \
        --filter-name "filter_FS" \

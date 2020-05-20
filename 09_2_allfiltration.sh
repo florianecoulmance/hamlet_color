@@ -19,7 +19,7 @@ gatk --java-options "-Xmx75G" \
        -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
        -V=$BASE_DIR/outputs/08_2_merge/all_sites.vcf.gz \
        -O=$BASE_DIR/outputs/09_2_allfiltration/intermediate.vcf.gz \
-       --filter-expression "QD < 4" \
+       --filter-expression "QD < 4.0" \
        --filter-name "filter_QD" \
        --filter-expression "FS > 60.0" \
        --filter-name "filter_FS" \
