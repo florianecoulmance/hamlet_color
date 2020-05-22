@@ -77,7 +77,7 @@ cat > $jobfile3 <<EOA # generate the job file
 #SBATCH --job-name=12_prep_gemma.tmp
 #SBATCH --partition=carl.p
 #SBATCH --output=$BASE_DIR/logs/12_prep_gemma_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/12__prep_gemma_%A_%a.err
+#SBATCH --error=$BASE_DIR/logs/12_prep_gemma_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -115,7 +115,7 @@ cat > $jobfile4 <<EOA # generate the job file
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=40G
-#SBATCH --time=02:30:00
+#SBATCH --time=04:00:00
 
 
 body() {
@@ -139,19 +139,21 @@ echo \${BASE_NAME}
 
 mv \${fam} \$BASE_NAME-old.fam
 cp \${BASE_NAME}-old.fam \${fam}
+cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
+cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim 
+cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
 
-
-awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}.fam
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
 
 
   # 2) create relatedness matrix of samples using gemma
-gemma -bfile \${BASE_NAME} -gk 1 -o \${TRAITS}
+gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o \${TRAITS}
 
   # 3) fit linear model using gemma (-lm)
-gemma -bfile \${BASE_NAME} -lm 4 -miss 0.1 -notsnp -o \${TRAITS}.lm
+gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o \${TRAITS}.lm
 
   # 4) fit linear mixed model using gemma (-lmm)
-gemma -bfile \${BASE_NAME} -k output/\${TRAITS}.cXX.txt -lmm 4 -o \${TRAITS}.lmm
+gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/\${TRAITS}.cXX.txt -lmm 4 -o \${TRAITS}.lmm
 
   # 5) reformat output
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/\${TRAITS}.lm.assoc.txt | \
@@ -160,18 +162,22 @@ sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/\${TRA
       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/\${TRAITS}.lmm.GxP.txt.gz
 
 
+rm \${BASE_NAME}_\${TRAITS}.bed
+rm \${BASE_NAME}_\${TRAITS}.bim
+rm \${BASE_NAME}_\${TRAITS}.log
+
 EOA
 
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "JID_RES" = "jid4" ] || [ "JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
 then
   echo "10_convert_plink DONE                   **"
 else
   jid1=$(sbatch ${jobfile1})
 fi
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
 then
   echo "*****     11_plink_binary DONE          **"
 elif [ "$JID_RES" = jid2 ]
@@ -181,7 +187,7 @@ else
   jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
 fi
 
-if [ "$JID_RES" = "jid4" ] || [ "JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
 then
   echo "*****     12_prep_gemma DONE              **"
 elif [ "$JID_RES" = "jid3" ]
@@ -191,7 +197,7 @@ else
   jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
 fi
 
-if [ "JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid5" ];
 then
   echo "*****     13_gemma DONE              **"
 elif [ "$JID_RES" = "jid4" ]

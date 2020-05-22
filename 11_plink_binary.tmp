@@ -2,15 +2,15 @@
 
 #SBATCH --job-name=11_plink_binary
 #SBATCH --partition=carl.p
-#SBATCH --output=/user/doau0129/work/chapter1_2/logs/11_plink_binary_%A_%a.out
-#SBATCH --error=/user/doau0129/work/chapter1_2/logs/11_plink_binary_%A_%a.err
+#SBATCH --output=/user/doau0129/work/chapter1_2//logs/11_plink_binary_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2//logs/11_plink_binary_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=02:30:00
 
-plink     --noweb     --file /user/doau0129/work/chapter1_2/outputs/gxp/GxP_plink     --make-bed     --out /user/doau0129/work/chapter1_2/outputs/gxp/GxP_plink_binary
+plink     --noweb     --file /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink     --make-bed     --out /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary
 
-cp /user/doau0129/work/chapter1_2/outputs/gxp/GxP_plink_binary.fam /user/doau0129/work/chapter1_2/outputs/gxp/GxP_plink_binary_sauvegarde.fam
+cp /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary.fam /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary_sauvegarde.fam
 
