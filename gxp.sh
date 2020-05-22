@@ -140,7 +140,7 @@ echo \${BASE_NAME}
 mv \${fam} \$BASE_NAME-old.fam
 cp \${BASE_NAME}-old.fam \${fam}
 cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
-cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim 
+cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
 
 awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
@@ -168,16 +168,57 @@ rm \${BASE_NAME}_\${TRAITS}.log
 
 EOA
 
+jobfile5=14_windows.tmp # temp file
+cat > $jobfile5 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=14_windows.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-16
+#SBATCH --output=$BASE_DIR/logs/14_windows_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/14_windows_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=02:30:00
+
+INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
+
+#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${TRAITS}
+
+lm=$BASE_DIR/outputs/gxp/\${TRAITS}.lm.GxP.txt.gz
+echo \${lm}
+lmm=$BASE_DIR/outputs/gxp/\${TRAITS}.lmm.GxP.txt.gz
+echo \${lmm}
+
+win5=50000
+step5=5000
+echo \${win5}
+echo \${step5}
+
+win1=10000
+step1=1000
+echo \${win1}
+echo \${step1}
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+$BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}
+$BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
+
+EOA
+
+
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
 then
   echo "10_convert_plink DONE                   **"
 else
   jid1=$(sbatch ${jobfile1})
 fi
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
 then
   echo "*****     11_plink_binary DONE          **"
 elif [ "$JID_RES" = jid2 ]
@@ -187,7 +228,7 @@ else
   jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
 fi
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
 then
   echo "*****     12_prep_gemma DONE              **"
 elif [ "$JID_RES" = "jid3" ]
@@ -197,7 +238,7 @@ else
   jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
 fi
 
-if [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
 then
   echo "*****     13_gemma DONE              **"
 elif [ "$JID_RES" = "jid4" ]
@@ -205,4 +246,14 @@ then
   jid4=$(sbatch ${jobfile4})
 else
   jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
+fi
+
+if [ "$JID_RES" = "jid6"];
+then
+  echo "*****     14_windows DONE              **"
+elif [ "$JID_RES" = "jid5" ]
+then
+  jid5=$(sbatch ${jobfile5})
+else
+  jid5=$(sbatch --dependency=afterok:${jid4##* } ${jobfile5})
 fi
