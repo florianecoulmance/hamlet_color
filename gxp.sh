@@ -70,26 +70,19 @@ cp $BASE_DIR/outputs/gxp/GxP_plink_binary.fam $BASE_DIR/outputs/gxp/GxP_plink_bi
 
 EOA
 
-jobfile3=12_gemma.tmp # temp file
+jobfile3=12_prep_gemma.tmp # temp file
 cat > $jobfile3 <<EOA # generate the job file
 #!/bin/bash
 
-#SBATCH --job-name=12_gemma.tmp
+#SBATCH --job-name=12_prep_gemma.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-16
-#SBATCH --output=$BASE_DIR/logs/12_gemma_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/12_gemma_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/12_prep_gemma_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/12__prep_gemma_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=40G
-#SBATCH --time=02:30:00
-
-body() {
-	IFS= read -r header
-	printf '%s\n' "\$header"
-	"\$@"
-}
+#SBATCH --mem-per-cpu=500M
+#SBATCH --time=00:15:00
 
 fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
 pheno=$BASE_DIR/metadata/traits
@@ -97,14 +90,6 @@ sed -i 's/PL17_125ranbel/PL17_125tanbel/g' \${fam}
 
 tr=(bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
-
-INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
-
-BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
-echo \${BASE_NAME}
-
-mv \${fam} \$BASE_NAME-old.fam
-cp \${BASE_NAME}-old.fam \${fam}
 
 #Create joint phenotype and .fam file with all phenotypes
 awk -F ";" '{print \$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
@@ -114,9 +99,47 @@ awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\
 echo -e 'label Within_family_ID ID_father ID_mother Sex bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
 
 
+EOA
+
+
+jobfile4=13_gemma.tmp # temp file
+cat > $jobfile4 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=13_gemma.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-16
+#SBATCH --output=$BASE_DIR/logs/13_gemma_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/13_gemma_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=40G
+#SBATCH --time=02:30:00
+
+
+body() {
+	IFS= read -r header
+	printf '%s\n' "\$header"
+	"\$@"
+}
+
+fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
+
+
+INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
+
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${TRAITS}
+
+
+BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
+echo \${BASE_NAME}
+
+mv \${fam} \$BASE_NAME-old.fam
+cp \${BASE_NAME}-old.fam \${fam}
+
 
 awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}.fam
 
@@ -141,14 +164,14 @@ EOA
 
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "JID_RES" = "jid4" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "JID_RES" = "jid4" ] || [ "JID_RES" = "jid5" ];
 then
   echo "10_convert_plink DONE                   **"
 else
   jid1=$(sbatch ${jobfile1})
 fi
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "JID_RES" = "jid5" ];
 then
   echo "*****     11_plink_binary DONE          **"
 elif [ "$JID_RES" = jid2 ]
@@ -158,12 +181,22 @@ else
   jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
 fi
 
-if [ "$JID_RES" = "jid4" ];
+if [ "$JID_RES" = "jid4" ] || [ "JID_RES" = "jid5" ];
 then
-  echo "*****     12_gemma DONE              **"
+  echo "*****     12_prep_gemma DONE              **"
 elif [ "$JID_RES" = "jid3" ]
 then
   jid3=$(sbatch ${jobfile3})
 else
   jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
+fi
+
+if [ "JID_RES" = "jid5" ];
+then
+  echo "*****     13_gemma DONE              **"
+elif [ "$JID_RES" = "jid4" ]
+then
+  jid4=$(sbatch ${jobfile4})
+else
+  jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
 fi
