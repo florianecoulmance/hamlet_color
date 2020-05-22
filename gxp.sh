@@ -66,6 +66,7 @@ plink \
     --make-bed \
     --out $BASE_DIR/outputs/gxp/GxP_plink_binary
 
+cp $BASE_DIR/outputs/gxp/GxP_plink_binary.fam $BASE_DIR/outputs/gxp/GxP_plink_binary_sauvegarde.fam
 
 EOA
 
@@ -82,61 +83,65 @@ cat > $jobfile3 <<EOA # generate the job file
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=40G
-#SBATCH --time=04:30:00
+#SBATCH --time=02:30:00
 
 body() {
 	IFS= read -r header
-	printf '%s\n' "$header"
-	"$@"
+	printf '%s\n' "\$header"
+	"\$@"
 }
 
-fam = $BASE_DIR/outputs/gxp/GxP_plink_binary.fam
-pheno = $BASE_DIR/metadata/traits
+fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
+pheno=$BASE_DIR/metadata/traits
+sed -i 's/PL17_125ranbel/PL17_125tanbel/g' \${fam}
 
 tr=(bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
 
 INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
 
-BASE_NAME=\$(echo  ${fam} | sed 's/.fam//g')
+BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
+echo \${BASE_NAME}
 
-mv ${fam} $BASE_DIR/outputs/gxp/\${BASE_NAME}-old.fam
-cp $BASE_DIR/outputs/gxp/\${BASE_NAME}-old.fam ${fam}
+mv \${fam} \$BASE_NAME-old.fam
+cp \${BASE_NAME}-old.fam \${fam}
 
 #Create joint phenotype and .fam file with all phenotypes
-pheno2 = awk -F ";" '{print $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21}' pheno
-pheno_fam = join ${fam} ${pheno2}
-pheno_fam_table = awk -F " " '{print $1,$2,$3,$4,$5,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26}' ${pheno_fam}
-echo -e 'label Within_family_ID ID_father ID_mother Sex bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat ${pheno_fam_table} >> $BASE_DIR/outputs/gxp/pheno_table.fam
+awk -F ";" '{print \$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
+sort -k1 $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
+join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24,\$25,\$26}' $BASE_DIR/outputs/gxp/pheno_intermediate3 > $BASE_DIR/outputs/gxp/pheno_intermediate4
+echo -e 'label Within_family_ID ID_father ID_mother Sex bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
 
 
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
-TRAITS=$(cat ${INPUT_TR} | head -n ${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo $TRAITS
+TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${TRAITS}
 
-awk -v t="$TRAITS" 'NR==1 {for (i=1; i<=NF; i++) {f[$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > ${fam}
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}.fam
 
 
   # 2) create relatedness matrix of samples using gemma
-gemma -bfile \$BASE_NAME -gk 1 -o ${TRAITS}
+gemma -bfile \${BASE_NAME} -gk 1 -o \${TRAITS}
 
   # 3) fit linear model using gemma (-lm)
-gemma -bfile \$BASE_NAME -lm 4 -miss 0.1 -notsnp -o ${TRAITS}.lm
+gemma -bfile \${BASE_NAME} -lm 4 -miss 0.1 -notsnp -o \${TRAITS}.lm
 
   # 4) fit linear mixed model using gemma (-lmm)
-gemma -bfile \$BASE_NAME -k output/${TRAITS}.cXX.txt -lmm 4 -o ${TRAITS}.lmm
+gemma -bfile \${BASE_NAME} -k output/\${TRAITS}.cXX.txt -lmm 4 -o \${TRAITS}.lmm
 
   # 5) reformat output
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/${TRAITS}.lm.assoc.txt | \
-      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > ${TRAITS}.lm.GxP.txt.gz
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/${TRAITS}.lmm.assoc.txt | \
-      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > ${TRAITS}.lmm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/\${TRAITS}.lm.assoc.txt | \
+      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/\${TRAITS}.lm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/\${TRAITS}.lmm.assoc.txt | \
+      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/\${TRAITS}.lmm.GxP.txt.gz
+
 
 EOA
 
 
 
-if [ "$JID_RES" = "jid2" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "JID_RES" = "jid4" ];
 then
   echo "10_convert_plink DONE                   **"
 else
