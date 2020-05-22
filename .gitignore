@@ -12,3 +12,4 @@ data/*
 .RData
 .Ruserdata
 output/*
+PCA/*
