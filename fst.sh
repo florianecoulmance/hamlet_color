@@ -17,7 +17,6 @@ done
 # Create the output repositories where will be stored files from each steps
 mkdir $BASE_DIR/outputs/fst/
 
-
 jobfile1=20_keep_species.tmp # temp file
 cat > $jobfile1 <<EOA # generate the job file
 #!/bin/bash
