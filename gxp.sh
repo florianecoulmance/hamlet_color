@@ -46,6 +46,7 @@ vcftools \
 
 EOA
 
+#Job2
 jobfile2=11_plink_binary.tmp # temp file
 cat > $jobfile2 <<EOA # generate the job file
 #!/bin/bash
