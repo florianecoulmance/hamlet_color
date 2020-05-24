@@ -34,7 +34,7 @@ echo ${BASE_NAME}
 mv ${fam} $BASE_NAME-old.fam
 cp ${BASE_NAME}-old.fam ${fam}
 cp ${BASE_NAME}.bed ${BASE_NAME}_${TRAITS}.bed
-cp ${BASE_NAME}.bim ${BASE_NAME}_${TRAITS}.bim 
+cp ${BASE_NAME}.bim ${BASE_NAME}_${TRAITS}.bim
 cp ${BASE_NAME}.log ${BASE_NAME}_${TRAITS}.log
 
 awk -v t="${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[$i] = i}} {print $(f["label"]), $(f["Within_family_ID"]), $(f["ID_father"]), $(f["ID_mother"]), $(f["Sex"]), $(f[t])}' /user/doau0129/work/chapter1_2//outputs/gxp/pheno_table.fam > ${BASE_NAME}_${TRAITS}.fam

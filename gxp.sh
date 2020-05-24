@@ -206,6 +206,8 @@ echo \${step1}
 
 
 $BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}
+$BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
+$BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
 $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
 
 EOA
@@ -248,7 +250,7 @@ else
   jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
 fi
 
-if [ "$JID_RES" = "jid6"];
+if [ "$JID_RES" = "jid6" ];
 then
   echo "*****     14_windows DONE              **"
 elif [ "$JID_RES" = "jid5" ]
