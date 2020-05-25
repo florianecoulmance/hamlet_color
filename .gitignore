@@ -3,7 +3,7 @@ packrat/lib*/
 packrat/src/
 logs/*
 outputs/*
-!outputs/gxp*.k.txt.gz
+!outputs/gxp/*.k.txt.gz
 ressources/*
 temp_files
 data/*
