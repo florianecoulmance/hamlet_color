@@ -232,8 +232,8 @@ cat > $jobfile4 <<EOA # generate the job file
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=100M
-#SBATCH --time=00:00:55
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
 
 INPUT_PW=$BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
 PW=\$(cat \${INPUT_PW} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
