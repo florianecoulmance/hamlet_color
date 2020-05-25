@@ -89,15 +89,15 @@ fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
 pheno=$BASE_DIR/metadata/traits
 sed -i 's/PL17_125ranbel/PL17_125tanbel/g' \${fam}
 
-tr=(bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae)
+tr=(bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae H.randallorum)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-awk -F ";" '{print \$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
+awk -F ";" '{print \$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
 sort -k1 $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
 join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24,\$25,\$26}' $BASE_DIR/outputs/gxp/pheno_intermediate3 > $BASE_DIR/outputs/gxp/pheno_intermediate4
-echo -e 'label Within_family_ID ID_father ID_mother Sex bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24,\$25,\$26,\$27}' $BASE_DIR/outputs/gxp/pheno_intermediate3 > $BASE_DIR/outputs/gxp/pheno_intermediate4
+echo -e 'label Within_family_ID ID_father ID_mother Sex bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae H.randallorum' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
 
 
 EOA
