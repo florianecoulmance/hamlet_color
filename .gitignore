@@ -13,4 +13,4 @@ data/*
 .Ruserdata
 output/*
 PCA/*
-GxP/*
+GxP/*.gz
