@@ -197,15 +197,19 @@ cat > $jobfile3 <<EOA # generate the job file
 
 printf 'nig\n%.0s' {1..6} > col1
 col2=(flo flo flo boc boc bel)
-paste -d " " col1 \${col2} > col2
+printf "%s\n" "\${col2[@]}" > col2
+paste -d " " col1 col2 > col12
 col3=(boc bel pue bel pue pue)
-paste -d " " col2 \${col3} > nig
+printf "%s\n" "\${col3[@]}" > col3
+paste -d " " col12 col3 > nig
 
 printf 'pue\n%.0s' {1..6} > col11
 col22=(flo flo flo boc boc bel)
-paste -d " " col11 \${col22} > col22
+printf "%s\n" "\${col22[@]}" > col22
+paste -d " " col11 col22 > col1122
 col33=(boc bel pue bel pue pue)
-paste -d " " col22 \${col33} > pue
+printf "%s\n" "\${col33[@]}" > col33
+paste -d " " col1122 col33 > pue
 
 awk 'NF' nig pue > $BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
 rm nig
