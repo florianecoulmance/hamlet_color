@@ -7,7 +7,7 @@ library(hypogen)
 library(dplyr)
 library(plyr)
 
-setwd('/Users/fco/Desktop/BREMEN_OP/chapter1_2/GxP/')
+setwd('/user/doau0129/chapter1_2/outputs/gxp')
 
 # df_gxp_snout <- read.table(file = 'snout.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
 # df_gxp_bars <- read.table(file = 'bars_body.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
