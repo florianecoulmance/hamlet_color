@@ -257,16 +257,16 @@ vcftools --gzvcf ${VCF} \
       --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
       --fst-window-step 5000 \
       --fst-window-size 50000 \
-      --out \${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log
+      --stdout 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log | \
+      gzip > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.windowed.weir.fst
 
   vcftools --gzvcf ${vcf} \
       --weir-fst-pop pop1.txt \
       --weir-fst-pop pop2.txt \
       --fst-window-size 10000 \
       --fst-window-step 1000 \
-      --out \${SP}_\${LOC1}_\${LOC2}.10k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.log
-
-  gzip *.windowed.weir.fst
+      --stdout 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.log | \
+      gzip > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.windowed.weir.fst
 
 
 EOA
