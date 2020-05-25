@@ -119,37 +119,37 @@ echo \${INPUT_VCF}
 INPUT_POP=$BASE_DIR/outputs/fst/hamlets.pop.txt
 echo \${INPUT_POP}
 
-awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > pop.txt
+awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/fst/pop.txt
 
 for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo nigpue puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
-  grep \$k pop.txt | cut -f 1 > pop.\$k.txt
+  grep \$k pop.txt | cut -f 1 > $BASE_DIR/outputs/fst/pop.\$k.txt
   done
 
 
-POP="--weir-fst-pop pop.abebel.txt \
-   --weir-fst-pop pop.abeboc.txt \
-   --weir-fst-pop pop.abepue.txt \
-   --weir-fst-pop pop.chlpue.txt \
-   --weir-fst-pop pop.floflo.txt \
-   --weir-fst-pop pop.gemflo.txt \
-   --weir-fst-pop pop.gumboc.txt \
-   --weir-fst-pop pop.gutpue.txt \
-   --weir-fst-pop pop.indbel.txt \
-   --weir-fst-pop pop.indpue.txt \
-   --weir-fst-pop pop.maybel.txt \
-   --weir-fst-pop pop.nigbel.txt \
-   --weir-fst-pop pop.nigboc.txt \
-   --weir-fst-pop pop.nigflo.txt \
-  --weir-fst-pop pop.nigpue.txt \
-  --weir-fst-pop pop.puebel.txt \
-  --weir-fst-pop pop.pueboc.txt \
-  --weir-fst-pop pop.pueflo.txt \
-  --weir-fst-pop pop.puepue.txt \
-  --weir-fst-pop pop.ranbel.txt \
-  --weir-fst-pop pop.tanpue.txt \
-  --weir-fst-pop pop.uniboc.txt \
-  --weir-fst-pop pop.uniflo.txt \
-  --weir-fst-pop pop.unipue.txt" 
+POP="--weir-fst-pop $BASE_DIR/outputs/fst/pop.abebel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.abeboc.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.abepue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.chlpue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.floflo.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.gemflo.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.gumboc.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.gutpue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.indbel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.indpue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.maybel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigbel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigboc.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigflo.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigpue.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.puebel.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.pueboc.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.pueflo.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.puepue.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.ranbel.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.tanpue.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.uniboc.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.uniflo.txt \
+  --weir-fst-pop $BASE_DIR/outputs/fst/pop.unipue.txt"
 
 
   # fst by SNP
@@ -157,7 +157,7 @@ POP="--weir-fst-pop pop.abebel.txt \
 vcftools --gzvcf \${INPUT_VCF} \
       \$POP \
      --stdout  2> multi_fst_snp.log | \
-     gzip > $BASE_DIR/outputs/fst/multi_fst.tsv.gz
+     gzip > $BASE_DIR/outputs/fst/multi_fst_snp.tsv.gz
 
      # fst 50kb window
      # ---------------
@@ -175,11 +175,101 @@ vcftools --gzvcf \${INPUT_VCF} \
      --fst-window-step 1000 \
      --fst-window-size 10000 \
      --stdout  2> multi_fst.10k.log | \
-     gzip > $BASE_DIR/outputs/fst/multi_fst_snp.tsv.gz  
+     gzip > $BASE_DIR/outputs/fst/multi_fst.10k.tsv.gz
 
 EOA
 
 
+jobfile3=23_prep_pairwise.tmp # temp file
+cat > $jobfile3 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=23_prep_pairwise
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/23_prep_pairwise_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/23_prep_pairwise_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=100M
+#SBATCH --time=00:00:55
+
+
+printf 'nig\n%.0s' {1..6} > col1
+col2=(flo flo flo boc boc bel)
+paste -d " " col1 \${col2} > col2
+col3=(boc bel pue bel pue pue)
+paste -d " " col2 \${col3} > nig
+
+printf 'pue\n%.0s' {1..6} > col11
+col22=(flo flo flo boc boc bel)
+paste -d " " col11 \${col22} > col22
+col33=(boc bel pue bel pue pue)
+paste -d " " col22 \${col33} > pue
+
+awk 'NF' nig pue > $BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
+rm nig
+rm pue
+rm col*
+
+
+EOA
+
+
+jobfile4=24_pairwise_fst.tmp # temp file
+cat > $jobfile4 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=24_pairwise_fst
+#SBATCH --partition=carl.p
+#SBATCH --array=1-12
+#SBATCH --output=$BASE_DIR/logs/24_pairwise_fst_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/24_pairwise_fst_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=100M
+#SBATCH --time=00:00:55
+
+INPUT_PW=$BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
+PW=\$(cat \${INPUT_PW} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${PW}
+
+SP=\$(cut -d' ' -f1 <<< \$PW)
+LOC1=\$(cut -d' ' -f2 <<< \$PW)
+LOC2=\$(cut -d' ' -f3 <<< \$PW)
+echo \${SP}
+echo \${LOC1}
+echo \${LOC2}
+
+POP=$BASE_DIR/outputs/fst/\${SP}.pop
+echo \${POP}
+
+VCF=$BASE_DIR/outputs/fst/\${SP}.vcf.gz
+echo \${VCF}
+
+
+grep \${LOC1} \${POP} > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt
+grep \${LOC2} \${POP} > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt
+
+vcftools --gzvcf ${VCF} \
+      --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
+      --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
+      --fst-window-step 5000 \
+      --fst-window-size 50000 \
+      --out \${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log
+
+  vcftools --gzvcf ${vcf} \
+      --weir-fst-pop pop1.txt \
+      --weir-fst-pop pop2.txt \
+      --fst-window-size 10000 \
+      --fst-window-step 1000 \
+      --out \${SP}_\${LOC1}_\${LOC2}.10k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.log
+
+  gzip *.windowed.weir.fst
+
+
+EOA
 
 if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
@@ -205,4 +295,24 @@ then
   jid2=$(sbatch ${jobfile2})
 else
   jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
+fi
+
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+then
+  echo "*****     23_prep_pairwise DONE          **"
+elif [ "$JID_RES" = jid3 ]
+then
+  jid3=$(sbatch ${jobfile3})
+else
+  jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
+fi
+
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+then
+  echo "*****     24_pairwise_fst DONE          **"
+elif [ "$JID_RES" = jid4 ]
+then
+  jid4=$(sbatch ${jobfile4})
+else
+  jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
 fi
