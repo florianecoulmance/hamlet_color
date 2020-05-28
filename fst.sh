@@ -59,7 +59,7 @@ then
         grep -v indpue | \
         grep -v gutpue | \
         grep -v chlpue | \
-        grep -v abe pue | \
+        grep -v abepue | \
         grep -v nigpue > $BASE_DIR/outputs/fst/\${SP}.pop
 fi
 
