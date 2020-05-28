@@ -16,5 +16,5 @@ output/*
 PCA/*
 GxP/*.gz
 R/*pdf
-GxP/*.pdf
+GxP/
 GxP/plots.zip
