@@ -2,7 +2,7 @@
 
 #SBATCH --job-name=14_windows.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-17
+#SBATCH --array=1-18
 #SBATCH --output=/user/doau0129/work/chapter1_2//logs/14_windows_%A_%a.out
 #SBATCH --error=/user/doau0129/work/chapter1_2//logs/14_windows_%A_%a.err
 #SBATCH --nodes=1

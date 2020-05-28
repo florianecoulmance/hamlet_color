@@ -92,10 +92,11 @@ tr=(bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran co
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-sort -k1 \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
-join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
-echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate3 >> $BASE_DIR/outputs/gxp/pheno_table.fam
+awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
+sort -k1 $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
+join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/pheno_intermediate3 > $BASE_DIR/outputs/gxp/pheno_intermediate4
+echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
 
 
 EOA
