@@ -86,18 +86,16 @@ cat > $jobfile3 <<EOA # generate the job file
 #SBATCH --time=00:15:00
 
 fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
-pheno=$BASE_DIR/metadata/traits
-sed -i 's/PL17_125ranbel/PL17_125tanbel/g' \${fam}
+pheno=$BASE_DIR/metadata/traits2
 
-tr=(bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae H.randallorum)
+tr=(bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-awk -F ";" '{print \$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
-sort -k1 $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
-join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24,\$25,\$26,\$27}' $BASE_DIR/outputs/gxp/pheno_intermediate3 > $BASE_DIR/outputs/gxp/pheno_intermediate4
-echo -e 'label Within_family_ID ID_father ID_mother Sex bars_head bars_body snout peduncle H.gummiguta H.unicolor H.puella H.nigricans H.indigo Tan.hamlet H.chlorurus H.guttavarius H.aberrans H.maya H.gemma H.floridae H.randallorum' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
+sort -k1 \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
+join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
+echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate3 >> $BASE_DIR/outputs/gxp/pheno_table.fam
 
 
 EOA
@@ -109,7 +107,7 @@ cat > $jobfile4 <<EOA # generate the job file
 
 #SBATCH --job-name=13_gemma.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-16
+#SBATCH --array=1-18
 #SBATCH --output=$BASE_DIR/logs/13_gemma_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/13_gemma_%A_%a.err
 #SBATCH --nodes=1
@@ -175,7 +173,7 @@ cat > $jobfile5 <<EOA # generate the job file
 
 #SBATCH --job-name=14_windows.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-16
+#SBATCH --array=1-18
 #SBATCH --output=$BASE_DIR/logs/14_windows_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/14_windows_%A_%a.err
 #SBATCH --nodes=1
