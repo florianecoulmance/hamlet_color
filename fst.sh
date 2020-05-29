@@ -35,7 +35,15 @@ cat > $jobfile1 <<EOA # generate the job file
 INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
 echo \${INPUT_VCF}
 
-tr=(nig pue)
+smp=(PL17_35puepue PL17_35indpue)
+printf "%s " "\${smp[@]}" > $BASE_DIR/outputs/09_1_snpfiltration/change_sample.txt
+
+bcftools reheader -s $BASE_DIR/outputs/09_1_snpfiltration/change_sample.txt -o $BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz \${INPUT_VCF}
+
+INPUT_CHANGED=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
+
+
+tr=(nig pue bel boc puer)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/fst_species.fofn
 
 INPUT_SP=$BASE_DIR/outputs/listoffiles/fst_species.fofn
@@ -44,7 +52,7 @@ echo \${SP}
 
 if [ "\${SP}" = "nig" ];
 then
-  vcfsamplenames \${INPUT_VCF} | \
+  vcfsamplenames \${INPUT_CHANGED} | \
        grep \${SP} > $BASE_DIR/outputs/fst/\${SP}.pop
 fi
 
@@ -52,19 +60,74 @@ fi
 
 if [ "\${SP}" = "pue" ];
 then
-  vcfsamplenames \${INPUT_VCF} | \
+  vcfsamplenames \${INPUT_CHANGED} | \
         grep \${SP} | \
-        grep -v unipue | \
-        grep -v tanpue | \
-        grep -v indpue | \
-        grep -v gutpue | \
-        grep -v chlpue | \
-        grep -v abepue | \
-        grep -v nigpue > $BASE_DIR/outputs/fst/\${SP}.pop
+        grep -v abe | \
+        grep -v chl | \
+        grep -v flo | \
+        grep -v gem | \
+        grep -v gum | \
+        grep -v gut | \
+        grep -v ind | \
+        grep -v may | \
+        grep -v nig | \
+        grep -v ran | \
+        grep -v tan | \
+        grep -v uni > $BASE_DIR/outputs/fst/\${SP}.pop
+fi
+
+if [ "\${SP}" = "bel" ];
+then
+  vcfsamplenames \${INPUT_CHANGED} | \
+        grep \${SP} | \
+        grep -v abe | \
+        grep -v chl | \
+        grep -v flo | \
+        grep -v gem | \
+        grep -v gum | \
+        grep -v gut | \
+        grep -v ran | \
+        grep -v tan | \
+        grep -v uni > $BASE_DIR/outputs/fst/\${SP}.pop
 fi
 
 
-vcftools --gzvcf \${INPUT_VCF} \
+if [ "\${SP}" = "boc" ];
+then
+  vcfsamplenames \${INPUT_CHANGED} | \
+        grep \${SP} | \
+        grep -v abe | \
+        grep -v chl | \
+        grep -v flo | \
+        grep -v gem | \
+        grep -v gum | \
+        grep -v gut | \
+        grep -v ran | \
+        grep -v tan | \
+        grep -v ind | \
+        grep -v may > $BASE_DIR/outputs/fst/\${SP}.pop
+fi
+
+if [ "\${SP}" = "puer" ];
+then
+  vcfsamplenames \${INPUT_CHANGED} | \
+        grep pue | \
+        grep -v abe | \
+        grep -v nig | \
+        grep -v flo | \
+        grep -v gem | \
+        grep -v gum | \
+        grep -v gut | \
+        grep -v ran | \
+        grep -v tan | \
+        grep -v ind | \
+        grep -v may | \
+        grep -v bel | \
+        grep -v boc | \
+        grep -v flo > $BASE_DIR/outputs/fst/\${SP}.pop
+fi
+
+vcftools --gzvcf \${INPUT_CHANGED} \
       --keep $BASE_DIR/outputs/fst/\${SP}.pop \
       --mac 3 \
       --recode \
@@ -87,7 +150,7 @@ cat > $jobfile11 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=02:30:00
 
-INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
 echo \${INPUT_VCF}
 
 vcfsamplenames \${INPUT_VCF} | \
@@ -112,7 +175,7 @@ cat > $jobfile2 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=15:00:00
 
-INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
 echo \${INPUT_VCF}
 
 
@@ -211,9 +274,39 @@ col33=(boc bel pue bel pue pue)
 printf "%s\n" "\${col33[@]}" > col33
 paste -d " " col1122 col33 > pue
 
-awk 'NF' nig pue > $BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
+
+printf 'bel\n%.0s' {1..6} > col111
+col222=(ind ind ind may may nig)
+printf "%s\n" "\${col222[@]}" > col222
+paste -d " " col111 col222 > col111222
+col333=(may nig pue nig pue pue)
+printf "%s\n" "\${col333[@]}" > col333
+paste -d " " col111222 col333 > bel
+
+
+printf 'boc\n%.0s' {1..6} > col1111
+col2222=(nig nig pue)
+printf "%s\n" "\${col2222[@]}" > col2222
+paste -d " " col1111 col2222 > col11112222
+col3333=(pue uni uni)
+printf "%s\n" "\${col3333[@]}" > col3333
+paste -d " " col11112222 col3333 > boc
+
+
+printf 'puer\n%.0s' {1..6} > col11111
+col22222=(chl chl pue)
+printf "%s\n" "\${col22222[@]}" > col22222
+paste -d " " col11111 col22222 > col1111122222
+col33333=(pue uni uni)
+printf "%s\n" "\${col33333[@]}" > col33333
+paste -d " " col1111122222 col33333 > puer
+
+awk 'NF' nig pue bel boc puer > $BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
 rm nig
 rm pue
+rm bel
+rm boc
+rm puer
 rm col*
 
 
@@ -226,7 +319,7 @@ cat > $jobfile4 <<EOA # generate the job file
 
 #SBATCH --job-name=24_pairwise_fst
 #SBATCH --partition=carl.p
-#SBATCH --array=1-12
+#SBATCH --array=1-24
 #SBATCH --output=$BASE_DIR/logs/24_pairwise_fst_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/24_pairwise_fst_%A_%a.err
 #SBATCH --nodes=1
@@ -275,30 +368,36 @@ vcftools --gzvcf ${VCF} \
 
 EOA
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "20_keep_species DONE **"
+elif [ "$JID_RES" = "jid1" ]
+then
+  jid1=$(sbatch ${jobfile1})
 else
   jid1=$(sbatch ${jobfile1})
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "21_all_hamlets DONE **"
+elif [ "$JID_RES" = "jid11" ]
+then
+  jid11=$(sbatch ${jobfile11})
 else
-  jid1=$(sbatch ${jobfile11})
+  jid11=$(sbatch ${jobfile11})
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****     22_multi DONE          **"
 elif [ "$JID_RES" = jid2 ]
 then
   jid2=$(sbatch ${jobfile2})
 else
-  jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
+  jid2=$(sbatch --dependency=afterok:${jid11##* } ${jobfile2})
 fi
 
 if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
@@ -308,7 +407,7 @@ elif [ "$JID_RES" = jid3 ]
 then
   jid3=$(sbatch ${jobfile3})
 else
-  jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
+  jid3=$(sbatch --dependency=afterok:${jid1##* } ${jobfile3})
 fi
 
 if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];

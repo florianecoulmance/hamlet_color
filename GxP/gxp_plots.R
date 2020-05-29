@@ -6,6 +6,8 @@ library(tidyverse)
 library(hypogen)
 library(dplyr)
 library(plyr)
+library(ggpubr)
+
 
 setwd('/Users/fco/Desktop/BREMEN_OP/chapter1_2/GxP')
 
@@ -14,29 +16,25 @@ setwd('/Users/fco/Desktop/BREMEN_OP/chapter1_2/GxP')
 # 
 
 files <- list.files(pattern = "k.txt.gz")
-traits <- list("bars_body", "bars_head", "peduncle", "snout", "H.unicolor", "H.aberrans", "H.nigricans", "H.maya", "H.gemma", "H.puella", "H.indigo","H.gummiguta", "Tan.hamlet", "H.guttavarius", "H.floridae", "H.chlorurus", "H.randallorum")
+traits <- list("bhead", "bbody", "pue", "nig", "combo_spec", "ind", "abe", "may",  "ran", "gem", "gut", "flo", "chl", "tan", "snout", "ped", "gum", "uni")
 
 for(i in 1:length(traits)) {
   
-  pdf(paste0(traits[i],"_plots"))
+  png(paste0(traits[i],"_plots.png"))
+  #par(mfrow=c(2,2))
+  h <- 0
+  pltList <- list()
   
-  par(mfrow=c(2,2))
 
   for(j in 1:length(files)){
-    
-    
-    if(substring(files[j], 1, 1)=="H" | substring(files[j], 1, 1)=="T"){
-      print("starts with H")
-      traitfile <- strsplit(files[j], ".lm")[[1]][1]
-      print(traitfile)
-    } else{
-      print("Dont start with H")
+
       traitfile <- regmatches(x=files[j],gregexpr('[.]',files[j]),invert=TRUE)[[1]][1]
       print(traitfile)
-      
-    }
+
     
     if(traitfile==traits[i]) {
+      h <- h + 1
+      print(h)
       print("trait and file match")
       data <- read_tsv(files[j]) %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
       name <- tools::file_path_sans_ext(files[j])
@@ -44,18 +42,21 @@ for(i in 1:length(traits)) {
       print(name)
       
       
-      p <- ggplot(data = data, aes(x = GPOS, y = AVG_p_wald))+
+      pltName <- paste( 'p', h, sep = '_' )
+      print(pltName)
+      pltList[[ pltName ]] <- ggplot(data = data, aes(x = GPOS, y = AVG_p_wald))+
         geom_hypo_LG()+
         geom_point(size = .2)+
         scale_fill_hypo_LG_bg()+
         scale_x_hypo_LG()+
         theme_hypo() + ggtitle(name)
       
-      print(p)
-       
+
     }
   
   }
+  figure <- ggarrange(pltList[[1]],pltList[[2]],pltList[[3]] ,pltList[[4]] ,ncol = 2, nrow = 2)
+  print(figure)
   print("Close the plot")
   dev.off()
   
