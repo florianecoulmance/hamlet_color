@@ -18,3 +18,4 @@ GxP/*.gz
 R/*pdf
 GxP/
 GxP/plots.zip
+*.tmp
