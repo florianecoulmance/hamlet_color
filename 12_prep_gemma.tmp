@@ -10,6 +10,11 @@
 #SBATCH --mem-per-cpu=500M
 #SBATCH --time=00:15:00
 
+
+#sed 's/PL17_35puepue/PL17_35indpue/g' /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary.fam > /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary1.fam
+#mv /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary1.fam /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary.fam
+
+
 fam=/user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink_binary.fam
 pheno=/user/doau0129/work/chapter1_2//metadata/traits2
 

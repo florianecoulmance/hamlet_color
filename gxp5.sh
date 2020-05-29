@@ -79,14 +79,14 @@ cp $BASE_DIR/outputs/gxp/GxP_plink_binary.fam $BASE_DIR/outputs/gxp/GxP_plink_bi
 
 EOA
 
-jobfile3=12_prep_gemma.tmp # temp file
+jobfile3=12_prep_gemma5.tmp # temp file
 cat > $jobfile3 <<EOA # generate the job file
 #!/bin/bash
 
-#SBATCH --job-name=12_prep_gemma.tmp
+#SBATCH --job-name=12_prep_gemma5.tmp
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/12_prep_gemma_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/12_prep_gemma_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/12_prep_gemma5_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/12_prep_gemma5_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -97,33 +97,38 @@ cat > $jobfile3 <<EOA # generate the job file
 #sed 's/PL17_35puepue/PL17_35indpue/g' $BASE_DIR/outputs/gxp/GxP_plink_binary.fam > $BASE_DIR/outputs/gxp/GxP_plink_binary1.fam
 #mv $BASE_DIR/outputs/gxp/GxP_plink_binary1.fam $BASE_DIR/outputs/gxp/GxP_plink_binary.fam
 
-
-fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
-pheno=$BASE_DIR/metadata/traits2
+cp $BASE_DIR/outputs/gxp/GxP_plink_binary_sauvegarde.fam $BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.fam
+cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bed $BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.bed
+cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bim $BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.bim
+cp $BASE_DIR/outputs/gxp/GxP_plink_binary.log $BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.log
+cp $BASE_DIR/outputs/gxp/GxP_plink_binary.nosex $BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.nosex
+ 
+fam=$BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.fam
+pheno=$BASE_DIR/metadata/traits5
 
 tr=(bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19}' \${pheno} > $BASE_DIR/outputs/gxp/pheno_intermediate1
-sort -k1 $BASE_DIR/outputs/gxp/pheno_intermediate1 > $BASE_DIR/outputs/gxp/pheno_intermediate2
-join \${fam} $BASE_DIR/outputs/gxp/pheno_intermediate2 > $BASE_DIR/outputs/gxp/pheno_intermediate3
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/pheno_intermediate3 > $BASE_DIR/outputs/gxp/pheno_intermediate4
-echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/pheno_table.fam && cat $BASE_DIR/outputs/gxp/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/pheno_table.fam
+awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19}' \${pheno} > $BASE_DIR/outputs/gxp/trait5/pheno_intermediate1
+sort -k1 $BASE_DIR/outputs/gxp/trait5/pheno_intermediate1 > $BASE_DIR/outputs/gxp/trait5/pheno_intermediate2
+join \${fam} $BASE_DIR/outputs/gxp/trait5/pheno_intermediate2 > $BASE_DIR/outputs/gxp/trait5/pheno_intermediate3
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/trait5/pheno_intermediate3 > $BASE_DIR/outputs/gxp/trait5/pheno_intermediate4
+echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/trait5/pheno_table.fam && cat $BASE_DIR/outputs/gxp/trait5/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/trait5/pheno_table.fam
 
 
 EOA
 
 
-jobfile4=13_gemma.tmp # temp file
+jobfile4=13_gemma5.tmp # temp file
 cat > $jobfile4 <<EOA # generate the job file
 #!/bin/bash
 
-#SBATCH --job-name=13_gemma.tmp
+#SBATCH --job-name=13_gemma5.tmp
 #SBATCH --partition=carl.p
 #SBATCH --array=1-18
-#SBATCH --output=$BASE_DIR/logs/13_gemma_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/13_gemma_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/13_gemma5_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/13_gemma5_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -138,7 +143,7 @@ body() {
 }
 
 
-fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
+fam=$BASE_DIR/outputs/gxp/trait5/GxP_plink_binary.fam
 
 
 INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
@@ -158,23 +163,23 @@ cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
 cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 
-awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/trait5/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
 
 
   # 2) create relatedness matrix of samples using gemma
-gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o \${TRAITS}
+gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /trait5/\${TRAITS}
 
   # 3) fit linear model using gemma (-lm)
-gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o \${TRAITS}.lm
+gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /trait5/\${TRAITS}.lm
 
   # 4) fit linear mixed model using gemma (-lmm)
-gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/\${TRAITS}.cXX.txt -lmm 4 -o \${TRAITS}.lmm
+gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/trait5/\${TRAITS}.cXX.txt -lmm 4 -o /trait5/\${TRAITS}.lmm
 
   # 5) reformat output
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/\${TRAITS}.lm.assoc.txt | \
-      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/\${TRAITS}.lm.GxP.txt.gz
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/\${TRAITS}.lmm.assoc.txt | \
-      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/\${TRAITS}.lmm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/trait5/\${TRAITS}.lm.assoc.txt | \
+      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/trait5/\${TRAITS}.lm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/trait5/\${TRAITS}.lmm.assoc.txt | \
+      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/trait5/\${TRAITS}.lmm.GxP.txt.gz
 
 
 rm \${BASE_NAME}_\${TRAITS}.bed
@@ -183,15 +188,15 @@ rm \${BASE_NAME}_\${TRAITS}.log
 
 EOA
 
-jobfile5=14_windows.tmp # temp file
+jobfile5=14_windows5.tmp # temp file
 cat > $jobfile5 <<EOA # generate the job file
 #!/bin/bash
 
-#SBATCH --job-name=14_windows.tmp
+#SBATCH --job-name=14_windows5.tmp
 #SBATCH --partition=carl.p
 #SBATCH --array=1-18
-#SBATCH --output=$BASE_DIR/logs/14_windows_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/14_windows_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/14_windows5_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/14_windows5_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -204,9 +209,9 @@ INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${TRAITS}
 
-lm=$BASE_DIR/outputs/gxp/\${TRAITS}.lm.GxP.txt.gz
+lm=$BASE_DIR/outputs/gxp/trait5/\${TRAITS}.lm.GxP.txt.gz
 echo \${lm}
-lmm=$BASE_DIR/outputs/gxp/\${TRAITS}.lmm.GxP.txt.gz
+lmm=$BASE_DIR/outputs/gxp/trait5/\${TRAITS}.lmm.GxP.txt.gz
 echo \${lmm}
 
 win5=50000

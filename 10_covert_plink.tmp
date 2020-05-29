@@ -12,7 +12,15 @@
 
 INPUT_VCF=/user/doau0129/work/chapter1_2//outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
 
-vcftools       --gzvcf ${INPUT_VCF}       --plink       --out /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink
+
+smp=(PL17_35puepue PL17_35indpue)
+printf "%s " "${smp[@]}" > /user/doau0129/work/chapter1_2//outputs/09_1_snpfiltration/change_sample.txt
+
+bcftools reheader -s /user/doau0129/work/chapter1_2//outputs/09_1_snpfiltration/change_sample.txt -o /user/doau0129/work/chapter1_2//outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz ${INPUT_VCF}
+
+INPUT_CHANGED=/user/doau0129/work/chapter1_2//outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
+
+vcftools       --gzvcf ${INPUT_CHANGED}       --plink       --out /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink
 
   plink       --file /user/doau0129/work/chapter1_2//outputs/gxp/GxP_plink       --recode12       --out /user/doau0129/work/chapter1_2//outputs/gxp/hapmap
 
