@@ -346,10 +346,13 @@ cat > $jobfile5 <<EOA # generate the job file
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=32G
-#SBATCH --time=04:30:00
+#SBATCH --mem-per-cpu=4G
+#SBATCH --time=01:00:00
 
-cat $BASE_DIR/outputs/fst/\*.50k.log | \
+ls -1 $BASE_DIR/outputs/fst/*.50k.log > $BASE_DIR/outputs/listoffiles/25_logs50k.fofn 
+cd $BASE_DIR/outputs/fst/
+
+cat *.50k.log | \
     grep -E 'Weir and Cockerham|--out' | \
     grep -A 3 50k | \
     sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
