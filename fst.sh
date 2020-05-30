@@ -320,7 +320,7 @@ vcftools --gzvcf \${VCF} \
       --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
       --fst-window-step 5000 \
       --fst-window-size 50000 \
-      --out $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log 
+      --out $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log
 
 vcftools --gzvcf \${VCF} \
       --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
@@ -333,6 +333,33 @@ gzip $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.windowed.weir.fst
 gzip $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.windowed.weir.fst
 
 EOA
+
+
+jobfile5=25_global.tmp # temp file
+cat > $jobfile5 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=25_global
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/25_global_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/25_global_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+cat $BASE_DIR/outputs/fst/\*.50k.log | \
+    grep -E 'Weir and Cockerham|--out' | \
+    grep -A 3 50k | \
+    sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
+    paste - - - | \
+    cut -f 1,3,5 | \
+
+sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/fst/fst_globals.txt
+
+EOA
+
 
 if [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
@@ -384,4 +411,14 @@ then
   jid4=$(sbatch ${jobfile4})
 else
   jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
+fi
+
+if [ "$JID_RES" = "jid6" ];
+then
+  echo "*****     25_global DONE          **"
+elif [ "$JID_RES" = jid5 ]
+then
+  jid5=$(sbatch ${jobfile5})
+else
+  jid5=$(sbatch --dependency=afterok:${jid4##* } ${jobfile5})
 fi
