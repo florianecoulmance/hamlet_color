@@ -34,8 +34,16 @@ cat > $jobfile1 <<EOA # generate the job file
 
 INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
 
+
+smp=(PL17_35puepue PL17_35indpue)
+printf "%s " "\${smp[@]}" > $BASE_DIR/outputs/09_1_snpfiltration/change_sample.txt
+
+bcftools reheader -s $BASE_DIR/outputs/09_1_snpfiltration/change_sample.txt -o $BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz \${INPUT_VCF}
+
+INPUT_CHANGED=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
+
 vcftools \
-      --gzvcf \${INPUT_VCF} \
+      --gzvcf \${INPUT_CHANGED} \
       --plink \
       --out $BASE_DIR/outputs/gxp/GxP_plink
 
@@ -85,6 +93,11 @@ cat > $jobfile3 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=500M
 #SBATCH --time=00:15:00
 
+
+#sed 's/PL17_35puepue/PL17_35indpue/g' $BASE_DIR/outputs/gxp/GxP_plink_binary.fam > $BASE_DIR/outputs/gxp/GxP_plink_binary1.fam
+#mv $BASE_DIR/outputs/gxp/GxP_plink_binary1.fam $BASE_DIR/outputs/gxp/GxP_plink_binary.fam
+
+
 fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
 pheno=$BASE_DIR/metadata/traits2
 
@@ -124,6 +137,7 @@ body() {
 	"\$@"
 }
 
+
 fam=$BASE_DIR/outputs/gxp/GxP_plink_binary.fam
 
 
@@ -142,6 +156,7 @@ cp \${BASE_NAME}-old.fam \${fam}
 cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
 cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
+cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 
 awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
 
@@ -213,14 +228,14 @@ $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
 EOA
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "10_convert_plink DONE                   **"
 else
   jid1=$(sbatch ${jobfile1})
 fi
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****     11_plink_binary DONE          **"
 elif [ "$JID_RES" = jid2 ]
@@ -230,7 +245,7 @@ else
   jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
 fi
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****     12_prep_gemma DONE              **"
 elif [ "$JID_RES" = "jid3" ]
@@ -240,7 +255,7 @@ else
   jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
 fi
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6"];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****     13_gemma DONE              **"
 elif [ "$JID_RES" = "jid4" ]

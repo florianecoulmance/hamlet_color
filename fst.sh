@@ -23,7 +23,7 @@ cat > $jobfile1 <<EOA # generate the job file
 
 #SBATCH --job-name=20_keep_species
 #SBATCH --partition=carl.p
-#SBATCH --array=1-2
+#SBATCH --array=1-5
 #SBATCH --output=$BASE_DIR/logs/20_keep_species_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/20_keep_species_%A_%a.err
 #SBATCH --nodes=1
@@ -32,39 +32,61 @@ cat > $jobfile1 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=02:30:00
 
-INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
-echo \${INPUT_VCF}
+#source activate /user/doau0129/miniconda3/envs/vcfenv
 
-tr=(nig pue)
+#INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+#echo \${INPUT_VCF}
+
+#smp=(PL17_35puepue PL17_35indpue)
+#printf "%s " "\${smp[@]}" > $BASE_DIR/outputs/09_1_snpfiltration/change_sample.txt
+
+#bcftools reheader -s $BASE_DIR/outputs/09_1_snpfiltration/change_sample.txt -o $BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz \${INPUT_VCF}
+#tabix filterd_bi-allelic_changed.vcf.gz
+
+INPUT_CHANGED=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
+
+
+tr=(nig pue bel boc puer)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/fst_species.fofn
 
 INPUT_SP=$BASE_DIR/outputs/listoffiles/fst_species.fofn
 SP=\$(cat \${INPUT_SP} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${SP}
 
-if [ "\${SP}" = "nig" ];
+if [ \${SP} = "nig" ];
 then
-  vcfsamplenames \${INPUT_VCF} | \
-       grep \${SP} > $BASE_DIR/outputs/fst/\${SP}.pop
+  echo \${SP}
+  vcfsamplenames \${INPUT_CHANGED} | grep nig > $BASE_DIR/outputs/fst/\${SP}.pop
 fi
 
 
 
-if [ "\${SP}" = "pue" ];
+if [ \${SP} = "pue" ];
 then
-  vcfsamplenames \${INPUT_VCF} | \
-        grep \${SP} | \
-        grep -v unipue | \
-        grep -v tanpue | \
-        grep -v indpue | \
-        grep -v gutpue | \
-        grep -v chlpue | \
-        grep -v abe pue | \
-        grep -v nigpue > $BASE_DIR/outputs/fst/\${SP}.pop
+  echo \${SP}
+  vcfsamplenames \${INPUT_CHANGED} | grep pue | grep -v abe | grep -v chl | grep -v gem | grep -v gum | grep -v gut | grep -v ind | grep -v may | grep -v nig | grep -v ran | grep -v tan | grep -v uni > $BASE_DIR/outputs/fst/\${SP}.pop
+fi
+
+if [ \${SP} = "bel" ];
+then
+  echo \${SP}
+  vcfsamplenames \${INPUT_CHANGED} | grep bel | grep -v abe | grep -v chl | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v tan | grep -v uni > $BASE_DIR/outputs/fst/\${SP}.pop
 fi
 
 
-vcftools --gzvcf \${INPUT_VCF} \
+if [ \${SP} = "boc" ];
+then
+  echo \${SP}
+  vcfsamplenames \${INPUT_CHANGED} | grep boc | grep -v abe | grep -v chl | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v tan | grep -v ind | grep -v may > $BASE_DIR/outputs/fst/\${SP}.pop
+fi
+
+if [ \${SP} = "puer" ];
+then
+  echo \${SP}
+  vcfsamplenames \${INPUT_CHANGED} | grep pue | grep -v abe | grep -v nig | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v ind | grep -v may | grep -v bel | grep -v boc  > $BASE_DIR/outputs/fst/\${SP}.pop
+fi
+
+vcftools --gzvcf \${INPUT_CHANGED} \
       --keep $BASE_DIR/outputs/fst/\${SP}.pop \
       --mac 3 \
       --recode \
@@ -87,7 +109,9 @@ cat > $jobfile11 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=02:30:00
 
-INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+#source activate /user/doau0129/miniconda3/envs/vcfenv
+
+INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
 echo \${INPUT_VCF}
 
 vcfsamplenames \${INPUT_VCF} | \
@@ -112,7 +136,9 @@ cat > $jobfile2 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=15:00:00
 
-INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+#source activate /user/doau0129/miniconda3/envs/vcfenv
+
+INPUT_VCF=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
 echo \${INPUT_VCF}
 
 
@@ -211,9 +237,39 @@ col33=(boc bel pue bel pue pue)
 printf "%s\n" "\${col33[@]}" > col33
 paste -d " " col1122 col33 > pue
 
-awk 'NF' nig pue > $BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
+
+printf 'bel\n%.0s' {1..6} > col111
+col222=(ind ind ind may may nig)
+printf "%s\n" "\${col222[@]}" > col222
+paste -d " " col111 col222 > col111222
+col333=(may nig pue nig pue pue)
+printf "%s\n" "\${col333[@]}" > col333
+paste -d " " col111222 col333 > bel
+
+
+printf 'boc\n%.0s' {1..3} > col1111
+col2222=(nig nig pue)
+printf "%s\n" "\${col2222[@]}" > col2222
+paste -d " " col1111 col2222 > col11112222
+col3333=(pue uni uni)
+printf "%s\n" "\${col3333[@]}" > col3333
+paste -d " " col11112222 col3333 > boc
+
+
+printf 'puer\n%.0s' {1..3} > col11111
+col22222=(chl chl pue)
+printf "%s\n" "\${col22222[@]}" > col22222
+paste -d " " col11111 col22222 > col1111122222
+col33333=(pue uni uni)
+printf "%s\n" "\${col33333[@]}" > col33333
+paste -d " " col1111122222 col33333 > puer
+
+awk 'NF' nig pue bel boc puer > $BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
 rm nig
 rm pue
+rm bel
+rm boc
+rm puer
 rm col*
 
 
@@ -226,7 +282,7 @@ cat > $jobfile4 <<EOA # generate the job file
 
 #SBATCH --job-name=24_pairwise_fst
 #SBATCH --partition=carl.p
-#SBATCH --array=1-12
+#SBATCH --array=1-24
 #SBATCH --output=$BASE_DIR/logs/24_pairwise_fst_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/24_pairwise_fst_%A_%a.err
 #SBATCH --nodes=1
@@ -234,6 +290,9 @@ cat > $jobfile4 <<EOA # generate the job file
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=32G
 #SBATCH --time=04:30:00
+
+
+#source activate /user/doau0129/miniconda3/envs/vcfenv
 
 INPUT_PW=$BASE_DIR/outputs/listoffiles/fst_pairwise.fofn
 PW=\$(cat \${INPUT_PW} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
@@ -256,49 +315,84 @@ echo \${VCF}
 grep \${LOC1} \${POP} > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt
 grep \${LOC2} \${POP} > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt
 
-vcftools --gzvcf ${VCF} \
+vcftools --gzvcf \${VCF} \
       --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
       --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
       --fst-window-step 5000 \
       --fst-window-size 50000 \
-      --stdout 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log | \
-      gzip > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.windowed.weir.fst
+      --out $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.log
 
-  vcftools --gzvcf ${vcf} \
-      --weir-fst-pop pop1.txt \
-      --weir-fst-pop pop2.txt \
+vcftools --gzvcf \${VCF} \
+      --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
+      --weir-fst-pop $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
       --fst-window-size 10000 \
       --fst-window-step 1000 \
-      --stdout 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.log | \
-      gzip > $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.windowed.weir.fst
+      --out $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k 2> $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.log
 
+gzip $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.50k.windowed.weir.fst
+gzip $BASE_DIR/outputs/fst/\${SP}_\${LOC1}_\${LOC2}.10k.windowed.weir.fst
 
 EOA
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+
+jobfile5=25_global.tmp # temp file
+cat > $jobfile5 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=25_global
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/25_global_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/25_global_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+cd $BASE_DIR/outputs/fst/
+
+cat $BASE_DIR/outputs/fst/\*.50k.log | \
+    grep -E 'Weir and Cockerham|--out' | \
+    grep -A 3 50k | \
+    sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
+    paste - - - | \
+    cut -f 1,3,5 | \
+
+sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/fst/fst_globals.txt
+
+EOA
+
+
+if [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "20_keep_species DONE **"
+elif [ "$JID_RES" = "jid1" ]
+then
+  jid1=$(sbatch ${jobfile1})
 else
   jid1=$(sbatch ${jobfile1})
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "21_all_hamlets DONE **"
+elif [ "$JID_RES" = "jid11" ]
+then
+  jid11=$(sbatch ${jobfile11})
 else
-  jid1=$(sbatch ${jobfile11})
+  jid11=$(sbatch ${jobfile11})
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****     22_multi DONE          **"
 elif [ "$JID_RES" = jid2 ]
 then
   jid2=$(sbatch ${jobfile2})
 else
-  jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
+  jid2=$(sbatch --dependency=afterok:${jid11##* } ${jobfile2})
 fi
 
 if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
@@ -308,7 +402,7 @@ elif [ "$JID_RES" = jid3 ]
 then
   jid3=$(sbatch ${jobfile3})
 else
-  jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
+  jid3=$(sbatch --dependency=afterok:${jid1##* } ${jobfile3})
 fi
 
 if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
@@ -319,4 +413,14 @@ then
   jid4=$(sbatch ${jobfile4})
 else
   jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
+fi
+
+if [ "$JID_RES" = "jid6" ];
+then
+  echo "*****     25_global DONE          **"
+elif [ "$JID_RES" = jid5 ]
+then
+  jid5=$(sbatch ${jobfile5})
+else
+  jid5=$(sbatch --dependency=afterok:${jid4##* } ${jobfile5})
 fi
