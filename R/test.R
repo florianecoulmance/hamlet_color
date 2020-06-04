@@ -9,12 +9,12 @@ library(tidyverse)
 
 setwd('/user/doau0129/work/chapter1_2/outputs/09_1_snpfiltration/')
 
-vcf_file <- 'filterd_bi-allelic.vcf.gz'
+vcf_file <- 'filterd_bi-allelic_changed_casz1.vcf.gz'
 
 ld_threshold <- 1
 
 out_prefix <- 'test'
-gds_file <- str_c(out_prefix,".gds")
+gds_file <- str_c(out_prefix,"_casz1.gds")
 
 snpgdsVCF2GDS(vcf.fn=vcf_file, out.fn=gds_file, method="biallelic.only")
 genofile <- snpgdsOpen(gds_file)
@@ -39,12 +39,12 @@ explained_var <- tibble(variation = pca$varprop*100) %>%
   select(PC, variation) %>%
   filter(!is.na(variation))
 
-save(pca,file = str_c(out_prefix,"_pca.RData"))
-pca_tib %>% write_tsv(path = str_c(out_prefix,"_eigenvectors.tsv"))
-explained_var %>% write_tsv(path = str_c(out_prefix,"_eixplained_var.tsv"))
+save(pca,file = str_c(out_prefix,"_casz1_pca.RData"))
+pca_tib %>% write_tsv(path = str_c(out_prefix,"_casz1_eigenvectors.tsv"))
+explained_var %>% write_tsv(path = str_c(out_prefix,"_casz1_eixplained_var.tsv"))
 
 
-png("pca.png")
+png("casz1_pca.png")
 plot(pca$eigenvect[,1],pca$eigenvect[,2] ,col=as.numeric(substr(pca$sample, 1,3) == 'CCM')+3, pch=2)
 dev.off()
 
