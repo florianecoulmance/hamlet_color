@@ -12,8 +12,13 @@ library(ggpubr)
 setwd('/Users/fco/Desktop/BREMEN_OP/chapter1_2/GxP')
 
 #df_gxp_rand <- read.table(file = 'H.randallorum.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
-# df_gxp_bars <- read.table(file = 'bars_body.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
+df_gxp_bars <- read.table(file = 'bbody.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
 # 
+
+df_gxp_bars <- read_tsv('bbody.lm.50k.5k.txt.gz') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+
+
+
 
 files <- list.files(pattern = "k.txt.gz")
 traits <- list("bhead", "bbody", "pue", "nig", "combo_spec", "ind", "abe", "may",  "ran", "gem", "gut", "flo", "chl", "tan", "snout", "ped", "gum", "uni")

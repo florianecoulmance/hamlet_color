@@ -93,15 +93,11 @@ cat > $jobfile3 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=500M
 #SBATCH --time=00:15:00
 
-
-#sed 's/PL17_35puepue/PL17_35indpue/g' $BASE_DIR/outputs/gxp/GxP_plink_binary.fam > $BASE_DIR/outputs/gxp/GxP_plink_binary1.fam
-#mv $BASE_DIR/outputs/gxp/GxP_plink_binary1.fam $BASE_DIR/outputs/gxp/GxP_plink_binary.fam
-
-cp $BASE_DIR/outputs/gxp/GxP_plink_binary_sauvegarde.fam $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
-cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bed $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bed
-cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bim $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bim
-cp $BASE_DIR/outputs/gxp/GxP_plink_binary.log $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.log
-cp $BASE_DIR/outputs/gxp/GxP_plink_binary.nosex $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.nosex
+#cp $BASE_DIR/outputs/gxp/GxP_plink_binary_sauvegarde.fam $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
+#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bed $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bed
+#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bim $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bim
+#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.log $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.log
+#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.nosex $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.nosex
  
 fam=$BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
 pheno=$BASE_DIR/metadata/traits3
@@ -112,6 +108,7 @@ printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits.fofn
 #Create joint phenotype and .fam file with all phenotypes
 awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19}' \${pheno} > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate1
 sort -k1 $BASE_DIR/outputs/gxp/trait3/pheno_intermediate1 > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate2
+sort -k1 \${fam}
 join \${fam} $BASE_DIR/outputs/gxp/trait3/pheno_intermediate2 > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate3
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/trait3/pheno_intermediate3 > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate4
 echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/trait3/pheno_table.fam && cat $BASE_DIR/outputs/gxp/trait3/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/trait3/pheno_table.fam
@@ -144,8 +141,6 @@ body() {
 
 
 fam=$BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
-
-
 INPUT_TR=$BASE_DIR/outputs/listoffiles/traits.fofn
 
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
@@ -156,6 +151,8 @@ echo \${TRAITS}
 BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
 echo \${BASE_NAME}
 
+echo \${BASE_NAME}_\${TRAITS}
+
 mv \${fam} \$BASE_NAME-old.fam
 cp \${BASE_NAME}-old.fam \${fam}
 cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
@@ -163,8 +160,8 @@ cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
 cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 
-awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/trait3/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
-
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/trait3/pheno_table.fam >  $BASE_DIR/outputs/gxp/trait3/pheno_header_\${TRAITS}.fam
+sed '1d' $BASE_DIR/outputs/gxp/trait3/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
 
   # 2) create relatedness matrix of samples using gemma
 gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /trait3/\${TRAITS}

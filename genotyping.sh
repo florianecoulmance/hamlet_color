@@ -476,6 +476,43 @@ gatk --java-options "-Xmx30G" \
 EOA
 
 
+
+jobfile101=a_coverage_table.tmp # temp file
+cat > $jobfile101 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=a_coverage_table
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/a_coverage_table_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/a_coverage_table_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=00:15:00
+
+FILES=/user/doau0129/work/chapter1_2/outputs/a_coverage/*
+
+for f in $FILES
+do
+  echo $f
+  name_file=${f##*/}
+  echo $name_file
+  sample1=${name_file%.*}
+  sample2=${sample1%.*}
+  sample=${sample2%.*}
+  echo $sample
+  cov=$(cat $f | awk 'FNR == 8 {print $2}')
+  echo $cov
+
+  echo "$sample $cov" >> $BASE_DIR/outputs/a_coverage/coverage_table
+done
+
+EOA
+
+
+
+
 #Remove all the files with a coverage lower than x15 from the analysis
 mkdir $BASE_DIR/outputs/b_removed_from_analysis/
 
@@ -536,68 +573,308 @@ EOA
 #
 #   # *** COMBINE gvcf FILES - ALL SAMPLES TOGETHER *** #
 #
-# jobfile12=06_combine_gvcf.tmp # temp file
-# cat > $jobfile12 <<EOA # generate the job file
-#
-# EOA
+
+mkdir $BASE_DIR/outputs/06_cohort_genotyping/
+
+jobfile12=06_combine_gvcf.tmp # temp file
+cat > $jobfile12 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=06_combine
+#SBATCH --partition=carl.p
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/06_combine_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/06_combine_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=100G
+#SBATCH --time=4-00:00:00
+
+ls -1 $BASE_DIR/outputs/05_genlikely/*.g.vcf.gz > $BASE_DIR/outputs/listoffiles/genlikely_individual0.fofn
+
+awk '{print "-V", $1}' $BASE_DIR/outputs/listoffiles/genlikely_individual0.fofn > $BASE_DIR/outputs/listoffiles/genlikely_individual.fofn
+
+rm $BASE_DIR/outputs/listoffiles/genlikely_individual0.fofn
+
+INPUT_GEN=$(cat $BASE_DIR/outputs/listoffiles/genlikely_individual.fofn)
+echo \${INPUT_GEN}
+
+gatk --java-options "-Xmx85g" \
+      CombineGVCFs \
+      -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+      \${INPUT_GEN} \
+      -O=$BASE_DIR/outputs/06_cohort_genotyping/cohort.g.vcf.gz
+
+
+EOA
 #
 #
 #
 #   # *** ALL SAMPLES ARE JOINTLY GENOTYPED *** #
 #
 # #GenotypeGVCFs#
-#
-# jobfile13=07_1_genotype.tmp # temp file
-# cat > $jobfile13 <<EOA # generate the job file
-#
-# EOA
+
+mkdir $BASE_DIR/outputs/07_genotyping/
+mkdir $BASE_DIR/outputs/07_1_raw_snp/
+
+jobfile13=07_1_genotype.tmp # temp file
+cat > $jobfile13 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=07_1_snp
+#SBATCH --partition=carl.p
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/07_1_snp_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/07_1_snp_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=90G
+#SBATCH --time=4-00:00:00
+
+gatk --java-options "-Xmx85g" \
+     GenotypeGVCFs \
+     -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+     -V=$BASE_DIR/outputs/06_cohort_genotyping/cohort.g.vcf.gz \
+     -O=$BASE_DIR/07_genotyping/07_1_raw_snp/intermediate.vcf.gz
+
+gatk --java-options "-Xmx85G" \
+     SelectVariants \
+     -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+     -V=$BASE_DIR/07_genotyping/07_1_raw_snp/intermediate.vcf.gz \
+     --select-type-to-include=SNP \
+     -O=$BASE_DIR/outputs/07_genotyping/07_1_raw_snp/raw_var_sites.vcf.gz
+
+rm $BASE_DIR/07_genotyping/07_1_raw_snp/intermediate.*
+
+EOA
 #
 #
 # #SelectVariants#
 #
-# jobfile14=07_2_select_variants.tmp # temp file
-# cat > $jobfile14 <<EOA # generate the job file
-#
-# EOA
+
+mkdir $BASE_DIR/outputs/07_genotyping/07_2_all_sites/
+
+jobfile14=07_2_all.tmp # temp file
+cat > $jobfile14 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=07_2_all
+#SBATCH --partition=carl.p
+#SBATCH --array=1-24
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/07_2_all_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/07_2_all_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=90G
+#SBATCH --time=4-00:00:00
+
+gatk --java-options "-Xmx85g" \
+    GenotypeGVCFs \
+    -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+    -L=LG${SLURM_ARRAY_TASK_ID} \
+    -V=$BASE_DIR/outputs/06_cohort_genotyping/cohort.g.vcf.gz  \
+    -O=$BASE_DIR/07_genotyping/07_2_all_sites/intermediate.vcf.gz \
+    --include-non-variant-sites=true
+
+gatk --java-options "-Xmx85G" \
+    SelectVariants \
+    -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+    -V=$BASE_DIR/07_genotyping/07_2_all_sites/intermediate.vcf.gz \
+    --select-type-to-exclude=INDEL \
+    -O=$BASE_DIR/07_genotyping/07_2_all_sites/all_sites.LG${SLURM_ARRAY_TASK_ID}.vcf.gz
+
+rm $BASE_DIR/07_genotyping/07_2_all_sites/intermediate.*
+
+EOA
 #
 #
 #
 #   # *** COLLECT THE METRICS OF RAW GENOTYPES IN TABLE *** #
 #
-# jobfile15=08_variant_table.tmp # temp file
-# cat > $jobfile15 <<EOA # generate the job file
+
+mkdir $BASE_DIR/outputs/08_1_variants_metrics/
+
+jobfile15=08_1_snp.tmp # temp file
+cat > $jobfile15 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=08_1_snp
+#SBATCH --partition=carl.p
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/08_1_snp_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/08_1_snp_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=30G
+#SBATCH --time=06:00:00
+
+gatk --java-options "-Xmx25G" \
+       VariantsToTable \
+       --variant=$BASE_DIR/outputs/07_genotyping/07_1_raw_snp/raw_var_sites.vcf.gz \
+       --output=$BASE_DIR/outputs/08_1_variants_metrics/raw_var_sites.table.txt \
+       -F=CHROM -F=POS -F=MQ \
+       -F=QD -F=FS -F=MQRankSum -F=ReadPosRankSum \
+       --show-filtered
+
+EOA
 #
-# EOA
-#
-#
+
+
+mkdir $BASE_DIR/outputs/08_2_merge/
+
+jobfile16=08_2_all.tmp # temp file
+cat > $jobfile16 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=08_2_all
+#SBATCH --partition=carl.p
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/08_2_all_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/08_2_all_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=45G
+#SBATCH --time=3-00:00:00
+
+ls -1 $BASE_DIR/outputs/07_2_all/all_sites.* > $BASE_DIR/outputs/listoffiles/all_sites_LG0.fofn
+
+awk '{print "-I", $1}' $BASE_DIR/outputs/listoffiles/all_sites_LG0.fofn > $BASE_DIR/outputs/listoffiles/all_sites_LG.fofn
+
+rm $BASE_DIR/outputs/listoffiles/all_sites_LG0.fofn
+
+INPUT_GEN=$(cat $BASE_DIR/outputs/listoffiles/all_sites_LG.fofn)
+echo \${INPUT_GEN}
+
+gatk --java-options "-Xmx85g" \
+       GatherVcfs \
+       \${INPUT_GEN} \
+       -O=$BASE_DIR/outputs/08_2_merge/all_sites.vcf.gz
+
+EOA
+
+
+
+
+
 #
 #   # *** TAGGING & FILTERING OF THE GENOTYPES BASED ON METRICS TABLE *** #
 #
 # #VariantFiltration#
 #
-# jobfile16=09_1_filter_variant.tmp # temp file
-# cat > $jobfile16 <<EOA # generate the job file
-#
-# EOA
+
+mkdir $BASE_DIR/outputs/09_1_snpfiltration/
+
+jobfile17=09_1_filtration.tmp # temp file
+cat > $jobfile17 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=09_1_filtration
+#SBATCH --partition=carl.p
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/09_1_filtration_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/09_1_filtration_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=100G
+#SBATCH --time=12:00:00
+
+gatk --java-options "-Xmx75G" \
+       VariantFiltration \
+       -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+       -V=$BASE_DIR/outputs/07_genotyping/07_1_raw_snp/raw_var_sites.vcf.gz \
+       -O=$BASE_DIR/outputs/09_1_snpfiltration/intermediate.vcf.gz \
+       --filter-expression "QD < 4.0" \
+       --filter-name "filter_QD" \
+       --filter-expression "FS > 60.0" \
+       --filter-name "filter_FS" \
+       --filter-expression "MQ < 57.2 || MQ > 62.2" \
+       --filter-name "filter_MQ" \
+       --filter-expression "MQRankSum < -0.2 || MQRankSum > 0.2" \
+       --filter-name "filter_MQRankSum" \
+       --filter-expression "ReadPosRankSum < -2.0 || ReadPosRankSum > 2.0 " \
+       --filter-name "filter_ReadPosRankSum"
+
+gatk --java-options "-Xmx75G" \
+       SelectVariants \
+       -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+       -V=$BASE_DIR/outputs/09_1_snpfiltration/intermediate.vcf.gz \
+       -O=$BASE_DIR/outputs/09_1_snpfiltration/intermediate.filterd.vcf.gz \
+       --exclude-filtered
+
+vcftools \
+       --gzvcf $BASE_DIR/outputs/09_1_snpfiltration/intermediate.filterd.vcf.gz \
+       --max-missing-count 17 \
+       --max-alleles 2 \
+       --stdout  \
+       --recode | \
+       bgzip > $BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+
+tabix -p vcf $BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic.vcf.gz
+
+rm $BASE_DIR/outputs/09_1_snpfiltration/intermediate.*
+
+EOA
 #
 #
 # #SelectVariants again...#
 #
-# jobfile17=09_2_select_variant.tmp # temp file
-# cat > $jobfile17 <<EOA # generate the job file
-#
-# EOA
-#
-#
-# #VCFTools#
-#
-# jobfile18=09_3_vcf_tools.tmp # temp file
-# cat > $jobfile18 <<EOA # generate the job file
-#
-# EOA
+
+mkdir $BASE_DIR/outputs/09_2_allfiltration/
+
+jobfile18=09_2_filtration.tmp # temp file
+cat > $jobfile18 <<EOA # generate the job file
+#!/bin/bash
+
+#SBATCH --job-name=09_2_filtration
+#SBATCH --partition=carl.p
+#SBATCH --output=/user/doau0129/work/chapter1_2/logs/09_2_filtration_%A_%a.out
+#SBATCH --error=/user/doau0129/work/chapter1_2/logs/09_2_filtration_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=150G
+#SBATCH --time=30:00:00
+
+tabix -p vcf $BASE_DIR/outputs/08_2_merge/all_sites.vcf.gz
+
+gatk --java-options "-Xmx75G" \
+       VariantFiltration \
+       -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+       -V=$BASE_DIR/outputs/08_2_merge/all_sites.vcf.gz \
+       -O=$BASE_DIR/outputs/09_2_allfiltration/intermediate.vcf.gz \
+       --filter-expression "QD < 4.0" \
+       --filter-name "filter_QD" \
+       --filter-expression "FS > 60.0" \
+       --filter-name "filter_FS" \
+       --filter-expression "MQ < 57.2 || MQ > 62.2" \
+       --filter-name "filter_MQ" \
+       --filter-expression "MQRankSum < -0.2 || MQRankSum > 0.2" \
+       --filter-name "filter_MQRankSum" \
+       --filter-expression "ReadPosRankSum < -2.0 || ReadPosRankSum > 2.0 " \
+       --filter-name "filter_ReadPosRankSum"
+       --QUIET true &> var_filt.log
+
+gatk --java-options "-Xmx75G" \
+       SelectVariants \
+       -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
+       -V=$BASE_DIR/outputs/09_2_allfiltration/intermediate.vcf.gz \
+       -O=$BASE_DIR/outputs/09_2_allfiltration/intermediate.filterd.vcf.gz \
+       --exclude-filtered \
+       --QUIET true \
+       --verbosity ERROR  &> var_select.log
+
+vcftools \
+       --gzvcf $BASE_DIR/outputs/09_2_allfiltration/intermediate.filterd.vcf.gz \
+       --max-missing-count 17 \
+       --stdout  \
+       --recode | \
+       bgzip > $BASE_DIR/outputs/09_2_allfiltration/filterd.allBP.vcf.gz
+
+rm $BASE_DIR/outputs/09_2_allfiltration/intermediate.*
 
 
-
+EOA
 
 
 if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
@@ -703,8 +980,6 @@ else
   jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
 fi
 
-
-
 if [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
 then
   echo "*****     a_coverage DONE                **"
@@ -715,6 +990,7 @@ else
   jid10=$(sbatch --dependency=afterok:${jid9##* } ${jobfile10})
 fi
 
+jid101=$(sbatch --dependency=afterok:${jid10##* } ${jobfile101})
 
 if [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
 then
@@ -793,11 +1069,11 @@ fi
 #   echo "*****     09_2_select_variant DONE       **"
 # elif [ "$JID_RES" = "jid17" ]
 # then
-#   jid17=$(sbatch ${jobfile17})
-# else
-#   jid17=$(sbatch --dependency=afterok:${jid16##* } ${jobfile17})
-# fi
-#
-#
-#
-# jid18=$(sbatch --dependency=afterok:${jid17##* } ${jobfile18})
+  jid17=$(sbatch ${jobfile17})
+else
+   jid17=$(sbatch --dependency=afterok:${jid16##* } ${jobfile17})
+fi
+
+
+
+jid18=$(sbatch --dependency=afterok:${jid17##* } ${jobfile18})

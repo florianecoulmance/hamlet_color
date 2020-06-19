@@ -43,4 +43,3 @@ for k in {01..24};do
 done
 
 gzip ${j}.${WIN_LAB}k.${STEP_LAB}k.txt
-rm ./$j*.tmp

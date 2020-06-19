@@ -19,3 +19,8 @@ R/*pdf
 GxP/
 GxP/plots.zip
 *.tmp
+<<<<<<< HEAD
+=======
+FST/*.gz
+FST/vide/*
+>>>>>>> 5605752bbb0bdad7d4c79f300e7ed18987b0df2f

@@ -91,6 +91,7 @@ pheno=$BASE_DIR/metadata/pheno_kosmas
 tr=(Bars Lines Snout Peduncle Blue Yellow Orange Tail_transparent)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traitskos.fofn
 
+
 #Create joint phenotype and .fam file with all phenotypes
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9}' \${pheno} > $BASE_DIR/outputs/gxp/kosmas/pheno_intermediate1
 sort -k1 $BASE_DIR/outputs/gxp/kosmas/pheno_intermediate1 > $BASE_DIR/outputs/gxp/kosmas/pheno_intermediate2
@@ -137,18 +138,22 @@ echo \${TRAITS}
 BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
 echo \${BASE_NAME}
 
-mv \${fam} \$BASE_NAME-old.fam
+echo \${BASE_NAME}_\${TRAITS}
+
+cp \${fam} \$BASE_NAME-old.fam
 cp \${BASE_NAME}-old.fam \${fam}
 cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
 cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
 cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 
-awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/kosmas/pheno_table.fam > \${BASE_NAME}_\${TRAITS}.fam
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/kosmas/pheno_table.fam > $BASE_DIR/outputs/gxp/kosmas/pheno_header_\${TRAITS}.fam
+#sed '1d' $BASE_DIR/outputs/gxp/kosmas/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
+sed '1d' $BASE_DIR/outputs/gxp/kosmas/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
 
-
-  # 2) create relatedness matrix of samples using gemma
+   # 2) create relatedness matrix of samples using gemma
 gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /kosmas/\${TRAITS}
+#gemma -bfile \${BASE_NAME} -gk 1 -o /kosmas/\${TRAITS}
 
   # 3) fit linear model using gemma (-lm)
 gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /kosmas/\${TRAITS}.lm
@@ -162,10 +167,6 @@ sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/kosmas
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/kosmas/\${TRAITS}.lmm.assoc.txt | \
       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/kosmas/\${TRAITS}.lmm.GxP.txt.gz
 
-
-rm \${BASE_NAME}_\${TRAITS}.bed
-rm \${BASE_NAME}_\${TRAITS}.bim
-rm \${BASE_NAME}_\${TRAITS}.log
 
 EOA
 
@@ -210,6 +211,8 @@ $BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}
 $BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
 $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
 $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
+
+rm $BASE_DIR/outputs/gxp/kosmas/\${*}.tmp
 
 EOA
 
