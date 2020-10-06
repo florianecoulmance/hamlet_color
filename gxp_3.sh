@@ -37,17 +37,15 @@ cat > $jobfile0 <<EOA # generate the job file
 INPUT_CHANGED=$BASE_DIR/outputs/09_1_snpfiltration/filterd_bi-allelic_changed.vcf.gz
 
 vcfsamplenames \${INPUT_CHANGED} | \
-       grep -v 28387nigboc | \
-       grep -v PL17_107puebel | \
-       grep -v PL17_108nigbel | \
-       grep -v PL17_111indbel > $BASE_DIR/outputs/09_1_snpfiltration/109.pop
+       grep -v flo | \
+       grep -v pue > $BASE_DIR/outputs/09_1_snpfiltration/belboc.pop
 
 
 vcftools --gzvcf \${INPUT_CHANGED} \
-       --keep $BASE_DIR/outputs/09_1_snpfiltration/109.pop \
+       --keep $BASE_DIR/outputs/09_1_snpfiltration/belboc.pop \
        --mac 3 \
        --recode \
-       --stdout | gzip > $BASE_DIR/outputs/09_1_snpfiltration/109.vcf.gz
+       --stdout | gzip > $BASE_DIR/outputs/09_1_snpfiltration/belboc.vcf.gz
 
 
 
@@ -69,18 +67,18 @@ cat > $jobfile1 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=02:30:00
 
-INPUT_109=$BASE_DIR/outputs/09_1_snpfiltration/109.vcf.gz
+INPUT_belboc=$BASE_DIR/outputs/09_1_snpfiltration/belboc.vcf.gz
 
 
 vcftools \
-      --gzvcf \${INPUT_109} \
+      --gzvcf \${INPUT_belboc} \
       --plink \
-      --out $BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink
+      --out $BASE_DIR/outputs/gxp/trait3/GxP_plink
 
   plink \
-      --file $BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink \
+      --file $BASE_DIR/outputs/gxp/trait3/GxP_plink \
       --recode12 \
-      --out $BASE_DIR/outputs/gxp/trait_109_modified3/hapmap
+      --out $BASE_DIR/outputs/gxp/trait3/hapmap
 
 EOA
 
@@ -101,11 +99,11 @@ cat > $jobfile2 <<EOA # generate the job file
 
 plink \
     --noweb \
-    --file $BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink \
+    --file $BASE_DIR/outputs/gxp/trait3/GxP_plink \
     --make-bed \
-    --out $BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink_binary
+    --out $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary
 
-cp $BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink_binary.fam $BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink_binary_sauvegarde.fam
+cp $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary_sauvegarde.fam
 
 EOA
 
@@ -128,20 +126,20 @@ cat > $jobfile3 <<EOA # generate the job file
 #cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bim $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bim
 #cp $BASE_DIR/outputs/gxp/GxP_plink_binary.log $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.log
 #cp $BASE_DIR/outputs/gxp/GxP_plink_binary.nosex $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.nosex
- 
-fam=$BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink_binary.fam
-pheno=$BASE_DIR/metadata/traits_109_modified3
+
+fam=$BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
+pheno=$BASE_DIR/metadata/traits3
 
 tr=(bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec)
-printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits_109.fofn
+printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/listoffiles/traits3.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19}' \${pheno} > $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate1
-sort -k1 $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate1 > $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate2
+awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19}' \${pheno} > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate1
+sort -k1 $BASE_DIR/outputs/gxp/trait3/pheno_intermediate1 > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate2
 sort -k1 \${fam}
-join \${fam} $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate2 > $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate3
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate3 > $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate4
-echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_table.fam && cat $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_table.fam
+join \${fam} $BASE_DIR/outputs/gxp/trait3/pheno_intermediate2 > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate3
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24}' $BASE_DIR/outputs/gxp/trait3/pheno_intermediate3 > $BASE_DIR/outputs/gxp/trait3/pheno_intermediate4
+echo -e 'label Within_family_ID ID_father ID_mother Sex bhead bbody snout ped gum uni pue nig ind tan chl gut abe may gem flo ran combo_spec' > $BASE_DIR/outputs/gxp/trait3/pheno_table.fam && cat $BASE_DIR/outputs/gxp/trait3/pheno_intermediate4 >> $BASE_DIR/outputs/gxp/trait3/pheno_table.fam
 
 
 EOA
@@ -170,8 +168,8 @@ body() {
 }
 
 
-fam=$BASE_DIR/outputs/gxp/trait_109_modified3/GxP_plink_binary.fam
-INPUT_TR=$BASE_DIR/outputs/listoffiles/traits_109.fofn
+fam=$BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
+INPUT_TR=$BASE_DIR/outputs/listoffiles/traits3.fofn
 
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
@@ -190,23 +188,23 @@ cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
 cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 
-awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_table.fam >  $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_header_\${TRAITS}.fam
-sed '1d' $BASE_DIR/outputs/gxp/trait_109_modified3/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/gxp/trait3/pheno_table.fam >  $BASE_DIR/outputs/gxp/trait3/pheno_header_\${TRAITS}.fam
+sed '1d' $BASE_DIR/outputs/gxp/trait3/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
 
   # 2) create relatedness matrix of samples using gemma
-gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /trait_109_modified3/\${TRAITS}
+gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /trait3/\${TRAITS}
 
   # 3) fit linear model using gemma (-lm)
-gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /trait_109_modified3/\${TRAITS}.lm
+gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /trait3/\${TRAITS}.lm
 
   # 4) fit linear mixed model using gemma (-lmm)
-gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/trait_109_modified3/\${TRAITS}.cXX.txt -lmm 4 -o /trait_109_modified3/\${TRAITS}.lmm
+gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/trait3/\${TRAITS}.cXX.txt -lmm 4 -o /trait3/\${TRAITS}.lmm
 
   # 5) reformat output
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/trait_109_modified3/\${TRAITS}.lm.assoc.txt | \
-      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/trait_109_modified3/\${TRAITS}.lm.GxP.txt.gz
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/trait_109_modified3/\${TRAITS}.lmm.assoc.txt | \
-      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/trait_109_modified3/\${TRAITS}.lmm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/trait3/\${TRAITS}.lm.assoc.txt | \
+      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/trait3/\${TRAITS}.lm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/trait3/\${TRAITS}.lmm.assoc.txt | \
+      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/gxp/trait3/\${TRAITS}.lmm.GxP.txt.gz
 
 
 rm \${BASE_NAME}_\${TRAITS}.bed
@@ -230,15 +228,15 @@ cat > $jobfile5 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=22G
 #SBATCH --time=02:30:00
 
-INPUT_TR=$BASE_DIR/outputs/listoffiles/traits_109.fofn
+INPUT_TR=$BASE_DIR/outputs/listoffiles/traits3.fofn
 
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${TRAITS}
 
-lm=$BASE_DIR/outputs/gxp/trait_109_modified3/\${TRAITS}.lm.GxP.txt.gz
+lm=$BASE_DIR/outputs/gxp/trait3/\${TRAITS}.lm.GxP.txt.gz
 echo \${lm}
-lmm=$BASE_DIR/outputs/gxp/trait_109_modified3/\${TRAITS}.lmm.GxP.txt.gz
+lmm=$BASE_DIR/outputs/gxp/trait3/\${TRAITS}.lmm.GxP.txt.gz
 echo \${lmm}
 
 win5=50000
