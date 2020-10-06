@@ -1,26 +1,18 @@
-.nextflow*
-packrat/lib*/
-packrat/src/
 logs/*
 outputs/*
-GxP/plots/*
+output/*
 ressources/*
+annotations/*
 temp_files
 data/*
-!data/RADME.md
+.DS_Store
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-output/*
-PCA/*
-GxP/*.gz
-R/*pdf
-GxP/
-GxP/plots.zip
+R/.DS_Store
+R/.Rproj.user
+R/.Rhistory
+R/.RData
+R/.Ruserdata
 *.tmp
-<<<<<<< HEAD
-=======
-FST/*.gz
-FST/vide/*
->>>>>>> 5605752bbb0bdad7d4c79f300e7ed18987b0df2f
