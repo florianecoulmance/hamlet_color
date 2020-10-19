@@ -172,14 +172,14 @@ EOA
 # ------------------------------------------------------------------------------
 # Job 2 converts previous bam with adapters info to fastaq files
 
-jobfile2=2_align_fastq.tmp # temp file
+jobfile2=2_align.tmp # temp file
 cat > $jobfile2 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=2_align_fastq
+#SBATCH --job-name=2_align
 #SBATCH --partition=carl.p
 #SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/2_align_fastq_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/2_align_fastq_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/2_align_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/2_align_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -198,86 +198,19 @@ echo \$sample
 gatk --java-options "-Xmx68G" \
     SamToFastq \
     -I=$BASE_DIR/outputs/1_adapters/adapters/\${ADAPT_BAM} \
-    -FASTQ=$BASE_DIR/outputs/2_align/1_fatsq/\${sample}.adapterfq \
+    -FASTQ=/dev/stdout \
     -INTERLEAVE=true \
     -NON_PF=true \
-    -TMP_DIR=$BASE_DIR/temp_files
-
-ls -1 $BASE_DIR/outputs/2_align/1_fatsq/ > $BASE_DIR/outputs/lof/2_1_fastq.fofn
-
-
-EOA
-
-
-
-# ------------------------------------------------------------------------------
-# Job 3 uses reference genome to align all samples
-
-jobfile3=3_align.tmp # temp file
-cat > $jobfile3 <<EOA # generate the job file
-#!/bin/bash
-#SBATCH --job-name=3_align
-#SBATCH --partition=mpcb.p
-#SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/3_align_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/3_align_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=15G
-#SBATCH --time=2-00:00:00
-
-
-INPUT_ADAPT_BAMS=$BASE_DIR/outputs/lof/2_1_fastq.fofn
-ADAPT_BAM=\$(cat \${INPUT_ADAPT_BAMS} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$ADAPT_BAM
-
-sample=\${ADAPT_BAM%.*}
-echo \$sample
-
-bwa mem -M -t 8 -p $BASE_DIR/ressources/HP_genome_unmasked_01.fa $BASE_DIR/outputs/2_align/1_fatsq/\${ADAPT_BAM} > $BASE_DIR/outputs/2_align/2_align/\${sample}.aligned.sam
-
-ls -1 $BASE_DIR/outputs/2_align/2_align/ > $BASE_DIR/outputs/lof/2_2_align.fofn
-
-
-EOA
-
-
-
-# ------------------------------------------------------------------------------
-# Job 4 merges aligned sam files to ubam files for each sample
-
-jobfile4=4_merge.tmp # temp file
-cat > $jobfile4 <<EOA # generate the job file
-#!/bin/bash
-#SBATCH --job-name=4_merge
-#SBATCH --partition=carl.p
-#SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/4_merge_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/4_merge_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=75G
-#SBATCH --time=05:00:00
-
-
-INPUT_ALIGNEMENT=$BASE_DIR/outputs/lof/2_2_align.fofn
-INPUT_AL=\$(cat \${INPUT_ALIGNEMENT} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$INPUT_AL
-
-sample1=\${INPUT_AL%.*}
-sample=\${sample1%.*}
-echo \$sample
-
+    -TMP_DIR=$BASE_DIR/temp_files | \
+bwa mem -M -t 8 -p $BASE_DIR/ressources/HP_genome_unmasked_01.fa /dev/stdin |
 gatk --java-options "-Xmx68G" \
     MergeBamAlignment \
     --VALIDATION_STRINGENCY SILENT \
     --EXPECTED_ORIENTATIONS FR \
     --ATTRIBUTES_TO_RETAIN X0 \
-    -ALIGNED_BAM=$BASE_DIR/outputs/2_align/2_align/\${INPUT_AL} \
+    -ALIGNED_BAM=/dev/stdin \
     -UNMAPPED_BAM=$BASE_DIR/outputs/0_ubam/\${sample}.ubam.bam \
-    -OUTPUT=$BASE_DIR/outputs/2_align/3_merge/\${sample}.mapped.bam \
+    -OUTPUT=$BASE_DIR/outputs/2_align/\${sample}.mapped.bam \
     --REFERENCE_SEQUENCE=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz \
     -PAIRED_RUN true \
     --SORT_ORDER "unsorted" \
@@ -293,7 +226,7 @@ gatk --java-options "-Xmx68G" \
     --UNMAP_CONTAMINANT_READS true \
     -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/2_align/3_merge/ > $BASE_DIR/outputs/lof/2_3_merge.fofn
+ls -1 $BASE_DIR/outputs/2_align/ > $BASE_DIR/outputs/lof/2_align.fofn
 
 
 EOA
@@ -301,24 +234,24 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 5 sorts the mapped bams
+# Job 3 uses reference genome to align all samples
 
-jobfile5=5_sort.tmp # temp file
-cat > $jobfile5 <<EOA # generate the job file
+jobfile3=3_tag.tmp # temp file
+cat > $jobfile3 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=5_sort
+#SBATCH --job-name=3_tag
 #SBATCH --partition=carl.p
 #SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/5_sort_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/5_sort_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/3_tag_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/3_tag_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=40G
-#SBATCH --time=2-00:00:00
+#SBATCH --time=3-00:00:00
 
 
-INPUT_MAPPED_BAM=$BASE_DIR/outputs/lof/2_3_merge.fofn
+INPUT_MAPPED_BAM=$BASE_DIR/outputs/lof/2_align.fofn
 MAPPED_BAM=\$(cat \${INPUT_MAPPED_BAM} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \$MAPPED_BAM
 
@@ -329,72 +262,37 @@ echo \$sample
 gatk --java-options "-Xmx30G" \
 		SortSam \
 		-I=$BASE_DIR/outputs/2_align/3_merge/\${MAPPED_BAM} \
-		-O=$BASE_DIR/outputs/3_duplicates/1_sort/\${sample}.sorted.sam \
+		-O=/dev/stdout \
 		--SORT_ORDER="coordinate" \
 		--CREATE_INDEX=false \
 		--CREATE_MD5_FILE=false \
-		-TMP_DIR=$BASE_DIR/temp_files
-
-ls -1 $BASE_DIR/outputs/3_duplicates/1_sort/ > $BASE_DIR/outputs/lof/3_1_sort.fofn
-
-
-EOA
-
-
-
-# ------------------------------------------------------------------------------
-# Job 6 tags sorted sam files
-
-jobfile6=6_tag.tmp # temp file
-cat > $jobfile6 <<EOA # generate the job file
-#!/bin/bash
-#SBATCH --job-name=6_tag
-#SBATCH --partition=carl.p
-#SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/6_tag_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/6_tag_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=40G
-#SBATCH --time=10:00:00
-
-
-INPUT_SORTSAM=$BASE_DIR/outputs/lof/3_1_sort.fofn
-SORTSAM=\$(cat \${INPUT_SORTSAM} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$SORTSAM
-
-sample1=\${SORTSAM%.*}
-sample=\${sample1%.*}
-echo \$sample
-
+		-TMP_DIR=$BASE_DIR/temp_files | \
 gatk --java-options "-Xmx30G" \
-  SetNmAndUqTags \
-  --INPUT=$BASE_DIR/outputs/3_duplicates/1_sort/\${SORTSAM} \
-  --OUTPUT=$BASE_DIR/outputs/3_duplicates/2_tag/\${sample}.intermediate.bam \
-  --CREATE_INDEX=false \
-  --CREATE_MD5_FILE=false \
-  -TMP_DIR=$BASE_DIR/temp_files \
-  --REFERENCE_SEQUENCE=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz
+    SetNmMdAndUqTags \
+    --INPUT=/dev/stdin \
+    --OUTPUT=$BASE_DIR/outputs/3_duplicates/2_tag/\${sample}.intermediate.bam \
+    --CREATE_INDEX=false \
+    --CREATE_MD5_FILE=false \
+    -TMP_DIR=$BASE_DIR/temp_files \
+    --REFERENCE_SEQUENCE=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz
 
-ls -1 $BASE_DIR/outputs/3_duplicates/2_tag/*.bam |xargs -n1 basename > $BASE_DIR/outputs/lof/3_2_tag.fofn
-
+ls -1 $BASE_DIR/outputs/3_duplicates/2_tag/*.bam |xargs -n1 basename > $BASE_DIR/outputs/lof/3_tag.fofn
 
 EOA
 
 
 
 # ------------------------------------------------------------------------------
-# Job 7 mark duplicates
+# Job 4 mark duplicates
 
-jobfile7=7_mark.tmp # temp file
-cat > $jobfile7 <<EOA # generate the job file
+jobfile4=4_mark.tmp # temp file
+cat > $jobfile4 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=7_mark
+#SBATCH --job-name=4_mark
 #SBATCH --partition=carl.p
 #SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/7_mark_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/7_mark_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/4_mark_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/4_mark_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -402,7 +300,7 @@ cat > $jobfile7 <<EOA # generate the job file
 #SBATCH --time=15:00:00
 
 
-INPUT_TAGSINTER=$BASE_DIR/outputs/lof/3_2_tag.fofn
+INPUT_TAGSINTER=$BASE_DIR/outputs/lof/3_tag.fofn
 TAGSINTER=\$(cat \${INPUT_TAGSINTER} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \$TAGSINTER
 
@@ -418,25 +316,24 @@ gatk --java-options "-Xmx30G" \
   -MAX_FILE_HANDLES=1000  \
   -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam > $BASE_DIR/outputs/lof/3_3_duplicates.fofn
+ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam > $BASE_DIR/outputs/lof/4_duplicates.fofn
 
 
 EOA
 
 
-
 # ------------------------------------------------------------------------------
-# Job 8 creates an index file for the aligned samples with adapters and marked
+# Job 5 creates an index file for the aligned samples with adapters and marked
 # duplicates
 
-jobfile8=8_index.tmp # temp file
-cat > $jobfile8 <<EOA # generate the job file
+jobfile5=5_index.tmp # temp file
+cat > $jobfile5 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=8_index
+#SBATCH --job-name=5_index
 #SBATCH --partition=carl.p
 #SBATCH --array=1-117
-#SBATCH --output=$BASE_DIR/logs/8_index_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/8_index_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/5_index_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/5_index_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -444,7 +341,7 @@ cat > $jobfile8 <<EOA # generate the job file
 #SBATCH --time=01:00:00
 
 
-INPUT_DUPLI=$BASE_DIR/outputs/lof/3_3_duplicates.fofn
+INPUT_DUPLI=$BASE_DIR/outputs/lof/4_duplicates.fofn
 DUPLI=\$(cat \${INPUT_DUPLI} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \$DUPLI
 
@@ -589,16 +486,16 @@ EOA
 # echo $SIZE
 
 # ------------------------------------------------------------------------------
-# Job 9 calculates genotype likelihoods
+# Job 6 calculates genotype likelihoods
 
-jobfile9=9_likelihood.tmp # temp file
-cat > $jobfile9 <<EOA # generate the job file
+jobfile6=6_likelihood.tmp # temp file
+cat > $jobfile6 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=9_likelihood
+#SBATCH --job-name=6_likelihood
 #SBATCH --partition=carl.p
 #SBATCH --array=1-$SIZE
-#SBATCH --output=$BASE_DIR/logs/9_likelihood_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/9_likelihood_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/6_likelihood_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/6_likelihood_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -628,15 +525,15 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 10 combines all the samples'gvcf files into one cohort one
+# Job 7 combines all the samples'gvcf files into one cohort one
 
-jobfile10=10_cohort.tmp # temp file
-cat > $jobfile10 <<EOA # generate the job file
+jobfile7=7_cohort.tmp # temp file
+cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=10_cohort
+#SBATCH --job-name=7_cohort
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/10_cohort_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/10_cohort_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/7_cohort_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/7_cohort_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -662,15 +559,15 @@ EOA
 # --------------------------- SNP ONLY ----------------------------------------#
 
 # ------------------------------------------------------------------------------
-# Job 11 genotype and select just SNPs variants
+# Job 8 genotype and select just SNPs variants
 
-jobfile11=11_snp.tmp # temp file
-cat > $jobfile11 <<EOA # generate the job file
+jobfile8=8_snp.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=11_snp
+#SBATCH --job-name=8_snp
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/11_snp_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/11_snp_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/8_snp_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/8_snp_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -699,15 +596,15 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 12 creates metric table to look before filtering
+# Job 9 creates metric table to look before filtering
 
-jobfile12=12_snp_metrics.tmp # temp file
-cat > $jobfile12 <<EOA # generate the job file
+jobfile9=9_snp_metrics.tmp # temp file
+cat > $jobfile9 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=12_snp_metrics
+#SBATCH --job-name=9_snp_metrics
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/12_snp_metrics_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/12_snp_metrics_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/9_snp_metrics_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/9_snp_metrics_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -730,16 +627,16 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 13 filter the SNP variants based on metrics from previous step, and
+# Job 10 filter the SNP variants based on metrics from previous step, and
 # creates the vcffiles for casz1 gene SNPs only
 
-jobfile13=13_snp_filter.tmp # temp file
-cat > $jobfile13 <<EOA # generate the job file
+jobfile10=10_snp_filter.tmp # temp file
+cat > $jobfile10 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=13_snp_filter
+#SBATCH --job-name=10_snp_filter
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/13_snp_filter_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/13_snp_filter_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/10_snp_filter_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/10_snp_filter_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -791,16 +688,16 @@ EOA
 # --------------------------- ALL SITES ---------------------------------------#
 
 # ------------------------------------------------------------------------------
-# Job 14 genotype and select all variants types
+# Job 11 genotype and select all variants types
 
-jobfile14=14_all.tmp # temp file
-cat > $jobfile14 <<EOA # generate the job file
+jobfile11=11_all.tmp # temp file
+cat > $jobfile11 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=14_all
+#SBATCH --job-name=11_all
 #SBATCH --partition=carl.p
 #SBATCH --array=1-24
-#SBATCH --output=$BASE_DIR/logs/14_all_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/14_all_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/11_all_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/11_all_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -831,15 +728,15 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 15 generates one file from all LG files genotypes for all variant sites
+# Job 12 generates one file from all LG files genotypes for all variant sites
 
-jobfile15=15_all_gather.tmp # temp file
-cat > $jobfile15 <<EOA # generate the job file
+jobfile12=12_all_gather.tmp # temp file
+cat > $jobfile12 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=15_all_gather
+#SBATCH --job-name=12_all_gather
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/15_all_gather_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/15_all_gather_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/12_all_gather_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/12_all_gather_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -864,15 +761,15 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 16 generates one file from all LG files genotypes for all variant sites
+# Job 13 generates one file from all LG files genotypes for all variant sites
 
-jobfile16=16_all_filter.tmp # temp file
-cat > $jobfile16 <<EOA # generate the job file
+jobfile13=13_all_filter.tmp # temp file
+cat > $jobfile13 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=16_all_filter
+#SBATCH --job-name=13_all_filter
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/16_all_filter_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/16_all_filter_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/13_all_filter_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/13_all_filter_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -926,17 +823,17 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 17 filter the SNP variants based on metrics from previous step, and
+# Job 14 filter the SNP variants based on metrics from previous step, and
 # creates the vcffiles for casz1 gene SNPs only
 
-jobfile17=17_changes.tmp # temp file
-cat > $jobfile17 <<EOA # generate the job file
+jobfile17=14_changes.tmp # temp file
+cat > $jobfile14 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=17_changes
+#SBATCH --job-name=14_changes
 #SBATCH --partition=carl.p
 #SBATCH --array=1-2
-#SBATCH --output=$BASE_DIR/logs/17_changes_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/17_changes_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/14_changes_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/14_changes_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -1032,7 +929,7 @@ EOA
 # ------------------------------------------------------------------------------
 # DATA PREPARATION
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ];
 then
   echo "*****   0_ubam          : DONE         **"
 else
@@ -1040,7 +937,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
   echo "*****   1_adapters      : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -1051,9 +948,9 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   2_align_fastq   : DONE         **"
+  echo "*****   2_align         : DONE         **"
 elif [ "$JID_RES" = jid2 ]
 then
   jid2=$(sbatch ${jobfile2})
@@ -1062,9 +959,9 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   3_align         : DONE         **"
+  echo "*****   3_tag           : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
 then
   jid3=$(sbatch ${jobfile3})
@@ -1073,9 +970,9 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   4_merge         : DONE         **"
+  echo "*****   4_mark          : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
 then
   jid4=$(sbatch ${jobfile4})
@@ -1084,9 +981,9 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   5_sort          : DONE         **"
+  echo "*****   5_index         : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
 then
   jid5=$(sbatch ${jobfile5})
@@ -1095,53 +992,20 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
-then
-  echo "*****   6_tag           : DONE         **"
-elif [ "$JID_RES" = "jid6" ]
-then
-  jid6=$(sbatch ${jobfile6})
-else
-  jid6=$(sbatch --dependency=afterok:${jid5##* } ${jobfile6})
-fi
-
-
-if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
-then
-  echo "*****   7_mark          : DONE         **"
-elif [ "$JID_RES" = "jid7" ]
-then
-  jid7=$(sbatch ${jobfile7})
-else
-  jid7=$(sbatch --dependency=afterok:${jid6##* } ${jobfile7})
-fi
-
-
-if [ "$JID_RES" = "jida" ] || [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
-then
-  echo "*****   8_index         : DONE         **"
-elif [ "$JID_RES" = "jid8" ]
-then
-  jid8=$(sbatch ${jobfile8})
-else
-  jid8=$(sbatch --dependency=afterok:${jid7##* } ${jobfile8})
-fi
-
-
-if [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jidb" ] || [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
   echo "*****   a_coverage      : DONE         **"
 elif [ "$JID_RES" = "jida" ]
 then
   jida=$(sbatch ${jobfilea})
 else
-  jida=$(sbatch --dependency=afterok:${jid8##* } ${jobfilea})
+  jida=$(sbatch --dependency=afterok:${jid5##* } ${jobfilea})
 fi
 
 
-if [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ]|| [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jidc" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   b_remove        : DONE         **"
+  echo "*****   b_remove      : DONE         **"
 elif [ "$JID_RES" = "jidb" ]
 then
   jidb=$(sbatch ${jobfileb})
@@ -1150,7 +1014,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
   echo "*****   c_histo         : DONE         **"
 elif [ "$JID_RES" = "jidc" ]
@@ -1164,51 +1028,76 @@ fi
 # ------------------------------------------------------------------------------
 # GENOTYPING
 
-if [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   9_likelihood     : DONE         **"
-elif [ "$JID_RES" = "jid9" ]
+  echo "*****   6_likelihood    : DONE         **"
+elif [ "$JID_RES" = "jid6" ]
 then
   # Create array size based on files not removed at previous step
   SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
   echo $SIZE
-  jid9=$(sbatch ${jobfile9})
+  jid6=$(sbatch ${jobfile6})
 else
   # Create array size based on files not removed at previous step
   SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
   echo $SIZE
-  jid9=$(sbatch --dependency=afterok:${jidc##* } ${jobfile9})
+  jid6=$(sbatch --dependency=afterok:${jidc##* } ${jobfile6})
 fi
 
 
-if [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   10_cohort        : DONE         **"
-elif [ "$JID_RES" = "jid10" ]
+  echo "*****   7_cohort        : DONE         **"
+elif [ "$JID_RES" = "jid7" ]
 then
-  jid10=$(sbatch ${jobfile10})
+  jid7=$(sbatch ${jobfile7})
 else
-  jid10=$(sbatch --dependency=afterok:${jid9##* } ${jobfile10})
+  jid7=$(sbatch --dependency=afterok:${jid6##* } ${jobfile7})
 fi
 
 
 # ------------------------------------------------------------------------------
 # FILTER FOR SNPs ONLY
 
-if [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   11_snp           : DONE         **"
+  echo "*****   8_snp           : DONE         **"
+elif [ "$JID_RES" = "jid8" ]
+then
+  jid8=$(sbatch ${jobfile8})
+else
+  jid8=$(sbatch --dependency=afterok:${jid7##* } ${jobfile8})
+fi
+
+
+if [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
+then
+  echo "*****   9_snp_metrics   : DONE         **"
+elif [ "$JID_RES" = "jid9" ]
+then
+  jid9=$(sbatch ${jobfile9})
+else
+  jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
+fi
+
+
+# ------------------------------------------------------------------------------
+# FILTER FOR ALL VARIANTS
+
+if [ "$JID_RES" = "jid12" ] || [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
+then
+  echo "*****   11_all           : DONE         **"
 elif [ "$JID_RES" = "jid11" ]
 then
   jid11=$(sbatch ${jobfile11})
 else
-  jid11=$(sbatch --dependency=afterok:${jid10##* } ${jobfile11})
+  jid11=$(sbatch --dependency=afterok:${jid7##* } ${jobfile11})
 fi
 
 
-if [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid13" ] || [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   12_snp_metrics   : DONE         **"
+  echo "*****   12_all_gather    : DONE         **"
 elif [ "$JID_RES" = "jid12" ]
 then
   jid12=$(sbatch ${jobfile12})
@@ -1218,65 +1107,40 @@ fi
 
 
 # ------------------------------------------------------------------------------
-# FILTER FOR ALL VARIANTS
+# LAST CHANGES AND PCA
 
-if [ "$JID_RES" = "jid15" ] || [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jid14" ] || [ "$JID_RES" = "jidd" ]
 then
-  echo "*****   14_all           : DONE         **"
+  echo "*****   10_snp_filter    : DONE         **"
+  echo "*****   13_all_filter    : DONE         **"
+elif [ "$JID_RES" = "jid10" ]
+then
+  jid10=$(sbatch ${jobfile10})
+elif [ "$JID_RES" = "jid13" ]
+then
+  jid13=$(sbatch ${jobfile13})
+else
+  jid10=$(sbatch --dependency=afterok:${jid9##* } ${jobfile10})
+  jid13=$(sbatch --dependency=afterok:${jid12##* } ${jobfile13})
+fi
+
+
+if [ "$JID_RES" = "jidd" ];
+then
+  echo "*****   14_changes       : DONE         **"
 elif [ "$JID_RES" = "jid14" ]
 then
   jid14=$(sbatch ${jobfile14})
 else
-  jid14=$(sbatch --dependency=afterok:${jid10##* } ${jobfile14})
+  jid14=$(sbatch --dependency=afterok:${jid13##* } ${jobfile14})
 fi
 
 
-if [ "$JID_RES" = "jid16" ] || [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
+if [ "$JID_RES" = "jidd" ];
 then
-  echo "*****   15_all_gather    : DONE         **"
-elif [ "$JID_RES" = "jid15" ]
-then
-  jid15=$(sbatch ${jobfile15})
+  jidd=$(sbatch ${jobfiled})
 else
-  jid15=$(sbatch --dependency=afterok:${jid14##* } ${jobfile15})
-fi
-
-
-# ------------------------------------------------------------------------------
-# LAST CHANGES AND PCA
-
-if [ "$JID_RES" = "jid17" ] || [ "$JID_RES" = "jid18" ];
-then
-  echo "*****   13_snp_filter    : DONE         **"
-  echo "*****   16_all_filter    : DONE         **"
-elif [ "$JID_RES" = "jid13" ]
-then
-  jid13=$(sbatch ${jobfile13})
-elif [ "$JID_RES" = "jid16" ]
-then
-  jid16=$(sbatch ${jobfile16})
-else
-  jid13=$(sbatch --dependency=afterok:${jid12##* } ${jobfile13})
-  jid16=$(sbatch --dependency=afterok:${jid15##* } ${jobfile16})
-fi
-
-
-if [ "$JID_RES" = "jid18" ];
-then
-  echo "*****   17_changes       : DONE         **"
-elif [ "$JID_RES" = "jid17" ]
-then
-  jid17=$(sbatch ${jobfile17})
-else
-  jid17=$(sbatch --dependency=afterok:${jid16##* } ${jobfile17})
-fi
-
-
-if [ "$JID_RES" = "jid18" ];
-then
-  jid18=$(sbatch ${jobfile18})
-else
-  jid18=$(sbatch --dependency=afterok:${jid17##* } ${jobfile18})
+  jidd=$(sbatch --dependency=afterok:${jid14##* } ${jobfiled})
 fi
 
 
