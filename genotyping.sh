@@ -399,7 +399,7 @@ cat > $jobfile7 <<EOA # generate the job file
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=40G
-#SBATCH --time=05:00:00
+#SBATCH --time=15:00:00
 
 
 INPUT_TAGSINTER=$BASE_DIR/outputs/lof/3_2_tag.fofn
@@ -418,7 +418,7 @@ gatk --java-options "-Xmx30G" \
   -MAX_FILE_HANDLES=1000  \
   -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/ > $BASE_DIR/outputs/lof/3_3_duplicates.fofn
+ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam > $BASE_DIR/outputs/lof/3_3_duplicates.fofn
 
 
 EOA
@@ -454,7 +454,7 @@ echo \$sample
 
 gatk --java-options "-Xmx30G" \
   BuildBamIndex \
-  -INPUT=$BASE_DIR/outputs/3_duplicates/3_mark/duplicates/\${DUPLI}
+  -INPUT=\${DUPLI}
 
 
 EOA
@@ -585,8 +585,8 @@ EOA
 # --------------------------- GENOTYPING --------------------------------------#
 
 # Create array size based on files not removed at previous step
-SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
-echo $SIZE
+# SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
+# echo $SIZE
 
 # ------------------------------------------------------------------------------
 # Job 9 calculates genotype likelihoods
@@ -1169,8 +1169,14 @@ then
   echo "*****   9_likelihood     : DONE         **"
 elif [ "$JID_RES" = "jid9" ]
 then
+  # Create array size based on files not removed at previous step
+  SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
+  echo $SIZE
   jid9=$(sbatch ${jobfile9})
 else
+  # Create array size based on files not removed at previous step
+  SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
+  echo $SIZE
   jid9=$(sbatch --dependency=afterok:${jidc##* } ${jobfile9})
 fi
 
