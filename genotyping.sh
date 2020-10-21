@@ -226,7 +226,7 @@ gatk --java-options "-Xmx68G" \
     --UNMAP_CONTAMINANT_READS true \
     -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/2_align/ > $BASE_DIR/outputs/lof/2_align.fofn
+ls -1 $BASE_DIR/outputs/2_align/*.mapped.bam > $BASE_DIR/outputs/lof/2_align.fofn
 
 
 EOA
@@ -261,7 +261,7 @@ echo \$sample
 
 gatk --java-options "-Xmx30G" \
 		SortSam \
-		-I=$BASE_DIR/outputs/2_align/3_merge/\${MAPPED_BAM} \
+		-I=$BASE_DIR/outputs/2_align/\${MAPPED_BAM} \
 		-O=/dev/stdout \
 		--SORT_ORDER="coordinate" \
 		--CREATE_INDEX=false \
