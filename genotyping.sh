@@ -170,21 +170,21 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 2 converts previous bam with adapters info to fastaq files
+# Job 2 uses reference genome to align the reads
 
 jobfile2=2_align.tmp # temp file
 cat > $jobfile2 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=2_align
-#SBATCH --partition=carl.p
+#SBATCH --partition=mpcb.p
 #SBATCH --array=1-117
 #SBATCH --output=$BASE_DIR/logs/2_align_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/2_align_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=75G
-#SBATCH --time=03:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --mem-per-cpu=30G
+#SBATCH --time=2-00:00:00
 
 
 INPUT_ADAPT_BAMS=$BASE_DIR/outputs/lof/1_adapters.fofn
@@ -234,7 +234,7 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 3 uses reference genome to align all samples
+# Job 3 tag
 
 jobfile3=3_tag.tmp # temp file
 cat > $jobfile3 <<EOA # generate the job file
