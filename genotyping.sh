@@ -485,8 +485,8 @@ EOA
 # --------------------------- GENOTYPING --------------------------------------#
 
 # Create array size based on files not removed at previous step
-# SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
-# echo $SIZE
+SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
+echo $SIZE
 
 # ------------------------------------------------------------------------------
 # Job 6 calculates genotype likelihoods
@@ -1036,14 +1036,8 @@ then
   echo "*****   6_likelihood    : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
 then
-  # Create array size based on files not removed at previous step
-  SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
-  echo $SIZE
   jid6=$(sbatch ${jobfile6})
 else
-  # Create array size based on files not removed at previous step
-  SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
-  echo $SIZE
   jid6=$(sbatch --dependency=afterok:${jidc##* } ${jobfile6})
 fi
 
