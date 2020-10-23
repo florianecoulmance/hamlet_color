@@ -386,10 +386,13 @@ sample1=\${COV%.*}
 sample=\${sample1%.*}
 echo \$sample
 
+PREFIX=\${sample##*/}
+echo \${PREFIX}
+
 gatk --java-options "-Xmx30G" \
   CollectWgsMetrics \
-  -I=$BASE_DIR/outputs/3_duplicates/3_mark/duplicates/\${COV} \
-  -O=$BASE_DIR/outputs/coverage/\${sample}.wgsmetrics.txt \
+  -I=\${COV} \
+  -O=$BASE_DIR/outputs/coverage/\${PREFIX}.wgsmetrics.txt \
   -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz
 
 
