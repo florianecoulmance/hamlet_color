@@ -926,6 +926,33 @@ Rscript --vanilla $BASE_DIR/R/pca.R \${PCA} $BASE_DIR/pca/ \${PREFIX}
 EOA
 
 
+# ------------------------------------------------------------------------------
+# Job 15 modify the snps wrong sample names
+
+jobfiled=15_modif.tmp # temp file
+cat > $jobfiled <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=15_modif
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/15_modif_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/15_modif_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=02:00:00
+
+INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz
+
+
+smp=(PL17_35puepue PL17_35indpue)
+printf "%s " "\${smp[@]}" > $BASE_DIR/outputs/6_genotyping/6_1_snp/change_sample.txt
+
+bcftools reheader -s $BASE_DIR/outputs/6_genotyping/6_1_snp/change_sample.txt -o $BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic_changed.vcf.gz \${INPUT_VCF}
+
+EOA
+
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
