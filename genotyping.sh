@@ -829,9 +829,9 @@ EOA
 # Job 14 filter the SNP variants based on metrics from previous step, and
 # creates the vcffiles for casz1 gene SNPs only
 
-jobfile17=14_changes.tmp # temp file
+jobfile14=14_changes.tmp # temp file
 cat > $jobfile14 <<EOA # generate the job file
-#!/bin/bash
+#!/usr/bin/env bash
 #SBATCH --job-name=14_changes
 #SBATCH --partition=carl.p
 #SBATCH --array=1-2
@@ -846,43 +846,41 @@ cat > $jobfile14 <<EOA # generate the job file
 
 INPUT_GENO=$BASE_DIR/outputs/lof/snp_all.fofn
 GENO=\$(cat \${INPUT_GENO} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-PATH=\${GENO%/*}
-echo \$GENO
-echo \$PATH
+P=\${GENO%/*}
+echo \${GENO}
+echo \${P}
 
-if [ "\${SLURM_ARRAY_TASK_ID}" == "1" ]
+if [[ "\${SLURM_ARRAY_TASK_ID}" == "1" ]]
 then
   PREFIX="snp"
-elif [ "\${SLURM_ARRAY_TASK_ID}" == "2" ]
+else
   PREFIX="all"
 fi
 
 echo \${PREFIX}
 
-echo "PL17_35puepue PL17_35indpue" > $BASE_DIR/outputs/lof/change_sample.txt
+#echo "PL17_35puepue PL17_35indpue" > $BASE_DIR/outputs/lof/change_sample.txt
 
-bcftools \
-       reheader \
-       --samples $BASE_DIR/outputs/lof/change_sample.txt \
-       -o \${PATH}/\${PREFIX}_filterd.vcf.gz \
-       \${GENO}
 
-# LG=\$(zless $BASE_DIR/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$1}')
-# START=\$(zless $BASE_DIR/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$4}')
-# END=\$(zless $BASE_DIR/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$5}')
-# echo \$LG
-# echo \$START
-# echo \$END
+bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${GENO}
+tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz
 
-# vcftools \
-#       --vcf \${PATH}/\${PREFIX}_filterd.vcf.gz \
-#       --chr \${LG} \
-#       --from-bp \${START} \
-#       --to-bp \${END} \
-#       --recode \
-#       --out \${PATH}/\${PREFIX}_filterd_casz1.vcf.gz
+LG=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$1}')
+START=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$4}')
+END=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$5}')
+echo \${LG}
+echo \${START}
+echo \${END}
 
-# echo -e "\${PATH}/\${PREFIX}_filterd.vcf.gz\n\${PATH}/\${PREFIX}_filterd_casz1.vcf.gz\n" >> $BASE_DIR/outputs/lof/17_pca.txt
+vcftools \
+      --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz \
+      --chr \${LG} \
+      --from-bp \${START} \
+      --to-bp \${END} \
+      --recode \
+      --out \${P}/\${PREFIX}_filterd_casz1.vcf.gz
+
+echo -e "\${P}/\${PREFIX}_filterd.vcf.gz\n\${P}/\${PREFIX}_filterd_casz1.vcf.gz\n" >> $BASE_DIR/outputs/lof/17_pca.txt
 
 
 EOA

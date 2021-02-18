@@ -32,7 +32,7 @@ done
 mkdir $BASE_DIR/outputs/7_gxp/
 
 # Repo for the corresponding dataset
-mkdir $BASE_DIR/outputs/7_gxp/$DATASET
+mkdir $BASE_DIR/outputs/7_gxp/$DATASET/
 
 
 
@@ -134,7 +134,7 @@ printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
 awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11}' \${pheno} > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
-sort -k1 $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 > $BASE_DIR/outputs/gxp/trait_113spec/pheno_intermediate2
+sort -k1 $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2
 sort -k1 \${fam}
 join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4
