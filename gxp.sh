@@ -13,7 +13,7 @@
 # ********** Allow to enter bash options **********
 # -------------------------------------------------
 
-while getopts i:j: option
+while getopts i:j:k: option
 do
 case "${option}"
 in
