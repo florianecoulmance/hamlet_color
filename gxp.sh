@@ -120,12 +120,6 @@ cat > $jobfile2 <<EOA # generate the job file
 #SBATCH --time=00:15:00
 
 
-#cp $BASE_DIR/outputs/gxp/GxP_plink_binary_sauvegarde.fam $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.fam
-#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bed $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bed
-#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.bim $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.bim
-#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.log $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.log
-#cp $BASE_DIR/outputs/gxp/GxP_plink_binary.nosex $BASE_DIR/outputs/gxp/trait3/GxP_plink_binary.nosex
- 
 fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
 pheno=$BASE_DIR/metadata/LAB_PCs.csv
 
@@ -133,7 +127,7 @@ tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-awk -F ";" '{print \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$11}' \${pheno} > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
+awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' \${pheno} > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
 sort -k1 $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2
 sort -k1 \${fam}
 join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3
@@ -285,6 +279,23 @@ INPUT_M=$BASE_DIR/outputs/lof/multi.fofn
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 MULTI=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${MULTI}
+
+NAME="$(cut -d ' ' -f 1 <<<"\${MULTI}")"
+echo \${NAME}
+
+COL="$(cut -d ' ' -f 2- <<<"\${MULTI}")"
+echo \${COL}
+
+sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table2.fam
+
+  # 4) fit linear mixed model using gemma (-lmm)
+gemma -bfile $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table2.fam -k output/$DATASET/\${NAME}.cXX.txt -lmm 4 -n \${COL} -o /$DATASET/\${NAME}.lmm
+
+  # 5) reformat output
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lm.assoc.txt | \
+      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lmm.assoc.txt | \
+      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lmm.GxP.txt.gz
 
 
 EOA
