@@ -278,9 +278,10 @@ cat > $jobfile5 <<EOA # generate the job file
 #SBATCH --time=04:00:00
 
 INPUT_M=$BASE_DIR/outputs/lof/multi.fofn
+fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
 
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
-MULTI=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+MULTI=\$(cat \${INPUT_M} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${MULTI}
 
 NAME="$(cut -d ' ' -f 1 <<<"\${MULTI}")"
@@ -289,14 +290,28 @@ echo \${NAME}
 COL="$(cut -d ' ' -f 2- <<<"\${MULTI}")"
 echo \${COL}
 
-sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table2.fam
+BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
+echo \${BASE_NAME}
 
-  # 4) fit linear mixed model using gemma (-lmm)
-gemma -bfile $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table2.fam -k output/$DATASET/\${NAME}.cXX.txt -lmm 4 -n \${COL} -o /$DATASET/\${NAME}.lmm
+echo \${BASE_NAME}_\${NAME}
 
-  # 5) reformat output
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lm.assoc.txt | \
-      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lm.GxP.txt.gz
+mv \${fam} \$BASE_NAME-old.fam
+cp \${BASE_NAME}-old.fam \${fam}
+cp \${BASE_NAME}.bed \${BASE_NAME}_\${NAME}.bed
+cp \${BASE_NAME}.bim \${BASE_NAME}_\${NAME}.bim
+cp \${BASE_NAME}.log \${BASE_NAME}_\${NAME}.log
+cp \${BASE_NAME}.nosex \${BASE_NAME}_\${NAME}.nosex
+
+awk -v t="\${COL}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam
+sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam > $BASE_DIR/outputs/7_gxp/$DATASET/\${BASE_NAME}_\${NAME}.fam
+
+  # 1) create relatedness matrix of samples using gemma
+gemma -bfile \${BASE_NAME}_\${NAME} -gk 1 -o /$DATASET/\${NAME}
+
+  # 2) fit multivariate linear mixed model using gemma (-lmm)
+gemma -bfile \${BASE_NAME}_\${NAME} -k output/$DATASET/\${NAME}.cXX.txt -lmm 4 -n \${COL} -o /$DATASET/\${NAME}.lmm
+
+  # 3) reformat output
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lmm.assoc.txt | \
       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lmm.GxP.txt.gz
 
