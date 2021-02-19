@@ -147,7 +147,7 @@ cat > $jobfile3 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=3_gemma.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-15
+#SBATCH --array=1-10
 #SBATCH --output=$BASE_DIR/logs/3_gemma_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/3_gemma_%A_%a.err
 #SBATCH --nodes=1
@@ -185,6 +185,9 @@ cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${TRAITS}.fam
 sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
 
+mkdir $BASE_DIR/output
+mkdir $BASE_DIR/output/$DATASET/
+
   # 2) create relatedness matrix of samples using gemma
 gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /$DATASET/\${TRAITS}
 
@@ -217,7 +220,7 @@ cat > $jobfile4 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=4_windows.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-15
+#SBATCH --array=1-10
 #SBATCH --output=$BASE_DIR/logs/4_windows_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/4_windows_%A_%a.err
 #SBATCH --nodes=1
