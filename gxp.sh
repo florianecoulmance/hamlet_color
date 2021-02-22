@@ -284,11 +284,25 @@ fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
 MULTI=\$(cat \${INPUT_M} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${MULTI}
 
-NAME="$(cut -d ' ' -f 1 <<<"\${MULTI}")"
+NAME="\$(cut -d ' ' -f 1 <<<"\${MULTI}")"
 echo \${NAME}
 
-COL="$(cut -d ' ' -f 2- <<<"\${MULTI}")"
+COL="\$(cut -d ' ' -f 2- <<<"\${MULTI}")"
 echo \${COL}
+
+COL2="\$(echo \${COL} | sed -e 's/ /, $/g')"
+echo \${COL2}
+
+string="$"
+COLUMNS="\${string}\${COL2}"
+echo \${COLUMNS}
+
+string2="\\\$1, \\\$2, \\\$3, \\\$4, \\\$5, "
+COLUMNS2="\${string2}\${COLUMNS}"
+echo \${COLUMNS2}
+
+PR="{print \${COLUMNS2}}"
+echo "\${PR}"
 
 BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
 echo \${BASE_NAME}
@@ -302,8 +316,8 @@ cp \${BASE_NAME}.bim \${BASE_NAME}_\${NAME}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${NAME}.log
 cp \${BASE_NAME}.nosex \${BASE_NAME}_\${NAME}.nosex
 
-awk -v t="\${COL}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam
-sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam > $BASE_DIR/outputs/7_gxp/$DATASET/\${BASE_NAME}_\${NAME}.fam
+awk -f <(echo "\${PR}") $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam
+sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam > \${BASE_NAME}_\${NAME}.fam
 
   # 1) create relatedness matrix of samples using gemma
 gemma -bfile \${BASE_NAME}_\${NAME} -gk 1 -o /$DATASET/\${NAME}
