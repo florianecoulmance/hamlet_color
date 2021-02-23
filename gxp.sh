@@ -206,6 +206,8 @@ sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATAS
 rm \${BASE_NAME}_\${TRAITS}.bed
 rm \${BASE_NAME}_\${TRAITS}.bim
 rm \${BASE_NAME}_\${TRAITS}.log
+rm \${BASE_NAME}_\${TRAITS}.nosex
+
 
 
 EOA
@@ -329,6 +331,10 @@ gemma -bfile \${BASE_NAME}_\${NAME} -k output/$DATASET/\${NAME}.cXX.txt -lmm 4 -
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lmm.assoc.txt | \
       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lmm.GxP.txt.gz
 
+rm \${BASE_NAME}_\${NAME}.bed
+rm \${BASE_NAME}_\${NAME}.bim
+rm \${BASE_NAME}_\${NAME}.log
+rm \${BASE_NAME}_\${NAME}.nosex
 
 EOA
 
@@ -402,4 +408,4 @@ fi
 # ******** Remove useless files and folders *******
 # -------------------------------------------------
 
-rm *tmp
+# rm *tmp
