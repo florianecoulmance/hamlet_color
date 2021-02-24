@@ -383,7 +383,7 @@ EOA
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****   0_convert_plink : DONE         **"
 else
@@ -391,7 +391,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****   1_plink_binary  : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -402,7 +402,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****   2_prep          : DONE         **"
 elif [ "$JID_RES" = "jid2" ]
@@ -413,7 +413,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****   3_gemma         : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
@@ -424,7 +424,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
 then
   echo "*****   4_windows       : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
@@ -435,14 +435,23 @@ else
 fi
 
 
-
-if [ "$JID_RES" = "jid5" ];
+if [ "$JID_RES" = "jid6" ];
+then
+  echo "*****   5_multi         : DONE         **"
+elif [ "$JID_RES" = "jid5" ]
 then
   jid5=$(sbatch ${jobfile5})
 else
   jid5=$(sbatch --dependency=afterok:${jid4##* } ${jobfile5})
 fi
  
+
+if [ "$JID_RES" = "jid6" ];
+then
+  jid6=$(sbatch ${jobfile6})
+else
+  jid6=$(sbatch --dependency=afterok:${jid5##* } ${jobfile6})
+fi
 
 
 # ******** Remove useless files and folders *******
