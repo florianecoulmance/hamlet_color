@@ -349,6 +349,33 @@ rm \${BASE_NAME}_\${NAME}.bim
 rm \${BASE_NAME}_\${NAME}.log
 rm \${BASE_NAME}_\${NAME}.nosex
 
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 6 GxP plots
+
+jobfile6=6_plots.tmp # temp file
+cat > $jobfile6 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=6_plots.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-10
+#SBATCH --output=$BASE_DIR/logs/6_plots_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/6_plots_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=04:00:00
+
+mkdir $BASE_DIR/figures/7_gxp/
+mkdir $BASE_DIR/figures/7_gxp/$DATASET/
+
+Rscript --vanilla $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/
+
 EOA
 
 
