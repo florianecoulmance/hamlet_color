@@ -371,6 +371,10 @@ cat > $jobfile6 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=22G
 #SBATCH --time=04:00:00
 
+
+module load hpc-env/8.3
+module load R/4.0.2-foss-2019b
+
 mkdir $BASE_DIR/figures/7_gxp/
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/
 
