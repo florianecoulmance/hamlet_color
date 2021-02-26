@@ -372,13 +372,15 @@ cat > $jobfile6 <<EOA # generate the job file
 #SBATCH --time=04:00:00
 
 
-module load hpc-env/8.3
-module load R/4.0.2-foss-2019b
+ml hpc-env/8.3
+ml R/4.0.2-foss-2019b
+
 
 mkdir $BASE_DIR/figures/7_gxp/
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/
 
-Rscript --vanilla $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/
+
+Rscript --vanilla $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/
 
 EOA
 

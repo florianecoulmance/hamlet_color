@@ -13,7 +13,7 @@ rm(list = ls())
 
 # Load needed library
 library(ggplot2)
-library(tidyverse)
+#library(tidyverse)
 library(hypogen)
 library(dplyr)
 library(plyr)
@@ -31,8 +31,6 @@ data_path <- as.character(args[1]) # Path to mean coverage data table
 # data_path <- "/Users/fco/Desktop/BREMEN_OP/ibd/coverage_table"
 figure_path <- as.character(args[2]) # Path to the figure folder
 
-
-setwd('/user/doau0129/chapter1_2/outputs/gxp')
 
 # df_gxp_snout <- read.table(file = 'snout.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
 # df_gxp_bars <- read.table(file = 'bars_body.lm.50k.5k.txt.gz', sep = '\t', header = TRUE)
