@@ -386,10 +386,94 @@ EOA
 
 
 
+# ------------------------------------------------------------------------------
+# Job 7 phen file preparation for mv-plink
+
+jobfile7=7_phen.tmp # temp file
+cat > $jobfile7 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=7_phen.tmp
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/7_phen_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/7_phen_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=04:00:00
+
+
+MAP=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.map 
+PED=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.ped
+cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map
+cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
+
+P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
+awk -F " " '{print \$1,\$2,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 8 run mvplink
+
+jobfile8=8_mvplink.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=8_mvplink.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-55
+#SBATCH --output=$BASE_DIR/logs/8_mvplink_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/8_mvplink_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=04:00:00
+
+
+INPUT_MV=$BASE_DIR/outputs/lof/mvplink.fofn
+
+#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+MV=\$(cat \${INPUT_MV} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${MV}
+
+NAME="\$(cut -d ' ' -f 1 <<<"\${MV}")"
+echo \${NAME}
+
+COL="\$(cut -d ' ' -f 2- <<<"\${MV}")"
+echo \${COL}
+IFS=' ' read -r -a C <<<\${COL}
+echo \${C[@]}
+for (( i = 0 ; i < \${#C[@]} ; i++ )) do (( C[\$i]=\${C[\$i]} - 5 )) ; done
+echo \${C[@]}
+echo \${C}
+
+COL2="\$(echo \${COL} | sed -e 's/ /, $/g')"
+echo \${COL2}
+
+string="$"
+COLUMNS="\${string}\${COL2}"
+echo \${COLUMNS}
+
+string2="\\\$1, \\\$2, \\\$3, \\\$4, \\\$5, "
+COLUMNS2="\${string2}\${COLUMNS}"
+echo \${COLUMNS2}
+
+PR="{print \${COLUMNS2}}"
+echo "\${PR}"
+
+
+EOA
+
+
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   0_convert_plink : DONE         **"
 else
@@ -397,7 +481,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   1_plink_binary  : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -408,7 +492,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   2_prep          : DONE         **"
 elif [ "$JID_RES" = "jid2" ]
@@ -419,7 +503,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   3_gemma         : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
@@ -430,7 +514,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   4_windows       : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
@@ -441,7 +525,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   5_multi         : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -452,11 +536,33 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+then
+  echo "*****   6_plots         : DONE         **"
+elif [ "$JID_RES" = "jid6" ]
 then
   jid6=$(sbatch ${jobfile6})
 else
   jid6=$(sbatch --dependency=afterok:${jid5##* } ${jobfile6})
+fi
+ 
+
+if [ "$JID_RES" = "jid8" ];
+then
+  echo "*****   7_phen          : DONE         **"
+elif [ "$JID_RES" = "jid7" ]
+then
+  jid7=$(sbatch ${jobfile7})
+else
+  jid7=$(sbatch --dependency=afterok:${jid6##* } ${jobfile7})
+fi
+
+
+if [ "$JID_RES" = "jid8" ];
+then
+  jid8=$(sbatch ${jobfile8})
+else
+  jid8=$(sbatch --dependency=afterok:${jid7##* } ${jobfile8})
 fi
 
 
