@@ -380,7 +380,7 @@ mkdir $BASE_DIR/figures/7_gxp/
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/
 
 
-Rscript --vanilla $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/
 
 EOA
 
@@ -409,7 +409,10 @@ cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map
 cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
 
 P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
-awk -F " " '{print \$1,\$2,\$5,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+
+var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10"
+sed -i "1s/.*/\${var}/" $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
 
 
 EOA
@@ -430,8 +433,8 @@ cat > $jobfile8 <<EOA # generate the job file
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=22G
-#SBATCH --time=04:00:00
+#SBATCH --mem-per-cpu=90G
+#SBATCH --time=1-00:00:00
 
 
 INPUT_MV=$BASE_DIR/outputs/lof/mvplink.fofn
@@ -445,25 +448,11 @@ echo \${NAME}
 
 COL="\$(cut -d ' ' -f 2- <<<"\${MV}")"
 echo \${COL}
-IFS=' ' read -r -a C <<<\${COL}
-echo \${C[@]}
-for (( i = 0 ; i < \${#C[@]} ; i++ )) do (( C[\$i]=\${C[\$i]} - 5 )) ; done
-echo \${C[@]}
-echo \${C}
 
-COL2="\$(echo \${COL} | sed -e 's/ /, $/g')"
-echo \${COL2}
+P=\$(echo  /user/doau0129/work/software/plink.multivariate --file gwas_multi --mqfam --mult-pheno gwas_multi.phen --pheno-name \${COL})
+echo \${P}
 
-string="$"
-COLUMNS="\${string}\${COL2}"
-echo \${COLUMNS}
-
-string2="\\\$1, \\\$2, \\\$3, \\\$4, \\\$5, "
-COLUMNS2="\${string2}\${COLUMNS}"
-echo \${COLUMNS2}
-
-PR="{print \${COLUMNS2}}"
-echo "\${PR}"
+/user/doau0129/work/software/plink.multivariate --file $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi --mqfam --mult-pheno $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen --pheno-name \${COL} --out $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total
 
 
 EOA
