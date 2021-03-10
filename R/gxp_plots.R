@@ -42,10 +42,10 @@ analysis <- "univariate_gemma"
 
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
-plotadgwas <- function(dataset,path,analysis) {
+plotadgwas <- function(dataset,path,analysis,y) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1,dir = 'v', strip.position="right") +
     geom_hypo_LG() +
-    geom_point(data = dataset, aes(x = GPOS, y = AVG_p_wald), size = .1) +
+    geom_point(data = dataset, aes(x = GPOS, y = y), size = .1) +
     scale_fill_hypo_LG_bg() +
     scale_x_hypo_LG(name = "Linkage Groups") +
     scale_y_continuous(name = expression(italic('-log10(p_value)'))) +
@@ -158,7 +158,15 @@ if (analysis == "univariate_gemma"){
 
 names(files_l) <- traits
 files <- bind_rows(files, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
-plotadgwas(files,figure_path,analysis)
+
+if (analysis == "univariate_gemma"){
+  plotadgwas(files,figure_path,analysis,"AVG_p_wald")
+  
+} else {
+  plotadgwas(files,figure_path,analysis,"AVG_P")
+  
+}
+  
 
 
 
