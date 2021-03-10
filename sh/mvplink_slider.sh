@@ -6,7 +6,7 @@
 # !!   (hence, if too many windows are created, the array index maximum is early entries are being overwritten     !!
 # -------------------------------------------------------------------------------------------------------------------
 # $1 = infile; $2 = windowsize; $3 = increment
-j=$(echo $1 | sed 's/.mvplink.txt.gz//g')
+j=$(echo $1 | sed 's/.txt.gz//g')
 WIN=$2;
 STEP=$3;
 WIN_LAB=$(($WIN/1000));
@@ -35,9 +35,9 @@ for k in {01..24};do
 
 	grep -v NA $j.LG$k.tmp | \
 	awk -v OFS=" " -v w=$WIN -v s=$STEP -v r=$k 'BEGIN{window=w;slide=s;g=0;OL=int(window/slide);}
-	{if(NR==1 && r==01){print "CHROM","BIN_START","BIN_END","N_SNPs","MID_POS","BIN_RANK","BIN_NR","SNP_DENSITY","F","P","AVG_P","WEIGHTS";}}
+	{if(NR==1 && r==01){print "CHROM","BIN_START","BIN_END","N_SNPs","MID_POS","BIN_RANK","BIN_NR","SNP_DENSITY","AVG_P";}}
 	{if(NR>1){g=int(($2-1)/slide)+1;{for (i=0;i<=OL-1;i++){if(g-i >0){A[g-i]+=$2; B[g-i]++;C[g-i]+=$4;G[g-i]=g-i;H[g-i]=$1;}}}};}
-	END{for(i in A){print H[i],(G[i]-1)*slide,(G[i]-1)*slide+window,B[i],A[i]/B[i],G[i],k+1,B[i]/window,$3,$4,C[i]/B[i],$5;k++}}' |
+	END{for(i in A){print H[i],(G[i]-1)*slide,(G[i]-1)*slide+window,B[i],A[i]/B[i],G[i],k+1,B[i]/window,C[i]/B[i];k++}}' |
 	body sort -k2 -n | \
 	sed -r '/^\s*$/d' >> ${j}.${WIN_LAB}k.${STEP_LAB}k.txt
 done

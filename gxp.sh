@@ -496,7 +496,7 @@ echo \${NAME}
 FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total.mqfam.total
 echo \${FILE}
 
-cut -d ' ' -f 2,3,6-9 \${FILE} | sed 's/SNP BP /CHROM POS /g' | awk '{sub(/\:.*$/,"",\$1); print \$0}' | awk '{if (\$3!="NA"){ print}}' | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
+awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8}' \${FILE} | cut -d ' ' -f 2,3,6-9 | sed 's/SNP BP /CHROM POS /g' | awk '{sub(/\:.*$/,"",\$1); print \$0}' | awk '{if (\$3!="NA"){ print}}' | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
 
 win5=50000
 step5=5000
