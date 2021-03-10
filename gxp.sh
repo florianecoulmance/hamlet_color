@@ -459,6 +459,63 @@ EOA
 
 
 
+# ------------------------------------------------------------------------------
+# Job 9 format mvplink results
+
+jobfile9=9_slider.tmp # temp file
+cat > $jobfile9 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=9_slider.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-55
+#SBATCH --output=$BASE_DIR/logs/9_slider_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/9_slider_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=90G
+#SBATCH --time=1-00:00:00
+
+
+body() {
+        IFS= read -r header
+        printf '%s\n' "\$header"
+        "\$@"
+}
+
+
+INPUT_MV=$BASE_DIR/outputs/lof/mvplink.fofn
+
+#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+MV=\$(cat \${INPUT_MV} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${MV}
+
+NAME="\$(cut -d ' ' -f 1 <<<"\${MV}")"
+echo \${NAME}
+
+FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total.mqfam.total
+echo \${FILE}
+
+cut -d ' ' -f 2,3,6-9 \${FILE} | sed 's/SNP BP /CHROM POS /g' | awk '{sub(/\:.*$/,"",\$1); print \$0}' | awk '{if (\$3!="NA"){ print}}' | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
+
+win5=50000
+step5=5000
+echo \${win5}
+echo \${step5}
+
+win1=10000
+step1=1000
+echo \${win1}
+echo \${step1}
+
+$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win5} \${step5}
+$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win1} \${step1}
+
+
+EOA
+
+
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
