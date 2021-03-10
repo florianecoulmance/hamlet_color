@@ -355,47 +355,15 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 6 GxP plots
+# Job 6 phen file preparation for mv-plink
 
-jobfile6=6_plots.tmp # temp file
+jobfile6=6_phen.tmp # temp file
 cat > $jobfile6 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=6_plots.tmp
+#SBATCH --job-name=6_phen.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-10
-#SBATCH --output=$BASE_DIR/logs/6_plots_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/6_plots_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=22G
-#SBATCH --time=04:00:00
-
-
-ml hpc-env/8.3
-ml R/4.0.2-foss-2019b
-
-
-mkdir $BASE_DIR/figures/7_gxp/
-mkdir $BASE_DIR/figures/7_gxp/$DATASET/
-
-
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/
-
-EOA
-
-
-
-# ------------------------------------------------------------------------------
-# Job 7 phen file preparation for mv-plink
-
-jobfile7=7_phen.tmp # temp file
-cat > $jobfile7 <<EOA # generate the job file
-#!/bin/bash
-#SBATCH --job-name=7_phen.tmp
-#SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/7_phen_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/7_phen_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/6_phen_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/6_phen_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -420,16 +388,16 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 8 run mvplink
+# Job 7 run mvplink
 
-jobfile8=8_mvplink.tmp # temp file
-cat > $jobfile8 <<EOA # generate the job file
+jobfile7=7_mvplink.tmp # temp file
+cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=8_mvplink.tmp
+#SBATCH --job-name=7_mvplink.tmp
 #SBATCH --partition=carl.p
 #SBATCH --array=1-55
-#SBATCH --output=$BASE_DIR/logs/8_mvplink_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/8_mvplink_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/7_mvplink_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/7_mvplink_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -460,16 +428,16 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 9 format mvplink results
+# Job 8 format mvplink results
 
-jobfile9=9_slider.tmp # temp file
-cat > $jobfile9 <<EOA # generate the job file
+jobfile8=8_slider.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=9_slider.tmp
+#SBATCH --job-name=8_slider.tmp
 #SBATCH --partition=carl.p
 #SBATCH --array=1-55
-#SBATCH --output=$BASE_DIR/logs/9_slider_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/9_slider_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/8_slider_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/8_slider_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -510,6 +478,47 @@ echo \${step1}
 
 $BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win5} \${step5}
 $BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win1} \${step1}
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 9 GxP plots
+
+jobfile9=9_plots.tmp # temp file
+cat > $jobfile9 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=9_plots.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-10
+#SBATCH --output=$BASE_DIR/logs/9_plots_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/9_plots_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=04:00:00
+
+
+ml hpc-env/8.3
+ml R/4.0.2-foss-2019b
+
+mkdir $BASE_DIR/figures/7_gxp/
+mkdir $BASE_DIR/figures/7_gxp/$DATASET/
+
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ univariate_gemma
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC1
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC2
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC3
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC4
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC5
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC6
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC7
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC8
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC9
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_byPCs
 
 
 EOA
@@ -584,7 +593,7 @@ fi
 
 if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   6_plots         : DONE         **"
+  echo "*****   6_phen          : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
 then
   jid6=$(sbatch ${jobfile6})
@@ -595,7 +604,7 @@ fi
 
 if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   7_phen          : DONE         **"
+  echo "*****   7_mvplink       : DONE         **"
 elif [ "$JID_RES" = "jid7" ]
 then
   jid7=$(sbatch ${jobfile7})
@@ -606,7 +615,7 @@ fi
 
 if [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   8_mvplink       : DONE         **"
+  echo "*****   8_slider        : DONE         **"
 elif [ "$JID_RES" = "jid8" ]
 then
   jid8=$(sbatch ${jobfile8})
