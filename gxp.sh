@@ -492,7 +492,6 @@ cat > $jobfile9 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=9_plots.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-10
 #SBATCH --output=$BASE_DIR/logs/9_plots_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/9_plots_%A_%a.err
 #SBATCH --nodes=1

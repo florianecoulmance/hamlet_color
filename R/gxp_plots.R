@@ -26,15 +26,15 @@ library(plyr)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[7:9]
+args = args[6:8]
 print(args)
 
-#data_path <- as.character(args[1]) # Path to mean coverage data table
-data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-#figure_path <- as.character(args[2]) # Path to the figure folder
-figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-analysis <- "univariate_gemma"
-# analysis <- as.character(args[3])
+data_path <- as.character(args[1]) # Path to mean coverage data table
+#data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+figure_path <- as.character(args[2]) # Path to the figure folder
+#figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+#analysis <- "univariate_gemma"
+analysis <- as.character(args[3])
 
 
 # -------------------------------------------------------------------------------------------------------------------
