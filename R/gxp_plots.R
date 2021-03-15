@@ -54,7 +54,7 @@ plotgwas_gem <- function(dataset,path,analysis) {
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'))
   
-  hypo_save(filename = paste0(path,analysis,".png"),
+  hypo_save(filename = paste0(path,analysis,".png"), type="cairo",
             plot = p,
             width = 8,
             height = 8)
@@ -74,7 +74,7 @@ plotgwas_mvp <- function(dataset,path,analysis) {
           axis.text.x.top= element_text(colour = 'darkgray'))
   
   
-  hypo_save(filename = paste0(path,analysis,".png"),
+  hypo_save(filename = paste0(path,analysis,".png"), type="cairo",
             plot = p,
             width = 8,
             height = 8)
@@ -95,7 +95,7 @@ concat_files_gem <- function(f,p) {
     #assign(run_files,d)
     l[[count]]=assign(run_files,d)
     print(head(d))
-    print(l)
+    #print(l)
   }
   return(l)
 }
@@ -114,7 +114,7 @@ concat_files_plk <- function(f,p) {
     #assign(run_files,d)
     l[[count]]=assign(run_files,d)
     print(head(d))
-    print(l)
+    #print(l)
   }
   return(l)
 }
@@ -128,7 +128,7 @@ concat_files_plk <- function(f,p) {
 if (analysis == "univariate_gemma"){
   files <- list.files(data_path, pattern = "lmm.50k.5k.txt.gz")
   print(files)
-  traits <- list("PC1", "PC10", "PC2") #, "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
+  traits <- list("PC1", "PC10", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
   print(traits)
   files_l <- concat_files_gem(files,data_path)
   print("here1")
@@ -141,78 +141,83 @@ if (analysis == "univariate_gemma"){
 } else {
   
   f <- list.files(data_path, pattern = "mvplink.50k.5k.txt.gz")
-  
+  print(f)  
   if (analysis == "multivariate_plink_PC1") {
-    files <- list.files(f, pattern = "PC1-")
-    traits <- list("PC1", "PC1_2", "PC1_3", "PC1_4", "PC1_5", "PC1_6", "PC1_7", "PC1_8", "PC1_9", "PC1_10")
+    files <- grep("PC1_", f, value = TRUE)
+    print(files)
+    traits <- list("PC1_10", "PC1_2", "PC1_3", "PC1_4", "PC1_5", "PC1_6", "PC1_7", "PC1_8", "PC1_9")
+    print(traits)
     files_l <- concat_files_plk(files,data_path)
-    print("here1")
-    # print(head(PC1))
-    # print("here2")
-    # files_l <- list(PC1, PC1_2, PC1_3, PC1_4, PC1_5, PC1_6, PC1_7, PC1_8, PC1_9, PC1_10)
-    # print("here3")
 
   } else if (analysis == "multivariate_plink_PC2"){
-    files <- list.files(f, pattern = "PC2-")
-    traits <- list("PC2", "PC2_3", "PC2_4", "PC2_5", "PC2_6", "PC2_7", "PC2_8", "PC2_9", "PC2_10")
+    files <- grep("PC2_", f, value = TRUE)
+    print(files)
+    traits <- list("PC2_10", "PC2_3", "PC2_4", "PC2_5", "PC2_6", "PC2_7", "PC2_8", "PC2_9")
+    print(traits)
     files_l <- concat_files_plk(files,data_path)
-    #files_l <- list(PC2, PC2_3, PC2_4, PC2_5, PC2_6, PC2_7, PC2_8, PC2_9, PC2_10)
     
   } else if (analysis == "multivariate_plink_PC3"){
-    files <- list.files(f, pattern = "PC3-")
-    traits <- list("PC3", "PC3_4", "PC3_5", "PC3_6", "PC3_7", "PC3_8", "PC3_9", "PC3_10")
+    files <- grep("PC3_", f, value = TRUE)
+    print(files)
+    traits <- list("PC3_10", "PC3_4", "PC3_5", "PC3_6", "PC3_7", "PC3_8", "PC3_9")
+    print(traits)
     files_l <- concat_files_plk(files,data_path)
-    #files_l <- list(PC3, PC3_4, PC3_5, PC3_6, PC3_7, PC3_8, PC3_9, PC3_10)
     
   } else if (analysis == "multivariate_plink_PC4"){
-    files <- list.files(f, pattern = "PC4-")
-    traits <- list("PC4", "PC4_5", "PC4_6", "PC4_7", "PC4_8", "PC4_9", "PC4_10")
+    files <- grep("PC4_", f, value = TRUE)
+    print(files)
+    traits <- list("PC4_10", "PC4_5", "PC4_6", "PC4_7", "PC4_8", "PC4_9")
+    print(traits)
     files_l <- concat_files_plk(files,data_path)
-    #files_l <- list(PC4, PC4_5, PC4_6, PC4_7, PC4_8, PC4_9, PC4_10)
     
   } else if (analysis == "multivariate_plink_PC5"){
-    files <- list.files(f, pattern = "PC5-")
-    traits <- list("PC5", "PC5_6", "PC5_7", "PC5_8", "PC5_9", "PC5_10")
+    files <- grep("PC5_", f, value = TRUE)
+    print(files)
+    traits <- list("PC5_10", "PC5_6", "PC5_7", "PC5_8", "PC5_9")
+    print(traits)
     files_l <- concat_files_plk(files, data_path)
-    #files_l <- list(PC5, PC5_6, PC5_7, PC5_8, PC5_9, PC5_10)
     
   } else if (analysis == "multivariate_plink_PC6"){
-    files <- list.files(f, pattern = "PC6-")
-    traits <- list("PC6", "PC6_7", "PC6_8", "PC6_9", "PC6_10")
+    files <- grep("PC6_", f, value = TRUE)
+    print(files)
+    traits <- list("PC6_10", "PC6_7", "PC6_8", "PC6_9")
+    print(traits)
     files_l <- concat_files_plk(files, data_path)
-    #files_l <- list(PC6, PC6_7, PC6_8, PC6_9, PC6_10)
     
   } else if (analysis == "multivariate_plink_PC7"){
-    files <- list.files(f, pattern = "PC7-")
-    traits <- list("PC7", "PC7_8", "PC7_9", "PC7_10")
+    files <- grep("PC7_", f, value = TRUE)
+    print(files)
+    traits <- list("PC7_10", "PC7_8", "PC7_9")
+    print(traits)
     files_l <- concat_files_plk(files, data_path)
-    #files_l <- list(PC7, PC7_8, PC7_9, PC7_10)
     
   } else if (analysis == "multivariate_plink_PC8"){
-    files <- list.files(f, pattern = "PC8-")
-    traits <- list("PC8", "PC8_9", "PC8_10")
+    files <- grep("PC8_", f, value = TRUE)
+    print(files)
+    traits <- list("PC8_10", "PC8_9")
+    print(traits)
     files_l <- concat_files_plk(files, data_path)
-    #files_l <- list(PC8, PC8_9, PC8_10)
     
     
   } else if (analysis == "multivariate_plink_PC9"){
-    files <- list.files(f, pattern = "PC9-")
-    traits <- list("PC9","PC9_10")
+    files <- grep("PC9_", f, value = TRUE)
+    print(files)
+    traits <- list("PC9_10")
+    print(traits)
     files_l <- concat_files_plk(files, data_path)
-    #files_l <- list(PC9, PC9_10)
     
   } else if (analysis == "multivariate_plink_byPCs"){
-    files <- list.files("PC1.mvplink.50k.5k.txt.gz", "PC2.mvplink.50k.5k.txt.gz", "PC3.mvplink.50k.5k.txt.gz", "PC4.mvplink.50k.5k.txt.gz", "PC5.mvplink.50k.5k.txt.gz", "PC6.mvplink.50k.5k.txt.gz", "PC7.mvplink.50k.5k.txt.gz", "PC8.mvplink.50k.5k.txt.gz", "PC9.mvplink.50k.5k.txt.gz", "PC10.mvplink.50k.5k.txt.gz")
-    traits <- list("PC1", "PC10", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
+    files <- list("PC1.mvplink.50k.5k.txt.gz", "PC2.mvplink.50k.5k.txt.gz", "PC3.mvplink.50k.5k.txt.gz", "PC4.mvplink.50k.5k.txt.gz", "PC5.mvplink.50k.5k.txt.gz", "PC6.mvplink.50k.5k.txt.gz", "PC7.mvplink.50k.5k.txt.gz", "PC8.mvplink.50k.5k.txt.gz", "PC9.mvplink.50k.5k.txt.gz", "PC10.mvplink.50k.5k.txt.gz")
+    print(files)
+    traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+    print(traits)
     files_l <- concat_files_plk(files, data_path)
-    #files_l <- list(PC1,PC2, PC3, PC4, PC5, PC6, PC7, PC8, PC9, PC10)
     
   }
   
 }
 
 names(files_l) <- traits
-print(files_l)
 files <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 
 if (analysis == "univariate_gemma"){
