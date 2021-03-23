@@ -54,7 +54,7 @@ plotgwas_gem <- function(dataset,path,analysis) {
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'))
   
-  hypo_save(filename = paste0(path,analysis,".png"), type="cairo",
+  hypo_save(filename = paste0(path,analysis,"10k1k.png"), type="cairo",
             plot = p,
             width = 8,
             height = 8)
@@ -126,7 +126,7 @@ concat_files_plk <- function(f,p) {
 #setwd(data_path)
 
 if (analysis == "univariate_gemma"){
-  files <- list.files(data_path, pattern = "lmm.50k.5k.txt.gz")
+  files <- list.files(data_path, pattern = "lmm.10k.1k.txt.gz")
   print(files)
   traits <- list("PC1", "PC10", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
   print(traits)
