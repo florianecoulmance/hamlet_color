@@ -131,7 +131,7 @@ awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' \${pheno} > $
 sort -k1 $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2
 sort -k1 \${fam}
 join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4
 echo -e 'label Within_family_ID ID_father ID_mother Sex PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10' > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4 >> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
 
 
@@ -175,8 +175,6 @@ echo \${BASE_NAME}
 
 echo \${BASE_NAME}_\${TRAITS}
 
-mv \${fam} \$BASE_NAME-old.fam
-cp \${BASE_NAME}-old.fam \${fam}
 cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
 cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
 cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
@@ -203,10 +201,10 @@ sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATAS
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lmm.assoc.txt | \
       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lmm.GxP.txt.gz
 
-rm \${BASE_NAME}_\${TRAITS}.bed
-rm \${BASE_NAME}_\${TRAITS}.bim
-rm \${BASE_NAME}_\${TRAITS}.log
-rm \${BASE_NAME}_\${TRAITS}.nosex
+# rm \${BASE_NAME}_\${TRAITS}.bed
+# rm \${BASE_NAME}_\${TRAITS}.bim
+# rm \${BASE_NAME}_\${TRAITS}.log
+# rm \${BASE_NAME}_\${TRAITS}.nosex
 
 
 
@@ -262,108 +260,108 @@ EOA
 
 
 
-# ------------------------------------------------------------------------------
-# Job 5 multivariate gemma
+# # ------------------------------------------------------------------------------
+# # Job 5 multivariate gemma
 
-jobfile5=5_multi.tmp # temp file
+# jobfile5=5_multi.tmp # temp file
+# cat > $jobfile5 <<EOA # generate the job file
+# #!/bin/bash
+# #SBATCH --job-name=5_multi.tmp
+# #SBATCH --partition=carl.p
+# #SBATCH --array=1-45
+# #SBATCH --output=$BASE_DIR/logs/5_multi_%A_%a.out
+# #SBATCH --error=$BASE_DIR/logs/5_multi_%A_%a.err
+# #SBATCH --nodes=1
+# #SBATCH --ntasks=1
+# #SBATCH --cpus-per-task=1
+# #SBATCH --mem-per-cpu=22G
+# #SBATCH --time=04:00:00
+
+
+# body() {
+#         IFS= read -r header
+#         printf '%s\n' "\$header"
+#         "\$@"
+# }
+
+
+# INPUT_M=$BASE_DIR/outputs/lof/multi.fofn
+# fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
+
+# #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+# MULTI=\$(cat \${INPUT_M} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+# echo \${MULTI}
+
+# NAME="\$(cut -d ' ' -f 1 <<<"\${MULTI}")"
+# echo \${NAME}
+
+# COL="\$(cut -d ' ' -f 2- <<<"\${MULTI}")"
+# echo \${COL}
+# IFS=' ' read -r -a C <<<\${COL}
+# echo \${C[@]}
+# for (( i = 0 ; i < \${#C[@]} ; i++ )) do (( C[\$i]=\${C[\$i]} - 5 )) ; done
+# echo \${C[@]}
+# echo \${C}
+
+# COL2="\$(echo \${COL} | sed -e 's/ /, $/g')"
+# echo \${COL2}
+
+# string="$"
+# COLUMNS="\${string}\${COL2}"
+# echo \${COLUMNS}
+
+# string2="\\\$1, \\\$2, \\\$3, \\\$4, \\\$5, "
+# COLUMNS2="\${string2}\${COLUMNS}"
+# echo \${COLUMNS2}
+
+# PR="{print \${COLUMNS2}}"
+# echo "\${PR}"
+
+# BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
+# echo \${BASE_NAME}
+
+# echo \${BASE_NAME}_\${NAME}
+
+# mv \${fam} \$BASE_NAME-old.fam
+# cp \${BASE_NAME}-old.fam \${fam}
+# cp \${BASE_NAME}.bed \${BASE_NAME}_\${NAME}.bed
+# cp \${BASE_NAME}.bim \${BASE_NAME}_\${NAME}.bim
+# cp \${BASE_NAME}.log \${BASE_NAME}_\${NAME}.log
+# cp \${BASE_NAME}.nosex \${BASE_NAME}_\${NAME}.nosex
+
+# awk -f <(echo "\${PR}") $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam
+# sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam > \${BASE_NAME}_\${NAME}.fam
+
+#   # 1) create relatedness matrix of samples using gemma
+# gemma -bfile \${BASE_NAME}_\${NAME} -gk 1 -o /$DATASET/\${NAME}
+
+#   # 2) fit multivariate linear mixed model using gemma (-lmm)
+# gemma -bfile \${BASE_NAME}_\${NAME} -k output/$DATASET/\${NAME}.cXX.txt -lmm 4 -n \${C[@]} -o /$DATASET/\${NAME}.lmm
+
+#   # 3) reformat output
+# sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lmm.assoc.txt | \
+#       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lmm.GxP.txt.gz
+
+# rm \${BASE_NAME}_\${NAME}.bed
+# rm \${BASE_NAME}_\${NAME}.bim
+# rm \${BASE_NAME}_\${NAME}.log
+# rm \${BASE_NAME}_\${NAME}.nosex
+
+
+# EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 5 phen file preparation for mv-plink
+
+jobfile5=5_phen.tmp # temp file
 cat > $jobfile5 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=5_multi.tmp
+#SBATCH --job-name=5_phen.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-45
-#SBATCH --output=$BASE_DIR/logs/5_multi_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/5_multi_%A_%a.err
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=22G
-#SBATCH --time=04:00:00
-
-
-body() {
-        IFS= read -r header
-        printf '%s\n' "\$header"
-        "\$@"
-}
-
-
-INPUT_M=$BASE_DIR/outputs/lof/multi.fofn
-fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
-
-#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
-MULTI=\$(cat \${INPUT_M} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \${MULTI}
-
-NAME="\$(cut -d ' ' -f 1 <<<"\${MULTI}")"
-echo \${NAME}
-
-COL="\$(cut -d ' ' -f 2- <<<"\${MULTI}")"
-echo \${COL}
-IFS=' ' read -r -a C <<<\${COL}
-echo \${C[@]}
-for (( i = 0 ; i < \${#C[@]} ; i++ )) do (( C[\$i]=\${C[\$i]} - 5 )) ; done
-echo \${C[@]}
-echo \${C}
-
-COL2="\$(echo \${COL} | sed -e 's/ /, $/g')"
-echo \${COL2}
-
-string="$"
-COLUMNS="\${string}\${COL2}"
-echo \${COLUMNS}
-
-string2="\\\$1, \\\$2, \\\$3, \\\$4, \\\$5, "
-COLUMNS2="\${string2}\${COLUMNS}"
-echo \${COLUMNS2}
-
-PR="{print \${COLUMNS2}}"
-echo "\${PR}"
-
-BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
-echo \${BASE_NAME}
-
-echo \${BASE_NAME}_\${NAME}
-
-mv \${fam} \$BASE_NAME-old.fam
-cp \${BASE_NAME}-old.fam \${fam}
-cp \${BASE_NAME}.bed \${BASE_NAME}_\${NAME}.bed
-cp \${BASE_NAME}.bim \${BASE_NAME}_\${NAME}.bim
-cp \${BASE_NAME}.log \${BASE_NAME}_\${NAME}.log
-cp \${BASE_NAME}.nosex \${BASE_NAME}_\${NAME}.nosex
-
-awk -f <(echo "\${PR}") $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam
-sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${NAME}.fam > \${BASE_NAME}_\${NAME}.fam
-
-  # 1) create relatedness matrix of samples using gemma
-gemma -bfile \${BASE_NAME}_\${NAME} -gk 1 -o /$DATASET/\${NAME}
-
-  # 2) fit multivariate linear mixed model using gemma (-lmm)
-gemma -bfile \${BASE_NAME}_\${NAME} -k output/$DATASET/\${NAME}.cXX.txt -lmm 4 -n \${C[@]} -o /$DATASET/\${NAME}.lmm
-
-  # 3) reformat output
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${NAME}.lmm.assoc.txt | \
-      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.lmm.GxP.txt.gz
-
-rm \${BASE_NAME}_\${NAME}.bed
-rm \${BASE_NAME}_\${NAME}.bim
-rm \${BASE_NAME}_\${NAME}.log
-rm \${BASE_NAME}_\${NAME}.nosex
-
-
-EOA
-
-
-
-# ------------------------------------------------------------------------------
-# Job 6 phen file preparation for mv-plink
-
-jobfile6=6_phen.tmp # temp file
-cat > $jobfile6 <<EOA # generate the job file
-#!/bin/bash
-#SBATCH --job-name=6_phen.tmp
-#SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/6_phen_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/6_phen_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/5_phen_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/5_phen_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -388,16 +386,16 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 7 run mvplink
+# Job 6 run mvplink
 
-jobfile7=7_mvplink.tmp # temp file
-cat > $jobfile7 <<EOA # generate the job file
+jobfile6=6_mvplink.tmp # temp file
+cat > $jobfile6 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=7_mvplink.tmp
+#SBATCH --job-name=6_mvplink.tmp
 #SBATCH --partition=carl.p
 #SBATCH --array=1-55
-#SBATCH --output=$BASE_DIR/logs/7_mvplink_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/7_mvplink_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/6_mvplink_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/6_mvplink_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -428,16 +426,16 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 8 format mvplink results
+# Job 7 format mvplink results
 
-jobfile8=8_slider.tmp # temp file
-cat > $jobfile8 <<EOA # generate the job file
+jobfile7=7_slider.tmp # temp file
+cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=8_slider.tmp
+#SBATCH --job-name=7_slider.tmp
 #SBATCH --partition=carl.p
 #SBATCH --array=1-55
-#SBATCH --output=$BASE_DIR/logs/8_slider_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/8_slider_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/7_slider_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/7_slider_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -485,15 +483,15 @@ EOA
 
 
 # ------------------------------------------------------------------------------
-# Job 9 GxP plots
+# Job 8 GxP plots
 
-jobfile9=9_plots.tmp # temp file
-cat > $jobfile9 <<EOA # generate the job file
+jobfile8=8_plots.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=9_plots.tmp
+#SBATCH --job-name=8_plots.tmp
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/9_plots_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/9_plots_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/8_plots_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/8_plots_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -581,7 +579,7 @@ fi
 
 if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   5_multi         : DONE         **"
+  echo "*****   5_phen          : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
 then
   jid5=$(sbatch ${jobfile5})
@@ -592,7 +590,7 @@ fi
 
 if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   6_phen          : DONE         **"
+  echo "*****   6_mvplink       : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
 then
   jid6=$(sbatch ${jobfile6})
@@ -603,7 +601,7 @@ fi
 
 if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   7_mvplink       : DONE         **"
+  echo "*****   7_slider        : DONE         **"
 elif [ "$JID_RES" = "jid7" ]
 then
   jid7=$(sbatch ${jobfile7})
@@ -614,7 +612,7 @@ fi
 
 if [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   8_slider        : DONE         **"
+  echo "*****   8_plots         : DONE         **"
 elif [ "$JID_RES" = "jid8" ]
 then
   jid8=$(sbatch ${jobfile8})
