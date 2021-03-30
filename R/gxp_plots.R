@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # by: Floriane Coulmance: 24/02/2021
 # usage:
-# Rscript --vanilla gxp_plots.R <data_path> <figure_path> <analysis>
+# Rscript gxp_plots.R <data_path> <figure_path> <analysis>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # figure_path in : $BASE_DIR/outputs/7_gxp/$DATASET/figures/
@@ -33,7 +33,7 @@ data_path <- as.character(args[1]) # Path to mean coverage data table
 #data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
 figure_path <- as.character(args[2]) # Path to the figure folder
 #figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-#analysis <- "univariate_gemma"
+#analysis <- "multivariate_plink_PC1"
 analysis <- as.character(args[3])
 
 
@@ -45,7 +45,8 @@ analysis <- as.character(args[3])
 plotgwas_gem <- function(dataset,path,analysis) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
     geom_hypo_LG() +
-    geom_point(data = dataset, aes(x = GPOS, y = AVG_p_wald), size = .1) +
+    geom_point(data = dataset, aes(x = GPOS, y = AVG_p_wald, label = apply( dataset[ , c("CHROM", "BIN_START", "BIN_END") ] , 1 , paste , collapse = "_")), size = .1, col = ifelse(dataset$AVG_p_wald > threshold, "red", "black")) +
+    geom_text(data=dataset[dataset$AVG_p_wald > threshold,], aes(GPOS,AVG_p_wald,label = apply( dataset[ , c("CHROM", "BIN_START", "BIN_END") ] , 1 , paste , collapse = "_"),color = "Red", size=2, hjust = 0, nudge_x = -2)) +
     scale_fill_hypo_LG_bg() +
     scale_x_hypo_LG(name = "Linkage Groups") +
     scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
@@ -64,7 +65,8 @@ plotgwas_gem <- function(dataset,path,analysis) {
 plotgwas_mvp <- function(dataset,path,analysis) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
     geom_hypo_LG() +
-    geom_point(data = dataset, aes(x = GPOS, y = AVG_P), size = .1) +
+    geom_point(data = dataset, aes(x = GPOS, y = AVG_P, label=range), size = .1, col = ifelse(dataset$AVG_P > threshold, "red", "black")) +
+    geom_text(data=dataset[dataset$AVG_P > threshold,], aes(GPOS,AVG_P,label = range),color = "Red", size=2, hjust = 0, nudge_x = -2) +
     scale_fill_hypo_LG_bg() +
     scale_x_hypo_LG(name = "Linkage Groups") +
     scale_y_continuous(name = expression(italic('-log(p-value)'))) +
@@ -74,7 +76,7 @@ plotgwas_mvp <- function(dataset,path,analysis) {
           axis.text.x.top= element_text(colour = 'darkgray'))
   
   
-  hypo_save(filename = paste0(path,analysis,".png"), type="cairo",
+  hypo_save(filename = paste0(path,analysis,".png"),
             plot = p,
             width = 8,
             height = 8)
@@ -124,6 +126,11 @@ concat_files_plk <- function(f,p) {
 # ANALYSIS
 
 #setwd(data_path)
+nb_snps <- 15900414
+threshold <- -log(0.05/nb_snps)/log(10)
+threshold <- 2
+print(nb_snps)
+print(threshold)
 
 if (analysis == "univariate_gemma"){
   files <- list.files(data_path, pattern = "lmm.50k.5k.txt.gz")
@@ -219,6 +226,7 @@ if (analysis == "univariate_gemma"){
 
 names(files_l) <- traits
 files <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+files$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
 if (analysis == "univariate_gemma"){
   plotgwas_gem(files,figure_path,analysis)
