@@ -19,16 +19,17 @@ body() {
     "$@"
 }
 
+
+zcat $1 | head -n 1  | cut -d ' ' -f 1,2,3,4,5 > ${j}.logarithm.txt.gz
+
 for k in {01..24};do
   echo -e  "--- ${RED}$j${NC} - $k ---"
 
-	zcat $1 | head -n 1  | cut -d ' ' -f 1,2,3,4,5 > $j.LG$k.tmp
-
 	zcat $1 | \
-		awk -v k=LG$k -v OFS='\t' '$1==k {print}' | \
-		cut -d ' ' -f 1,2,3,4,5 | \
-		awk -v OFS=' ' '{$4=-log($4)/log(10);print $0}' >> $j.LG$k.tmp
-    body sort -k2 -n | \
-    sed -r '/^\s*$/d' >> ${j}.logarithm.txt.gz
+		        awk -v k=LG$k -v OFS='\t' '$1==k {print}' | \
+		        cut -d ' ' -f 1,2,3,4,5 | \
+		        awk -v OFS=' ' '{$4=-log($4)/log(10);print $0}' | \
+            body sort -k2 -n | \
+            sed -r '/^\s*$/d' >> ${j}.logarithm.txt.gz
 
 done
