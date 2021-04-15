@@ -526,7 +526,7 @@ EOA
 # Job 9 other plots
 
 jobfile9=9_other_plots.tmp # temp file
-cat > $jobfile8 <<EOA # generate the job file
+cat > $jobfile9 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=9_other_plots.tmp
 #SBATCH --partition=carl.p
