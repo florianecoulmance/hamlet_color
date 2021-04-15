@@ -522,6 +522,46 @@ Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figu
 
 EOA
 
+# ------------------------------------------------------------------------------
+# Job 9 other plots
+
+jobfile9=9_other_plots.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=9_other_plots.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-55
+#SBATCH --output=$BASE_DIR/logs/9_other_plots_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/9_other_plots_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=04:00:00
+
+
+ml hpc-env/8.3
+ml R/4.0.2-foss-2019b
+
+ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
+
+INPUT_AVG=$BASE_DIR/outputs/lof/mvplink_50k.fofn
+
+#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+AVG=\$(cat \${INPUT_AVG} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${AVG}
+
+I=\${AVG%.*}
+J=\${I%.*}
+NAME=\${J%.*}
+echo \${NAME}
+
+
+# Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${AVG} $BASE_DIR/figures/7_gxp/$DATASET/ \${NAME}
+
+
+
+EOA
 
 
 # ********** Schedule the job launching ***********
