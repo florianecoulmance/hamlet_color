@@ -231,13 +231,17 @@ data_snp <- paste0(pc,".mvplink.logarithm.txt.gz")
 gxp_snp <- prep_file(data_snp,data_path)
 
 # Select regions where the association signal is the highest
-thresh <- gxp_data[gxp_data[, "LOG_P"] >= 2 ,]
+thresh <- gxp_data[gxp_data[, "LOG_P"] >= 1.2 ,]
 
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>%
   setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos"))
 
 outlier_pick <- region_table$outlier_id # find outlier regions of interest
+
+outlier_pick <- outlier_pick[lapply(outlier_pick,function(x) length(grep("LG08",x,value=FALSE))) == 0]
+
+print(outlier_pick)
 nb <- length(outlier_pick) # count nb of regions 
 region_label_tibbles <- tibble(outlier_id = outlier_pick, label = letters[1:nb]) # prepare panels letters for plots
 
@@ -271,6 +275,15 @@ if (nb <= 4) {
 } else if (nb <= 16 & nb > 12) {
   row = 4
   heights = c(4, 4)
+} else if (nb <= 20 & nb > 16) {
+  row = 5
+  heights = c(5, 5)
+} else if (nb <= 24 & nb > 20) {
+  row = 6
+  heights = c(6, 6)
+} else if (nb <= 28 & nb > 24) {
+  row = 7
+  heights = c(7, 7)
 } else {
   print("nb of snp too elevated, change -log(p_val) threshold")
 }
