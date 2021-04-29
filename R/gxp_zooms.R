@@ -43,11 +43,11 @@ print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
 data_file <- as.character(args[2])
-# data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-# data_file <- "PC1_8.mvplink.50k.5k.txt.gz"
+data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+data_file <- "PC1_5.mvplink.50k.5k.txt.gz"
 figure_path <- as.character(args[3]) # Path to the figure folder
-# figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-# pc <- "PC1_8"
+figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+pc <- "PC1_5"
 pc <- as.character(args[4])
 
 
@@ -153,27 +153,106 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
 }
 
 
-save_snp <- function (lg, start, end, trait, ...) {
+save_snp <- function (lg, start, end, outlier_id, ...) {
   # Create table with most associated SNPs of the most associated 5okb regions
   
   data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25) %>%
          filter(row_number(desc(LOG_P)) <= 5) %>%
-         dplyr::summarise(CHROM = CHROM, POS = POS, LOG_P = LOG_P, WEIGHTS = WEIGHTS, RUN = RUN, RANGE = RANGE, GSTART = GSTART, MID_POS = MID_POS, BIN_START = BIN_START, BIN_END = BIN_END)
-  
+         dplyr::summarise(CHROM = CHROM, POS = POS, LOG_P = LOG_P, WEIGHTS = WEIGHTS, RUN = RUN, RANGE = RANGE, GSTART = GSTART, MID_POS = MID_POS, BIN_START = BIN_START, BIN_END = BIN_END) %>%
+         mutate(ID = outlier_id)
 }
 
 
 save_snp_table <- function(table, path, name) {
   # Save the most associated snps of regions of high association
-  
+
   a <- table %>% filter(outlier_id %in% outlier_pick) %>%
-    pmap(save_snp, cool_genes = cool_genes) %>% do.call(rbind, .)
+    pmap(save_snp) %>%
+    do.call(rbind, .)
+  
+  # print(a)
   write.table(a, file = paste0(path,name,".snp.txt"), sep = " ", row.names = FALSE, col.names = TRUE, quote = FALSE)
 }
 
 
-plot_curt <- function (loc = "bel", outlier_id, outlier_nr, lg, start, end, 
-                       cool_genes, text = TRUE, label, trait, ...) 
+custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(), genes_of_sec_interest = c(),
+                             anno_rown = 3, width = 0.1, gene_color = 'darkgray', start, end) {
+  # import annotation data of this LG and range
+  df_list <- hypogen::hypo_annotation_get(searchLG = searchLG, xrange = xrange,
+                                          genes_of_interest = genes_of_interest,
+                                          genes_of_sec_interest = genes_of_sec_interest,
+                                          anno_rown = anno_rown)
+  ggplot2::ggplot() +
+    # add exons
+    ggplot2::geom_rect(data = df_list[[2]],
+                       aes(xmin = ps, xmax = pe, ymin = yl - (width/2),
+                           ymax = yl + (width/2), group = Parent),
+                       fill = alpha(gene_color,.6), col = gene_color, lwd = 0.1) +
+    # add outlier area
+    ggplot2::geom_rect(inherit.aes = FALSE,
+                       data = tibble::tibble(start = start, end = end),
+                       aes(xmin = start, xmax = end),
+                       ymin = -Inf, ymax = Inf,
+                       fill=rgb(1,1,1,.3),color = rgb(1,1,1,.9)) +
+    # add gene direction if known
+    ggplot2::geom_segment(data = (df_list[[1]] %>%
+                                    dplyr::filter(strand %in% c("+", "-"))),
+                          aes(x = ps, xend = pe,
+                              y = yl, yend = yl, group = Parent),
+                          lwd = 0.2, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
+                          color = clr_genes) +
+    # add gene extent if direction is unknown
+    ggplot2::geom_segment(data = (df_list[[1]] %>%
+                                    dplyr::filter(!strand %in% c("+", "-"))),
+                          aes(x = ps, xend = pe,
+                              y = yl, yend = yl, group = Parent),
+                          lwd = 0.2, color = clr_genes) +
+    # add gene label
+    ggplot2::geom_text(data = df_list[[1]],                                 # <-- remove the "%>%" and add a ","
+                       size = GenomicOriginsScripts::plot_text_size_small / ggplot2::.pt,
+                       aes(x = labelx, label = gsub("hpv1g000000", ".", label), y = yl - 0.5))
+}
+
+
+plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),...){
+  ttle <- stringr::str_sub(outlier_id,1,4) %>%
+    stringr::str_c(.,' (',project_inv_case(label),')')
+  p <- custom_annoplot_flo(searchLG = lg,                                                 # <-- name modified here
+                           xrange = c(start-window_buffer*1.25,end+window_buffer*1.25),
+                           genes_of_interest = genes,
+                           anno_rown = 6, start = start, end = end) +
+    # layout x ayis
+    ggplot2::scale_x_continuous(name = ttle,
+                                position = 'top',
+                                expand = c(0,0),
+                                limits = c(start-window_buffer*1.25, end+window_buffer*1.25),
+                                labels = ax_scl)+
+    # layout y ayis
+    ggplot2::scale_y_continuous(name = expression(bolditalic(Genes)), expand = c(0,.4))+
+    # use same boundaries for all panels
+    ggplot2::coord_cartesian(xlim = c(start-window_buffer, end+window_buffer))+
+    # special panel layout for annotation panel
+    hypogen::theme_hypo()+
+    ggplot2::theme(text = ggplot2::element_text(size = plot_text_size),
+                   panel.background = ggplot2::element_rect(fill = rgb(.9,.9,.9),
+                                                            color = rgb(1,1,1,0)),
+                   legend.position = 'none',
+                   axis.title.x = ggplot2::element_text(),
+                   axis.line = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(),
+                   axis.ticks.y = ggplot2::element_blank())
+  # use correct greec symbols in labels if needed
+  if(outlier_id == 'LG17_1'){
+    p$layers[[5]]$data$label <- p$layers[[5]]$data$label %>%
+      stringr::str_replace(., 'alpha', "\u03B1")%>%
+      stringr::str_replace(.,  'beta', "\u03B2")
+  }
+  p
+}
+
+
+
+plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, ...) 
 {
   p_g <- plot_panel_anno(lg = lg, outlier_id = outlier_id, 
                          label = label, start = start, end = end, genes = cool_genes)
@@ -231,7 +310,7 @@ data_snp <- paste0(pc,".mvplink.logarithm.txt.gz")
 gxp_snp <- prep_file(data_snp,data_path)
 
 # Select regions where the association signal is the highest
-thresh <- gxp_data[gxp_data[, "LOG_P"] >= 1.2 ,]
+thresh <- gxp_data[gxp_data[, "LOG_P"] >= 1.7 ,]
 
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>%
