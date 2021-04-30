@@ -142,9 +142,12 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
   ggplot2::ggplot() +
     geom_rect(inherit.aes = FALSE, data = tibble(start = start,end = end), aes(xmin = start, xmax = end),
               ymin = -Inf, ymax = Inf, fill = rgb(0.9, 0.9, 0.9, 0.3), color = rgb(0.9, 0.9, 0.9, 0.9)) + 
-    geom_line(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25), aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE), size = 0.2) +
-    geom_text_repel(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25) %>%  filter(row_number(desc(LOG_P)) <= 5), aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE), segment.color = 'transparent', color = "Red", size=1, hjust = -1, nudge_x = -1.5) +
-    scale_color_manual(name = "GxP Trait", values = gxp_clr) +
+    geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
+               aes(x = MID_POS, y = LOG_P, color = ifelse(row_number(desc(LOG_P)) <= 5, "red", gxp_clr), label = RANGE), size = 0.1, stroke = 0.2) +
+    geom_text_repel(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25) %>%  filter(row_number(desc(LOG_P)) <= 5),
+                    aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE),
+                    segment.color = 'red', min.segment.length = 0.5, segment.size = 0.05, color = "Red", size=1.7, hjust = -1, nudge_x = -1.5) +
+    scale_color_manual(name = "GxP Trait", values = c(gxp_clr, "red")) +
     scale_x_continuous(name = lg, expand = c(0, 0), position = "top") +
     scale_y_continuous(name = expression(bolditalic(-log[10](p))),expand = c(0, 0)) +
     guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"), override.aes = list(size = 2))) +
@@ -214,9 +217,10 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
 }
 
 
-plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),...){
+plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),...)  {
   ttle <- stringr::str_sub(outlier_id,1,4) %>%
     stringr::str_c(.,' (',project_inv_case(label),')')
+  
   p <- custom_annoplot_flo(searchLG = lg,                                                 # <-- name modified here
                            xrange = c(start-window_buffer*1.25,end+window_buffer*1.25),
                            genes_of_interest = genes,
@@ -254,7 +258,7 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
 
 plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, ...) 
 {
-  p_g <- plot_panel_anno(lg = lg, outlier_id = outlier_id, 
+  p_g <- plot_panel_anno_flo(lg = lg, outlier_id = outlier_id, 
                          label = label, start = start, end = end, genes = cool_genes)
 
   p_gxp <- plot_panel_gxp(lg = lg, start = start, end = end,
