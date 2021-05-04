@@ -128,7 +128,7 @@ def save_modifiedImage(pix_arr, lof, effect):
     pixel_table["images"] = lof
     # print(pixel_table.shape)
     # print(pixel_table)
-    pixel_table.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/17.03.21/'+effect+'_modifiedImage_leftoff.csv')
+    pixel_table.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/'+effect+'_modifiedImage.csv')
 
 # ----------------------------------------------------------------------------------------------
 
@@ -152,9 +152,9 @@ def variances(pca, effect):
     var_explained = pca.explained_variance_ratio_
     var_cum = pca.explained_variance_ratio_.cumsum()
     varDF = pd.DataFrame(var_explained)
-    varDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/17.03.21/'+effect+'_var.csv')
+    varDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/'+effect+'_var.csv')
     varcumDF = pd.DataFrame(var_cum)
-    varcumDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/17.03.21/'+effect+'_varcum.csv')
+    varcumDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/'+effect+'_varcum.csv')
 
 # ----------------------------------------------------------------------------------------------
 
@@ -290,7 +290,7 @@ def plot_abseigen(feature, effect):
     eigvectDF = pd.DataFrame(data=feature, index=row_name)
     # print(eigvectDF.shape)
     # print(eigvectDF)
-    eigvectDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/17.03.21/'+effect+'evect_abs.csv')
+    eigvectDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/'+effect+'evect_abs.csv')
 
 # ----------------------------------------------------------------------------------------------
 
@@ -302,148 +302,28 @@ def save_pcpict(pixels, flist, effect):
     principalDF["images"] = flist
     # print(principalDF.shape)
     # print(principalDF)
-    principalDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/17.03.21/'+effect+'_PCs.csv')
+    principalDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/'+effect+'_PCs.csv')
 
 # ----------------------------------------------------------------------------------------------
-# ----------------------------------------------------------------------------------------------
-
-def plot_snp(b_m, rgb_m, pca, weights, pcs):
-    '''
-    Create the fish heatmap corresponding to the importance of each pixels in the PCs variations
-    '''
-
-    # get the egeinvectors for each PCs : matrix = PCs x pixels
-    feat_imp = pca.components_ 
-    print(feat_imp)
-    print(feat_imp[0])
-    print(feat_imp.shape)
-
-    print(len(pcs))
-    # Create empty list to store norm values 
-    weights_norms = numpy.zeros(shape=(len(pcs),273217))
-    print(weights_norms.shape)
-
-    # count starts at different number depending on the first PC in the list
-    if (pcs[0] == "PC1"):
-        count = 0
-    elif (pcs[0] == "PC2"):
-        count = 1
-    elif (pcs[0] == "PC3"):
-        count = 2
-    elif (pcs[0] == "PC4"):
-        count = 3
-    elif (pcs[0] == "PC5"):
-        count = 4
-    elif (pcs[0] == "PC6"):
-        count = 5
-    elif (pcs[0] == "PC7"):
-        count = 6
-    elif (pcs[0] == "PC8"):
-        count = 7
-    elif (pcs[0] == "PC9"):
-        count = 8
-    else:
-        print("not implemented")
-
-    
-
-    for i, pc in enumerate(pcs):
-        print(count)
-        print(i)
-        print(pc)
-        im_PC = feat_imp[count].reshape((273217, 3), order='C') # 347361
-        print(weights[count])
-        print(im_PC)
-        im_PCscores = [v for v in weights[count]*np.linalg.norm(im_PC,axis = 1)]
-        print(len(im_PCscores))
-        # list_norms.append(im_PCscores)
-        weights_norms[i] = im_PCscores
-        count += 1
-
-    print(weights_norms.shape)
-    print(weights_norms)
-
-    im_pcs = np.sum(weights_norms,axis=0)
-    print(im_pcs.shape)  
-    print(len(im_pcs))
-
-# =================
-    # mapper = cm.ScalarMappable(cmap=cm.get_cmap('coolwarm', 10))
-    # node_color = np.array([(r, g, b) for r, g, b, a in mapper.to_rgba(im_PCscores)])
-    # print(node_color.shape)
-    # rgb_m[b_m] = node_color
-    # print(rgb_m[b_m])
-
-
-    # heatmap = plt.pcolor(node_color)
-
-    # plt.figure(figsize=(8,4))
-    # plt.imshow(rgb_m) 
-    # plt.colorbar(heatmap)
-    # plt.show()
-    # plt.savefig('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/28.01.2021/'+effect+'_PC'+str(component)+'_heatmap.png')
-# =================
-
-    min_val, max_val = min(im_pcs), max(im_pcs)
-    print(min_val, max_val)
-    print(-max_val, -min_val)
-    
-    cmap = cm.coolwarm
-
-    if abs(max_val)<abs(min_val):
-        bounds = [min_val, -max_val, 0, max_val, -min_val]
-        norm = cm.colors.Normalize(vmin=min_val, vmax=-min_val)
-    elif abs(max_val)>abs(min_val):
-        bounds = [-max_val, -min_val, 0, min_val, max_val]
-        norm = cm.colors.Normalize(vmin=-(max_val), vmax=max_val)
-    
-    print(bounds)
-
-    mapper = cm.ScalarMappable(cmap=cmap,norm=norm)
-    # print(mapper)
-    # color_list = cmap(im_PCscores)
-    # print(len(color_list))
-    # print(color_list[0:10])
-    color_mask = np.array([(r, g, b) for r, g, b, a in mapper.to_rgba(im_pcs)])
-    print(len(color_mask))
-    print(color_mask[0:10])
-    rgb_m[b_m] = color_mask
-
-    fig, ax = plt.subplots(figsize=(12,8))
-    im = ax.imshow(rgb_m)
-    cax = fig.add_axes([0.910, 0.100, 0.009, 0.775])
-    cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='vertical')
-    cb.ax.tick_params(labelsize=5)
-    # cb.ax.ticklabel_format(style='scientific',useOffset=True, useMathText=True)
-    # ax.xaxis.set_major_formatter(cb.ScalarFormatter(useMathText=True))
-    cb.ax.set_yticklabels(['{:e}'.format(x) for x in bounds])
-    plt.show()
-
-
-    return feat_imp
-
 # ----------------------------------------------------------------------------------------------
 
 def main():
 
     bool_mask, rgb_mask, mask_blur = blur_mask(mask)
-    print(bool_mask)
-    print(rgb_mask)
-    print(bool_mask.shape)
-    print(rgb_mask.shape)
+
     arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, "LAB")
-    print(arr_modified)
-    print(arr_modified.shape)
+
+
     # save_modifiedImage(arr_modified, list_f, "LAB")
+    
     pca_im, new_arr = Pca(arr_modified)
-    print(pca_im)
-    # variances(pca_im, "LAB")
+
+    variances(pca_im, "LAB")
+    
     # pc1_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, "AB")
     # pc2_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, "AB")
     # pc3_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, "AB")
-    w = [-0.5224,-0.1288,0.3269,-0.6997,0.0483,-0.03124,-0.09484,0.319]
-    p = ["PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8"]
-    plot_snp(bool_mask, rgb_mask, pca_im, w, p)
+    
     # save_pcpict(new_arr, list_f, "LAB")
 
 # ----------------------------------------------------------------------------------------------
@@ -455,6 +335,6 @@ def main():
 
 if __name__ == "__main__":
     # execute only if run as a script
-    path_images = "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/3-registred/Modalities/RGB/all/"
+    path_images = "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/left_54off_59on/3-registred/Modalities/RGB/"
     mask = cv2.imread("/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/mask1.tif", 0)
     main()
