@@ -121,7 +121,7 @@ cat > $jobfile2 <<EOA # generate the job file
 
 
 fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
-pheno=$BASE_DIR/metadata/LAB_PCs_left_54off_59on.csv
+pheno=$BASE_DIR/metadata/LAB_PCs_54off_59on.csv
 
 tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
@@ -462,20 +462,20 @@ echo \${NAME}
 FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total.mqfam.total
 echo \${FILE}
 
-# awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8}' \${FILE} | cut -d ' ' -f 2,3,6-9 | sed 's/SNP BP /CHROM POS /g' | awk '{sub(/\:.*$/,"",\$1); print \$0}' | awk '{if (\$3!="NA"){ print}}' | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
+awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8}' \${FILE} | cut -d ' ' -f 2,3,6-9 | sed 's/SNP BP /CHROM POS /g' | awk '{sub(/\:.*$/,"",\$1); print \$0}' | awk '{if (\$3!="NA"){ print}}' | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
 
-# win5=50000
-# step5=5000
-# echo \${win5}
-# echo \${step5}
+win5=50000
+step5=5000
+echo \${win5}
+echo \${step5}
 
-# win1=10000
-# step1=1000
-# echo \${win1}
-# echo \${step1}
+win1=10000
+step1=1000
+echo \${win1}
+echo \${step1}
 
-# $BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win5} \${step5}
-# $BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win1} \${step1}
+$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win5} \${step5}
+$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win1} \${step1}
 
 $BASE_DIR/sh/mvplink_log.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
 
@@ -503,21 +503,25 @@ cat > $jobfile8 <<EOA # generate the job file
 
 ml hpc-env/8.3
 ml R/4.0.2-foss-2019b
+ml FriBidi
+ml HarfBuzz
+
+ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
 
 mkdir $BASE_DIR/figures/7_gxp/
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/
 
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ univariate_gemma
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC1
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC2
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC3
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC4
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC5
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC6
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC7
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC8
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC9
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_byPCs
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC2
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC3
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC4
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC5
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC6
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC7
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC8
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC9
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_byPCs
 
 
 EOA
@@ -542,8 +546,11 @@ cat > $jobfile9 <<EOA # generate the job file
 
 ml hpc-env/8.3
 ml R/4.0.2-foss-2019b
+ml FriBidi
+ml HarfBuzz
 
-ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
+
+# ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
 
 INPUT_AVG=$BASE_DIR/outputs/lof/mvplink_50k.fofn
 
@@ -558,7 +565,7 @@ echo \${NAME}
 
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
 
-# Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${AVG} $BASE_DIR/figures/7_gxp/$DATASET/\${NAME} \${NAME}
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${AVG} $BASE_DIR/figures/7_gxp/$DATASET/\${NAME} \${NAME}
 # python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/PC1_5.snp.txt $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
 
 
