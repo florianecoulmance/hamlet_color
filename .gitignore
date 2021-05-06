@@ -1,8 +1,7 @@
-multi*
+./multi*
+./PC1*
 fst*
 NA*
-mul*
-PC1*
 slurm*
 logs/*
 outputs/*
