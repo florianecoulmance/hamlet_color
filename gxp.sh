@@ -558,9 +558,9 @@ INPUT_AVG=$BASE_DIR/outputs/lof/mvplink_50k.fofn
 AVG=\$(cat \${INPUT_AVG} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${AVG}
 
-I=\${AVG%.*}
-J=\${I%.*}
-NAME=\${J%.*}
+B=\$(basename "\${AVG}")
+echo \${B}
+NAME=\${B%%.*}
 echo \${NAME}
 
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
