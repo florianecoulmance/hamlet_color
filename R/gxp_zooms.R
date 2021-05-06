@@ -43,12 +43,13 @@ print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
 data_file <- as.character(args[2])
-data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-data_file <- "PC1_5.mvplink.50k.5k.txt.gz"
 figure_path <- as.character(args[3]) # Path to the figure folder
-figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
-pc <- "PC1_5"
 pc <- as.character(args[4])
+# data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+# data_file <- "PC1_5.mvplink.50k.5k.txt.gz"
+figure_path <- as.character(args[3]) # Path to the figure folder
+# figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+# pc <- "PC1_5"
 
 
 # -------------------------------------------------------------------------------------------------------------------
