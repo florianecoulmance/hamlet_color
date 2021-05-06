@@ -297,7 +297,8 @@ plot_regions <- function(region, outlier_list, label, path, name) {
   hypo_save(filename = paste0(path, name, ".png"),
             plot = p_single,
             width = 12,
-            height = 8)  
+            height = 8,
+	    type="cairo")  
 }
 
 

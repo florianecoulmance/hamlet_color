@@ -83,7 +83,7 @@ plotgwas_mvp <- function(dataset,path,analysis) {
           axis.text.x.top= element_text(colour = 'darkgray'))
   
   
-  hypo_save(filename = paste0(path,analysis,".png"),
+  hypo_save(filename = paste0(path,analysis,".png"), type="cairo",
             plot = p,
             width = 8,
             height = 8)
