@@ -565,8 +565,8 @@ echo \${NAME}
 
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
 
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${AVG} $BASE_DIR/figures/7_gxp/$DATASET/\${NAME} \${NAME}
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.snp.txt $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${NAME} \${NAME}
+# python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.snp.txt $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
 
 
 EOA
