@@ -14,6 +14,8 @@
 rm(list = ls())
 
 # Load needed library
+library(broom, lib.loc=.libPaths()[-1])
+library(dbplyr, lib.loc=.libPaths()[-1])
 library(GenomicOriginsScripts)
 library(ggplot2)
 library(ggrepel)
