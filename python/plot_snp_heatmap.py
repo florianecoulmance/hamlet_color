@@ -194,11 +194,15 @@ def main():
     Executes all essential commands
     '''
     
+    snp_arr = pd.read_csv(table_snp, sep=' ') # <-- open the table of SNP highly associated
+    arr_modified = pd.read_csv(path_images, sep=',') # <-- open the table of modified images from the dataset
+    mask = cv2.imread(path_mask, 0) # <-- open the mask file
+
     pc_list = make_pc_list(table_snp) # <-- create the PC string list from the input file string
     
     bool_mask, rgb_mask, mask_blur = blur_mask(mask) # <-- create all the mask matrix and images needed for further analysis
 
-    arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, "LAB") # <-- create table of sample * modified image (refer to function in scratch_1.py)
+    # arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, "LAB") # <-- create table of sample * modified image (refer to function in scratch_1.py)
 
     # save_modifiedImage(arr_modified, list_f, "LAB")
     
@@ -259,12 +263,10 @@ if __name__ == "__main__":
     
     table_snp = sys.argv[1] # <-- path to the input table of highest SNP associated
     # print(table_snp) 
-    snp_arr = pd.read_csv(table_snp, sep=' ') # <-- open the table of SNP highly associated
-    # print(snp_arr)
-    
-    path_images = "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/3-registred/Modalities/RGB/all/" # <-- path to the aligned images dataset folder
-    mask = cv2.imread("/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/mask1.tif", 0) # <-- file to the mask file
-    path_figure = sys.argv[2] # <-- path to the figure folder
+    path_images = sys.argv[2] # <-- path to the modified image table data
+    path_mask = sys.argv[3] # <-- path to the mask file
+    path_figure = sys.argv[4] # <-- path to the figure folder
+
     main() # <-- execute the main
 
 
