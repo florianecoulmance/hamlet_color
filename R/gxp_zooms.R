@@ -1,11 +1,12 @@
 # by: Floriane Coulmance: 15/04/2021
 # usage:
-# Rscript gxp_plots.R <data_path> <data_file> <figure_path> <pc>
+# Rscript gxp_plots.R <data_path> <data_file> <figure_path> <pc> <threshold>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # data_file in : *mvplink.50k.5k.txt.gz
 # figure_path in : $BASE_DIR/outputs/figures/7_gxp/$DATASET/
 # pc in : 55 names of univariate and multivariate PCs association analysis
+# threshold in : -log(p_value) number from 50k averaged plots
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -40,16 +41,17 @@ library(igraph)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:9]
+args = args[6:10]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
 data_file <- as.character(args[2])
 figure_path <- as.character(args[3]) # Path to the figure folder
 pc <- as.character(args[4])
+threshold <- as.numeric(args[5])
 # data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
 # data_file <- "PC1_5.mvplink.50k.5k.txt.gz"
-figure_path <- as.character(args[3]) # Path to the figure folder
+# figure_path <- as.character(args[3]) # Path to the figure folder
 # figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
 # pc <- "PC1_5"
 
@@ -169,7 +171,7 @@ save_snp <- function (lg, start, end, outlier_id, ...) {
 }
 
 
-save_snp_table <- function(table, path, name) {
+save_snp_table <- function(table, path, name, t) {
   # Save the most associated snps of regions of high association
 
   a <- table %>% filter(outlier_id %in% outlier_pick) %>%
@@ -177,7 +179,7 @@ save_snp_table <- function(table, path, name) {
     do.call(rbind, .)
   
   # print(a)
-  write.table(a, file = paste0(path,name,".snp.txt"), sep = " ", row.names = FALSE, col.names = TRUE, quote = FALSE)
+  write.table(a, file = paste0(path, t, "/", name, ".snp.txt"), sep = " ", row.names = FALSE, col.names = TRUE, quote = FALSE)
 }
 
 
@@ -318,7 +320,7 @@ data_snp <- paste0(pc,".mvplink.logarithm.txt.gz")
 gxp_snp <- prep_file(data_snp,data_path)
 
 # Select regions where the association signal is the highest
-thresh <- gxp_data[gxp_data[, "LOG_P"] >= 1.7 ,]
+thresh <- gxp_data[gxp_data[, "LOG_P"] >= threshold ,]
 
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>%
@@ -379,7 +381,7 @@ if (nb <= 4) {
 plot_regions(region_table, outlier_pick, region_label_tibbles, figure_path, pc)
 
 # Create a summary table with most associated snps with their respective weights
-save_snp_table(region_table, data_path, pc)
+save_snp_table(region_table, data_path, pc, threshold)
 
 
 

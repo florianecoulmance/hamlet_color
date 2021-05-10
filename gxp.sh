@@ -563,9 +563,14 @@ echo \${B}
 NAME=\${B%%.*}
 echo \${NAME}
 
-mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
+T="1.7"
+echo \${T}
 
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${NAME} \${NAME}
+mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/
+mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/
+mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/
+
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
 # python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.snp.txt $BASE_DIR/figures/7_gxp/$DATASET/\${NAME}/
 
 
