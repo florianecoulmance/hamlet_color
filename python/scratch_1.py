@@ -13,7 +13,7 @@ import pandas as pd
 import cv2
 from sklearn.decomposition import PCA
 import numpy as np
-matplotlib.use('TkAgg')
+
 
 # ----------------------------------------------------------------------------------------------
 

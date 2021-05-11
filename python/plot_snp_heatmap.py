@@ -18,7 +18,6 @@ import pandas as pd
 import cv2
 from sklearn.decomposition import PCA
 import numpy as np
-matplotlib.use('TkAgg')
 from scratch_1 import blur_mask, modify_image, Pca
 
 
@@ -194,10 +193,12 @@ def main():
     Executes all essential commands
     '''
     
-    snp_arr = pd.read_csv(table_snp, sep=' ') # <-- open the table of SNP highly associated
+    snp_arr = pd.read_csv(path_data+table_snp, sep=' ') # <-- open the table of SNP highly associated
     arr_modified = pd.read_csv(path_images, sep=',') # <-- open the table of modified images from the dataset
     mask = cv2.imread(path_mask, 0) # <-- open the mask file
-
+    print(snp_arr)
+    print(arr_modified)
+    
     pc_list = make_pc_list(table_snp) # <-- create the PC string list from the input file string
     
     bool_mask, rgb_mask, mask_blur = blur_mask(mask) # <-- create all the mask matrix and images needed for further analysis
@@ -261,11 +262,18 @@ if __name__ == "__main__":
     arguments = len(sys.argv) - 1 # <-- count the arguments
     print ("The script is called with %i arguments" % (arguments))
     
-    table_snp = sys.argv[1] # <-- path to the input table of highest SNP associated
+    path_data = sys.argv[1]    
+    table_snp = sys.argv[2] # <-- path to the input table of highest SNP associated
     # print(table_snp) 
-    path_images = sys.argv[2] # <-- path to the modified image table data
-    path_mask = sys.argv[3] # <-- path to the mask file
-    path_figure = sys.argv[4] # <-- path to the figure folder
+    path_images = sys.argv[3] # <-- path to the modified image table data
+    path_mask = sys.argv[4] # <-- path to the mask file
+    path_figure = sys.argv[5] # <-- path to the figure folder
+    
+    print(path_data)
+    print(table_snp)
+    print(path_images)
+    print(path_mask)
+    print(path_figure)
 
     main() # <-- execute the main
 
