@@ -65,7 +65,7 @@ def make_heat(b_m, rgb_m, pca, weights, pcs):
     feat_imp = pca.components_ 
 
     # Create empty table to store vectors of calculated values for each PCs considered in the association
-    weights_norms = numpy.zeros(shape=(len(pcs),273217))
+    weights_norms = numpy.zeros(shape=(len(pcs),347361)) # 273217
 
     # count starts at different number depending on the first PC in the pc list
     # important to consider the right row in the feat_imp table for further analysis 
@@ -100,7 +100,7 @@ def make_heat(b_m, rgb_m, pca, weights, pcs):
         print(i)
         print(pc)
 
-        im_PC = feat_imp[count].reshape((273217, 3), order='C') # <-- use count as index since we want to retrieve the specific PC row in feat_imp (the matrix of eigenvectors for each PC)
+        im_PC = feat_imp[count].reshape((347361, 2), order='C') # <-- 273217, 3 use count as index since we want to retrieve the specific PC row in feat_imp (the matrix of eigenvectors for each PC)
 
         im_PCscores = [v for v in weights[i]*np.linalg.norm(im_PC,axis = 1)] # <-- use i as index to retrieve the specific PC weight in the list of weights
                                                                              # <-- calculation of the norm of 3 layers of raster per pixel and multiply by the weights
@@ -193,19 +193,23 @@ def main():
     Executes all essential commands
     '''
     
-    snp_arr = pd.read_csv(path_data+table_snp, sep=' ') # <-- open the table of SNP highly associated
-    arr_modified = pd.read_csv(path_images, sep=',') # <-- open the table of modified images from the dataset
-    mask = cv2.imread(path_mask, 0) # <-- open the mask file
-    print(snp_arr)
-    print(arr_modified)
-    
+    # snp_arr = pd.read_csv(path_data+table_snp, sep=' ') # <-- open the table of SNP highly associated
+    # arr_modified = pd.read_csv(path_images, sep=',') # <-- open the table of modified images from the dataset
+    # mask = cv2.imread(path_mask, 0) # <-- open the mask file
+
     pc_list = make_pc_list(table_snp) # <-- create the PC string list from the input file string
     
     bool_mask, rgb_mask, mask_blur = blur_mask(mask) # <-- create all the mask matrix and images needed for further analysis
 
-    # arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, "LAB") # <-- create table of sample * modified image (refer to function in scratch_1.py)
 
-    # save_modifiedImage(arr_modified, list_f, "LAB")
+    a = im_modified.drop('images', axis=1) 
+    print(a)
+    print(a.shape)
+    arr_modified = a.drop(a.columns[0], axis=1)
+
+    # arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, "LAB") # <-- create table of sample * modified image (refer to function in scratch_1.py)
+    print(arr_modified)
+    print(arr_modified.shape)
     
     pca_im, new_arr = Pca(arr_modified) # <-- perform PCA on the sample * image created at the previous step
     
@@ -262,17 +266,23 @@ if __name__ == "__main__":
     arguments = len(sys.argv) - 1 # <-- count the arguments
     print ("The script is called with %i arguments" % (arguments))
     
-    path_data = sys.argv[1]    
-    table_snp = sys.argv[2] # <-- path to the input table of highest SNP associated
-    # print(table_snp) 
-    path_images = sys.argv[3] # <-- path to the modified image table data
-    path_mask = sys.argv[4] # <-- path to the mask file
-    path_figure = sys.argv[5] # <-- path to the figure folder
-    
+    path_data = sys.argv[1]
     print(path_data)
+
+    table_snp = sys.argv[2]
     print(table_snp)
-    print(path_images)
-    print(path_mask)
+
+    snp_arr = pd.read_csv(path_data+sys.argv[2], sep=' ') # <-- open the table of SNP highly associated
+    print(snp_arr)
+
+    im_modified = pd.read_csv(sys.argv[3], sep=',') # <-- open the table of modified images from the dataset
+    print(im_modified)
+    print(im_modified.shape)
+
+    mask = cv2.imread(sys.argv[4], 0) # <-- open the mask file
+    print(mask)
+
+    path_figure = sys.argv[5] # <-- path to the figure folder
     print(path_figure)
 
     main() # <-- execute the main

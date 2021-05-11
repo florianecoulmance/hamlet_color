@@ -304,37 +304,56 @@ def save_pcpict(pixels, flist, effect):
     # print(principalDF)
     principalDF.to_csv('/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/'+effect+'_PCs.csv')
 
+
+
 # ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 
 def main():
+    '''
+    Executes all essential commands
+    '''
 
     bool_mask, rgb_mask, mask_blur = blur_mask(mask)
 
-    arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, "LAB")
+    arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, color_space)
 
-
-    # save_modifiedImage(arr_modified, list_f, "LAB")
+    save_modifiedImage(arr_modified, list_f, color_space)
     
     pca_im, new_arr = Pca(arr_modified)
 
-    variances(pca_im, "LAB")
+    variances(pca_im, color_space)
     
-    # pc1_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, "AB")
-    # pc2_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, "AB")
-    # pc3_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, "AB")
+    # pc1_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space)
+    # pc2_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space)
+    # pc3_im = plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space)
     
-    # save_pcpict(new_arr, list_f, "LAB")
+    save_pcpict(new_arr, list_f, color_space)
+
+
 
 # ----------------------------------------------------------------------------------------------
-
-
-
-
-
+# ----------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    # execute only if run as a script
-    path_images = "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/left_54off_59on/3-registred/Modalities/RGB/"
-    mask = cv2.imread("/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/mask1.tif", 0)
+    
+    print ("The script is called %s" % (sys.argv[0])) # <-- name of the script running
+    arguments = len(sys.argv) - 1 # <-- count the arguments
+    print ("The script is called with %i arguments" % (arguments))
+    
+    # path_images = "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/left_54off_59on/3-registred/Modalities/RGB/"
+    path_images = sys.argv[1] # <-- give path to the aligned images
+    print(path_images)
+
+    # mask = cv2.imread("/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/mask1.tif", 0)
+    mask = cv2.imread(sys.argv[2], 0) # <-- open the mask file
+    print(mask)
+
+    color_space = sys.argv[3] # <-- give the effect to use
+    print(color_space)
+
+    path_figure = sys.argv[4] # <-- path to the result folder
+    print(path_figure)
+
     main()
