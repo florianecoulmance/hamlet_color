@@ -121,7 +121,8 @@ cat > $jobfile2 <<EOA # generate the job file
 
 
 fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
-pheno=$BASE_DIR/metadata/AB_PCs_54off_59on_fullm.csv
+pheno=$BASE_DIR/metadata/${DATASET}_PCs.csv
+echo \${pheno}
 
 tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
