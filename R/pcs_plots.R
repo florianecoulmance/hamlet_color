@@ -33,7 +33,7 @@ library(hypoimg)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:11]
+args = args[6:13]
 print(args)
 
 path_phenotypes <- as.character(args[1])
@@ -42,6 +42,8 @@ metadata_path <- as.character(args[3])
 pca_file <- as.character(args[4])
 variance_file <- as.character(args[5])
 im_file_path <- as.character(args[6])
+mask <- as.character(args[7])
+data_name <- as.character(args[8])
 # path_phenotypes <- "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/left_54off_59on/" # "$BASE_DIR/images/AB_fullm_left_54off_59on/"
 # color_space <- "AB"
 # metadata_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/"
@@ -57,7 +59,7 @@ im_file_path <- as.character(args[6])
 # -------------------------------------------------------------------------------------------------------------------
 
 
-plot_pca <- function(data, center_points, variance, pheno_path, type) {
+plot_pca <- function(data, center_points, variance, pheno_path, effect, m_type, dat) {
   
   # Function to plot PCA from dataframe and centroids of groups 
 
@@ -83,17 +85,17 @@ plot_pca <- function(data, center_points, variance, pheno_path, type) {
   p <- p + theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 6))
   p <- p + guides(color = guide_legend(nrow = 1))
   p <- p + labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %"))
-  p <- p + ggtitle("PCA AB, 113 images, 54 off, 59 on, full mask")
+  p <- p + ggtitle(paste0("PCA ", effect, ", ", m_type, ", ", dat))
   
   
-  hypo_save(filename = paste0(pheno_path,"AB_fullm_left_54off_59on_pca.png"),
+  hypo_save(filename = paste0(pheno_path, effect, "_", m_type, "_", dat, "_pca.png"),
             plot = p,
             width = 12,
             height = 8)
 }
 
 
-write_metadata_gxp <- function(PCs, path_meta) {
+write_metadata_gxp <- function(PCs, path_meta, effect, m_type, dat) {
   
   #  Make usable metadata for gxp pipeline
   
@@ -115,7 +117,7 @@ write_metadata_gxp <- function(PCs, path_meta) {
   PCs["im"] <- gsub('.{4}$', '', PCs$images)
   PCs$X <- NULL
   
-  write.table(PCs,paste0(path_meta,"AB_fullm_left_54off_59on_PCs.csv"),sep=";",row.names=FALSE, quote = FALSE)
+  write.table(PCs,paste0(path_meta, effect, "_", m_type, "_", dat, "_PCs.csv"),sep=";",row.names=FALSE, quote = FALSE)
   
   return(PCs)
   
@@ -135,7 +137,7 @@ im <- read.table(file = im_file_path, sep = '\t', header = TRUE)
 
 im["im"] <- gsub('.{4}$', '', im$image) # <- create a column with image name without suffix
 
-PC_table <- write_metadata_gxp(pca_results, metadata_path) # <- create a table with sample name for further gxp analysis 
+PC_table <- write_metadata_gxp(pca_results, metadata_path, color_space, mask, data_name) # <- create a table with sample name for further gxp analysis 
 
 meta_table <- merge(PC_table, im, by = 'im') # <- merge image metadata file to PCA results table 
 centroids <- aggregate(cbind(PC1,PC2)~spec,PC_table,mean) # <- create centroid table for PC1 PC2 for each of the species group
@@ -143,7 +145,7 @@ meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # <- merge cent
 centroids["PC1.x"] <- centroids["PC1"] # <- create matching columns to meta_table_centroid in centroids table
 centroids["PC2.x"] <- centroids["PC2"]
 
-plot_pca(meta_table_centroid, centroids, var, path_phenotypes, color_space) # <- plot PCA and save it
+plot_pca(meta_table_centroid, centroids, var, path_phenotypes, color_space, mask, data_name) # <- plot PCA and save it
 
 
 # p1 <-ggplot(final,aes(x=PC1,y=PC2,color=spec))

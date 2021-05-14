@@ -242,11 +242,11 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, m_name, data_name
     min_val, max_val = min(im_PCscores), max(im_PCscores)
     print(min_val, max_val)
     
-    norm = matplotlib.colors.Normalize(0,0.005)
+    norm = matplotlib.colors.Normalize(0,0.015)
     colors = [[norm(0), "grey"],
-          [norm(0.001), "yellow"],
-          [norm(0.003), "orange"],
-          [norm( 0.005), "darkred"]]
+          [norm(0.005), "yellow"],
+          [norm(0.01), "orange"],
+          [norm( 0.015), "darkred"]]
 
     # if abs(max_val)<abs(min_val):
     #     bounds = [min_val, -max_val, 0, max_val, -min_val]
@@ -258,7 +258,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, m_name, data_name
 
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
     mapper = cm.ScalarMappable(cmap=cmap,norm=norm)
-    bounds = [0, 0, 0.005] # <-- create min and max for the colorbar scale
+    bounds = [0, 0.005, 0.010, 0.015] # <-- create min and max for the colorbar scale
 
     color_mask = np.array([(r, g, b) for r, g, b, a in mapper.to_rgba(im_PCscores)])
     
