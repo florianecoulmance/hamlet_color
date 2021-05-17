@@ -51,7 +51,7 @@ def make_pc_list(table_name) :
 
 # ----------------------------------------------------------------------------------------------
 
-def make_heat(b_m, rgb_m, pca, weights, pcs):
+def make_heat(b_m, rgb_m, pca, weights, pcs, effect):
     '''
     Create the phenotype image for a particular SNP based on multivariate PCs involved in association and their relative importance in the association
     inputs : boolean_mask matrix the size of the image (1 layer only),
@@ -92,6 +92,16 @@ def make_heat(b_m, rgb_m, pca, weights, pcs):
     else:
         print("not implemented")
 
+    # 
+    if (effect == "LAB"):
+        channel = 3
+    elif (effect == "AB"):
+        channel = 2
+    elif (effect == "L") or (effect == "A") or (effect == "B"):
+        channel = 1
+    else:
+        print("Please change effect string")
+
     
     # Loop through list of PC and perform calculations with weights for each PCs
     # count can be different than i
@@ -100,7 +110,7 @@ def make_heat(b_m, rgb_m, pca, weights, pcs):
         print(i)
         print(pc)
 
-        im_PC = feat_imp[count].reshape((347361, 2), order='C') # <-- 273217, 3 use count as index since we want to retrieve the specific PC row in feat_imp (the matrix of eigenvectors for each PC)
+        im_PC = feat_imp[count].reshape((347361, channel), order='C') # <-- 273217, 3 use count as index since we want to retrieve the specific PC row in feat_imp (the matrix of eigenvectors for each PC)
 
         im_PCscores = [v for v in weights[i]*np.linalg.norm(im_PC,axis = 1)] # <-- use i as index to retrieve the specific PC weight in the list of weights
                                                                              # <-- calculation of the norm of 3 layers of raster per pixel and multiply by the weights
@@ -247,7 +257,7 @@ def main():
             w = list(map(float, w)) # <-- change the list os string separated by , to a list of floats
             print(w)
 
-            im = make_heat(bool_mask, rgb_mask, pca_im, w, pc_list) # <-- create image heatmap based on weights list for the SNP
+            im = make_heat(bool_mask, rgb_mask, pca_im, w, pc_list, color_space) # <-- create image heatmap based on weights list for the SNP
 
             heat_table["IMAGE"][i+1] = im # <-- store the image in the table on the row corresponding to the SNP
 
@@ -284,6 +294,9 @@ if __name__ == "__main__":
 
     path_figure = sys.argv[5] # <-- path to the figure folder
     print(path_figure)
+
+    color_space = sys.argv[6] # <-- give the effect to use
+    print(color_space)
 
     main() # <-- execute the main
 
