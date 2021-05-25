@@ -566,6 +566,24 @@ echo \${NAME}
 EFF=${DATASET%%_*}
 echo \${EFF}
 
+C=${DATASET%_*_*}
+echo \${C}
+M=\${C#*_}
+echo \${M}
+
+if [ "\${M}" = "fullm" ];
+then
+  MASK=$BASE_DIR/ressources/full_mask.tif
+elif [ "\${M}" = "bodym" ]
+then
+  MASK=$BASE_DIR/ressources/body_mask.tif
+else
+  echo "please verify your dataset folder spelling in the specified -k parameter"
+fi
+
+echo \${MASK}
+
+
 T="1.7"
 echo \${T}
 
@@ -574,7 +592,7 @@ mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/
 mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/
 
 Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv $BASE_DIR/ressources/full_mask.tif $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
+python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
 
 
 EOA
