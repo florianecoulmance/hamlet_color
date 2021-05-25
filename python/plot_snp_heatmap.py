@@ -65,7 +65,7 @@ def make_heat(b_m, rgb_m, pca, weights, pcs, effect):
     feat_imp = pca.components_ 
 
     # Create empty table to store vectors of calculated values for each PCs considered in the association
-    weights_norms = numpy.zeros(shape=(len(pcs),347361)) # 273217
+    weights_norms = numpy.zeros(shape=(len(pcs),b_m.sum())) # 273217
 
     # count starts at different number depending on the first PC in the pc list
     # important to consider the right row in the feat_imp table for further analysis 
