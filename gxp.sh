@@ -566,9 +566,9 @@ echo \${NAME}
 EFF=${DATASET%%_*}
 echo \${EFF}
 
-C=${DATASET%_*_*}
+C=${DATASET#*_}
 echo \${C}
-M=\${C#*_}
+M=\${C%%_*}
 echo \${M}
 
 if [ "\${M}" = "fullm" ];
