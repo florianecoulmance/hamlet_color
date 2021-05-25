@@ -110,7 +110,7 @@ def make_heat(b_m, rgb_m, pca, weights, pcs, effect):
         print(i)
         print(pc)
 
-        im_PC = feat_imp[count].reshape((347361, channel), order='C') # <-- 273217, 3 use count as index since we want to retrieve the specific PC row in feat_imp (the matrix of eigenvectors for each PC)
+        im_PC = feat_imp[count].reshape((b_m.sum(), channel), order='C') # <-- 273217, 3 use count as index since we want to retrieve the specific PC row in feat_imp (the matrix of eigenvectors for each PC)
 
         im_PCscores = [v for v in weights[i]*np.linalg.norm(im_PC,axis = 1)] # <-- use i as index to retrieve the specific PC weight in the list of weights
                                                                              # <-- calculation of the norm of 3 layers of raster per pixel and multiply by the weights
