@@ -333,6 +333,7 @@ outlier_pick <- outlier_pick[lapply(outlier_pick,function(x) length(grep("LG08",
 print(outlier_pick)
 nb <- length(outlier_pick) # count nb of regions 
 region_label_tibbles <- tibble(outlier_id = outlier_pick, label = letters[1:nb]) # prepare panels letters for plots
+print(nb)
 
 # Set parameters for plots
 cool_genes <-  c('arl3','kif16b','cdx1','hmcn2',
