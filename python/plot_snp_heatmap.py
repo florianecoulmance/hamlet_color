@@ -191,7 +191,7 @@ def plot_heat(im_table, figure_path, region_id):
 
     # plt.show()
 
-    g.savefig(figure_path+region_id+"_heatmaps.png") # <-- save in appropriate figure folder with region id as file title
+    g.savefig(figure_path+region_id+"_heatmaps.pdf") # <-- save in appropriate figure folder with region id as file title
 
 
 
