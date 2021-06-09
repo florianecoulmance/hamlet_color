@@ -42,8 +42,8 @@ def blur_mask(m):
     mask = m > 128
 
     mask2 = np.full((1000, 1639, 3), np.NaN)
-    mask2[mask == 0] = (255, 255, 255)
-    mask2[mask == 1] = (0, 0, 0)
+    mask2[mask == 0] = (0, 0, 0)
+    mask2[mask == 1] = (255, 255, 255)
     # cv2.imshow('mask2', mask2)
 
     mask_blurred = cv2.blur(mask2,(5,5),cv2.BORDER_DEFAULT)
