@@ -128,11 +128,11 @@ tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
-awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' \${pheno} > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
+awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10, \$11, \$12, \$13, \$14, \$15}' \${pheno} > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
 sort -k1 $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2
 sort -k1 \${fam}
 join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16, \$17, \$18, \$19, \$20, \$21}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4
 echo -e 'label Within_family_ID ID_father ID_mother Sex PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10' > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4 >> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
 
 
@@ -376,9 +376,9 @@ cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map
 cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
 
 P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
-awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
 
-var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10"
+var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 PC13 PC14 PC15"
 sed -i "1s/.*/\${var}/" $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
 
 
@@ -394,7 +394,7 @@ cat > $jobfile6 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=6_mvplink.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-55
+#SBATCH --array=1-120
 #SBATCH --output=$BASE_DIR/logs/6_mvplink_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/6_mvplink_%A_%a.err
 #SBATCH --nodes=1
@@ -434,7 +434,7 @@ cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=7_slider.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-55
+#SBATCH --array=1-120
 #SBATCH --output=$BASE_DIR/logs/7_slider_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/7_slider_%A_%a.err
 #SBATCH --nodes=1
@@ -522,6 +522,11 @@ Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figu
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC7
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC8
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC9
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC10
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC11
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC12
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC13
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC14
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_byPCs
 
 
