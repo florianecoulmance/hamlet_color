@@ -124,7 +124,7 @@ fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
 pheno=$BASE_DIR/metadata/${DATASET}_PCs.csv
 echo \${pheno}
 
-tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)
+tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 PC13 PC14 PC15)
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
 
 #Create joint phenotype and .fam file with all phenotypes
@@ -133,7 +133,7 @@ sort -k1 $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 > $BASE_DIR/output
 sort -k1 \${fam}
 join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate2 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16, \$17, \$18, \$19, \$20, \$21}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate3 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4
-echo -e 'label Within_family_ID ID_father ID_mother Sex PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10' > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4 >> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
+echo -e 'label Within_family_ID ID_father ID_mother Sex PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 PC13 PC14 PC15' > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate4 >> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
 
 
 EOA
@@ -532,6 +532,8 @@ Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figu
 
 EOA
 
+
+
 # ------------------------------------------------------------------------------
 # Job 9 other plots
 
@@ -607,10 +609,66 @@ Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DI
 EOA
 
 
+
+# ------------------------------------------------------------------------------
+# Job 10 univariate plink
+
+jobfile10=10_assoc_plink.tmp # temp file
+cat > $jobfile10 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=10_assoc_plink.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-55
+#SBATCH --output=$BASE_DIR/logs/10_assoc_plink_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/10_assoc_plink_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=40G
+#SBATCH --time=04:00:00
+
+#P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
+
+body() {
+	IFS= read -r header
+	printf '%s\n' "\$header"
+	"\$@"
+}
+
+fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam
+INPUT_TR=$BASE_DIR/outputs/lof/pcs.fofn
+
+#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+echo \${TRAITS}
+
+BASE_NAME=\$(echo  \${fam} | sed 's/.fam//g')
+echo \${BASE_NAME}
+
+echo \${BASE_NAME}_\${TRAITS}
+
+cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed
+cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
+cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
+cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
+
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam >  $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${TRAITS}.fam
+sed '1d' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_header_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.fam
+
+mkdir $BASE_DIR/output
+mkdir $BASE_DIR/output/$DATASET/
+
+plink --bfile \${BASE_NAME}_\${TRAITS} --assoc
+
+
+EOA
+
+
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   0_convert_plink : DONE         **"
 else
@@ -618,7 +676,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   1_plink_binary  : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -629,7 +687,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   2_prep          : DONE         **"
 elif [ "$JID_RES" = "jid2" ]
@@ -640,7 +698,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   3_gemma         : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
@@ -651,7 +709,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   4_windows       : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
@@ -662,7 +720,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   5_phen          : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -673,7 +731,7 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   6_mvplink       : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
@@ -684,7 +742,7 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   7_slider        : DONE         **"
 elif [ "$JID_RES" = "jid7" ]
@@ -695,7 +753,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10"];
 then
   echo "*****   8_plots         : DONE         **"
 elif [ "$JID_RES" = "jid8" ]
@@ -706,11 +764,22 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid10"];
+then
+  echo "*****   9_other_plots   : DONE         **"
+elif [ "$JID_RES" = "jid9" ]
 then
   jid9=$(sbatch ${jobfile9})
 else
   jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
+fi
+
+
+if [ "$JID_RES" = "jid10" ];
+then
+  jid10=$(sbatch ${jobfile10})
+else
+  jid10=$(sbatch --dependency=afterok:${jid9##* } ${jobfile10})
 fi
 
 
