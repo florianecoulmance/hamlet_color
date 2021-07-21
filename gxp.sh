@@ -723,7 +723,7 @@ EOA
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   0_convert_plink : DONE         **"
 else
@@ -731,7 +731,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   1_plink_binary  : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -742,7 +742,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   2_prep          : DONE         **"
 elif [ "$JID_RES" = "jid2" ]
@@ -753,7 +753,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   3_gemma         : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
@@ -764,7 +764,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   4_windows       : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
@@ -775,7 +775,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   5_phen          : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -786,7 +786,7 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   6_mvplink       : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
@@ -797,7 +797,7 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   7_slider        : DONE         **"
 elif [ "$JID_RES" = "jid7" ]
@@ -808,7 +808,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   8_plots         : DONE         **"
 elif [ "$JID_RES" = "jid8" ]
@@ -819,7 +819,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ];
 then
   echo "*****   9_other_plots   : DONE         **"
 elif [ "$JID_RES" = "jid9" ]
@@ -829,8 +829,10 @@ else
   jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
 fi
 
-
-if [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid11" ];
+then
+  echo "*****   10_assoc_plink  : DONE         **"
+elif [ "$JID_RES" = "jid10" ];
 then
   jid10=$(sbatch ${jobfile10})
 else
