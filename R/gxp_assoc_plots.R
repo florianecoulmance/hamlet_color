@@ -70,7 +70,7 @@ concat_files <- function(f,p) {
   for (file in f) {
     count = count + 1 
     run_files <- file %>%
-      str_sub(.,end=-19) %>%
+      str_sub(.,end=-21) %>%
       str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
     print(run_files)
     d <- read.table(paste0(p,file), header=TRUE)
@@ -94,7 +94,7 @@ concat_files <- function(f,p) {
 
 files <- list.files(data_path, pattern = "assoc.50k.5k.txt.gz")
 print(files)
-traits <- list("PC10", "PC11", "PC12", "PC13", "PC14", "PC15", "PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
+traits <- list("PC1", "PC10", "PC11", "PC12", "PC13", "PC14", "PC15", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
 print(traits)
 files_l <- concat_files(files,data_path)
 names(files_l) <- traits
