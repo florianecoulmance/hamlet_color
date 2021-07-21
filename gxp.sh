@@ -696,7 +696,13 @@ INPUT_A=$BASE_DIR/outputs/lof/assoc.fofn
 ASSOC=\$(cat \${INPUT_A} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
 echo \${ASSOC}
 
-NAME=\$(awk -F'_' '{print \$2}' \${ASSOC} | awk -F'.' '{print \$1}') 
+N1=\$(echo \${ASSOC##*/})
+echo \${N1}
+
+N2=\$(echo \${N1##*_})
+echo \${N2}
+
+NAME=\$(echo \${N2%%.*})
 echo \${NAME}
 
 awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9}' \${ASSOC} | cut -d ' ' -f 2,3,6-9 | sed 's/SNP BP /CHROM POS /g' | awk '{sub(/\:.*$/,"",\$1); print \$0}' | awk '{if (\$3!="NA"){ print}}' | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.assoc.txt.gz
