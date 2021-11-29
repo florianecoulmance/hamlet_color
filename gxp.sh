@@ -370,15 +370,15 @@ cat > $jobfile5 <<EOA # generate the job file
 #SBATCH --time=04:00:00
 
 
-MAP=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.map 
-PED=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.ped
-cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map
-cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
+#MAP=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.map 
+#PED=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.ped
+#cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map
+#cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
 
 P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
-awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15}' \${P} > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
 
-var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 PC13 PC14 PC15"
+var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10"
 sed -i "1s/.*/\${var}/" $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
 
 
@@ -394,7 +394,7 @@ cat > $jobfile6 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=6_mvplink.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-120
+#SBATCH --array=1-55
 #SBATCH --output=$BASE_DIR/logs/6_mvplink_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/6_mvplink_%A_%a.err
 #SBATCH --nodes=1
@@ -434,7 +434,7 @@ cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=7_slider.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-120
+#SBATCH --array=1-55
 #SBATCH --output=$BASE_DIR/logs/7_slider_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/7_slider_%A_%a.err
 #SBATCH --nodes=1
@@ -512,7 +512,7 @@ ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outpu
 mkdir $BASE_DIR/figures/7_gxp/
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/
 
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ univariate_gemma
+#Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ univariate_gemma
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC1
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC2
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC3
@@ -522,11 +522,6 @@ Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figu
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC7
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC8
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC9
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC10
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC11
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC12
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC13
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC14
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_byPCs
 
 
@@ -578,24 +573,25 @@ echo \${C}
 M=\${C%%_*}
 echo \${M}
 
-# if [ "\${M}" = "fullm" ];
-# then
-  # MASK=$BASE_DIR/ressources/full_mask.tif
-# elif [ "\${M}" = "bodym" ]
-# then
-  # MASK=$BASE_DIR/ressources/body_mask.tif
-# else
-  # echo "please verify your dataset folder spelling in the specified -k parameter"
-# fi
+
+if [ "\${M}" = "fullm" ];
+then
+  MASK=$BASE_DIR/ressources/full_mask.tif
+elif [ "\${M}" = "bodym" ]
+then
+  MASK=$BASE_DIR/ressources/body_mask.tif
+else
+  echo "please verify your dataset folder spelling in the specified -k parameter"
+fi
 
 
 
-MASK=$BASE_DIR/ressources/body_mask.tif
+#MASK=$BASE_DIR/ressources/full_mask.tif
 
 echo \${MASK}
 
 
-T="10"
+T="1.7"
 echo \${T}
 
 mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/
@@ -603,7 +599,7 @@ mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/
 mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/
 
 Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
-#python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
+python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
 
 
 EOA
