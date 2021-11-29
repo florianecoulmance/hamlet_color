@@ -3,7 +3,7 @@
 # by: Floriane Coulmance: 11/05/2021
 #
 # usage:
-# ./phenotype_pca.sh -i /Users/fco/Desktop/PhD/1_CHAPTER1/ -j AB -k fullm -l 54off_59on -m all -n left
+# ./continuous_phenotype_pca.sh -i /Users/fco/Desktop/PhD/1_CHAPTER1/ -j AB -k fullm -l 54off_59on -m all -n left
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
@@ -61,7 +61,9 @@ echo $MASK_FILE
 
 # Repo for pca outputs
 mkdir $BASE_DIR/1_GENETICS/chapter1/images/
-mkdir $BASE_DIR/1_GENETICS/chapter1/images/$DATASET
+mkdir $BASE_DIR/1_GENETICS/chapter1/images/continuous/
+mkdir $BASE_DIR/1_GENETICS/chapter1/images/continuous/LAB/
+mkdir $BASE_DIR/1_GENETICS/chapter1/images/continuous/LAB/$DATASET
 
 # Repo for the corresponding dataset
 mkdir $BASE_DIR/1_GENETICS/chapter1/figures/7_gxp/$DATASET/
@@ -75,7 +77,7 @@ mkdir $BASE_DIR/1_GENETICS/chapter1/figures/7_gxp/$DATASET/
          $BASE_DIR/0_IMAGES/convert_png/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/ \
          $BASE_DIR/0_IMAGES/convert_png/smallDatasetl1/$MASK_FILE \
          $COLOR_SPACE \
-         $BASE_DIR/1_GENETICS/chapter1/images/$DATASET/ \
+         $BASE_DIR/1_GENETICS/chapter1/images/continuous/LAB/$DATASET/ \
          $BASE_DIR/1_GENETICS/chapter1/figures/7_gxp/$DATASET/ \
          $MASK \
          $OVERALL_DAT \
@@ -83,7 +85,7 @@ mkdir $BASE_DIR/1_GENETICS/chapter1/figures/7_gxp/$DATASET/
 
 
 Rscript R/pcs_plots.R \
-         $BASE_DIR/1_GENETICS/chapter1/images/$DATASET/ \
+         $BASE_DIR/1_GENETICS/chapter1/images/continuous/LAB/$DATASET/ \
          $COLOR_SPACE \
          $BASE_DIR/1_GENETICS/chapter1/metadata/ \
          ${DATASET}_PCs.csv \
