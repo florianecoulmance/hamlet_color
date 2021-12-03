@@ -553,9 +553,9 @@ ml FriBidi
 ml HarfBuzz
 
 
-# ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
+ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
 
-INPUT_AVG=$BASE_DIR/outputs/lof/mvplink_50k.fofn
+INPUT_AVG=$BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
 
 #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 AVG=\$(cat \${INPUT_AVG} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
@@ -599,7 +599,7 @@ mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/
 mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/
 
 Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
+#python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
 
 
 EOA
