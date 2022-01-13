@@ -45,7 +45,7 @@ snpset <- snpgdsLDpruning(genofile, ld.threshold = ld_threshold, autosome.only =
 snpset.id <- unlist(snpset)
 
 
-# perfor pca
+# perform pca
 pca <- snpgdsPCA(genofile, snp.id = snpset.id, num.thread = 2, autosome.only = FALSE)
 
 pca_tib <- pca$eigenvect %>%

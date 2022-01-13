@@ -1,7 +1,7 @@
 #!/bin/bash
 # by: Floriane Coulmance: 01/04/2020
 # usage:
-# gxp.sh -i <PATH> -j <JOB_ID>
+# sbatch gxp.sh -i <PATH> -j <JOB_ID>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script
@@ -33,7 +33,7 @@ mkdir $BASE_DIR/logs/
 # Repo for figures
 mkdir $BASE_DIR/figures/
 
-# Outputs repo
+# Outputs repo for each step of the pipeline
 mkdir $BASE_DIR/outputs/
 mkdir $BASE_DIR/outputs/0_ubam/
 mkdir $BASE_DIR/outputs/1_adapters/
@@ -62,7 +62,7 @@ mkdir $BASE_DIR/outputs/coverage/
 # Repo for pca analysis files
 mkdir $BASE_DIR/outputs/pca/
 
-# Annex folder for list of files
+# Annex folder for files of list of files
 mkdir $BASE_DIR/outputs/lof/
 
 
@@ -74,40 +74,41 @@ mkdir $BASE_DIR/outputs/lof/
 
 # ------------------------------------------------------------------------------
 # Job 0 creates single unaligned bam files from forward and reverse sequencing
-# files for each of the 49 samples considered in this study
+# raw files for each of the 117 samples considered in this study and output them
+# in /0_ubam/
 
 jobfile0=0_ubam.tmp # temp file
 cat > $jobfile0 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=0_ubam
-#SBATCH --partition=carl.p
-#SBATCH --array=2-118
-#SBATCH --output=$BASE_DIR/logs/0_ubam_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/0_ubam_%A_%a.err
-#SBATCH --nodes=1
+#SBATCH --job-name=0_ubam                                                               # set the jobname
+#SBATCH --partition=carl.p                                                              # set the cluster partition to use
+#SBATCH --array=2-118                                                                   # set the array numbers 
+#SBATCH --output=$BASE_DIR/logs/0_ubam_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/0_ubam_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=20G
-#SBATCH --time=04:00:00
+#SBATCH --mem-per-cpu=20G                                                               # set the estimated memory needed for the job to run
+#SBATCH --time=04:00:00                                                                 # set the estimated amount of time for the job to run
 
 
-INPUT_META=$BASE_DIR/metadata/metadata_gxp_ben_floridae_complete
-LINES=\$(cat \${INPUT_META} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+INPUT_META=$BASE_DIR/metadata/metadata_gxp_ben_floridae_complete                        # metadata file for each sample of the genotyping
+LINES=\$(cat \${INPUT_META} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)              # run job for each line of the metadata file (each sample) according to the job array number
 
-IFS=";" read -r -a array <<< "\$LINES"
-label=\${array[1]}
+IFS=";" read -r -a array <<< "\$LINES"                                                  # set separator to ; to read line as array
+label=\${array[1]}                                                                      # separate array elements into variables to use later in the script
 company=\${array[7]}
 frwdfile=\${array[9]}
 flowcellidfrwd=\${array[15]}
 lanefrwd=\${array[16]}
 revfile=\${array[24]}
 
-echo -e "----------------------------"
+echo -e "----------------------------"                                                  # print sample name and corresponding information for the job output file
 echo -e "Label:\t\${label}\nFwd:\t\${frwdfile}\nRev:\t\${revfile}"
 echo -e "Flowcell:\t\${flowcellidfrwd}\nLane:\t\${lanefrwd}"
 echo -e "Read group:\t\${flowcellidfrwd}.\${lanefrwd}\nCompany:\t\${company}"
 
-gatk --java-options "-Xmx20G" \
+gatk --java-options "-Xmx20G" \                                                         # GATK command to create 1 ubam file per sample from reverse and forward raw files
     FastqToSam \
     -SM=\${label} \
     -F1=$BASE_DIR/data/\${frwdfile} \
@@ -121,7 +122,7 @@ gatk --java-options "-Xmx20G" \
     --TMP_DIR=$BASE_DIR/temp_files
 
 #Make a file of files
-ls -1 $BASE_DIR/outputs/0_ubam/ > $BASE_DIR/outputs/lof/0_ubam.fofn
+ls -1 $BASE_DIR/outputs/0_ubam/ > $BASE_DIR/outputs/lof/0_ubam.fofn                     # create file of list of ubam file
 
 
 EOA
@@ -147,22 +148,22 @@ cat > $jobfile1 <<EOA # generate the job file
 #SBATCH --time=04:00:00
 
 
-INPUT_UBAMS=$BASE_DIR/outputs/lof/0_ubam.fofn
-UBAMS=\$(cat \${INPUT_UBAMS} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$UBAMS
+INPUT_UBAMS=$BASE_DIR/outputs/lof/0_ubam.fofn                                           # input the list of unaligned bam files created in jobfile0
+UBAMS=\$(cat \${INPUT_UBAMS} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # create a job for each of the files (117 because 117 samples)
+echo \$UBAMS                                                                            # print to the job output file
 
-sample1=\${UBAMS%.*}
+sample1=\${UBAMS%.*}                                                                    # get sample name from ubam file name
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # print sample name to the job output file
 
-gatk --java-options "-Xmx18G" \
+gatk --java-options "-Xmx18G" \                                                         # GATK command to mark adapters
    MarkIlluminaAdapters \
-   -I=$BASE_DIR/outputs/0_ubam/\${UBAMS} \
-   -O=$BASE_DIR/outputs/1_adapters/adapters/\${sample}.adapter.bam \
+   -I=$BASE_DIR/outputs/0_ubam/\${UBAMS} \                                              # unaligned bam as input
+   -O=$BASE_DIR/outputs/1_adapters/adapters/\${sample}.adapter.bam \              
    -M=$BASE_DIR/outputs/1_adapters/metrics/\${sample}.adapter.metrics.txt \
    -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/1_adapters/adapters/ > $BASE_DIR/outputs/lof/1_adapters.fofn
+ls -1 $BASE_DIR/outputs/1_adapters/adapters/ > $BASE_DIR/outputs/lof/1_adapters.fofn    # create file of list of files that have been marked for adapters
 
 
 EOA
@@ -187,23 +188,23 @@ cat > $jobfile2 <<EOA # generate the job file
 #SBATCH --time=2-00:00:00
 
 
-INPUT_ADAPT_BAMS=$BASE_DIR/outputs/lof/1_adapters.fofn
-ADAPT_BAM=\$(cat \${INPUT_ADAPT_BAMS} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+INPUT_ADAPT_BAMS=$BASE_DIR/outputs/lof/1_adapters.fofn                                  # input the list of sample files that have been marked for adapters
+ADAPT_BAM=\$(cat \${INPUT_ADAPT_BAMS} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)    # create 1 job per file
 echo \$ADAPT_BAM
 
-sample1=\${ADAPT_BAM%.*}
+sample1=\${ADAPT_BAM%.*}                                                                # get sample name out of file name
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # output sample name to job output file
 
-gatk --java-options "-Xmx68G" \
-    SamToFastq \
+gatk --java-options "-Xmx68G" \                                                         # GATK command to convert to fastq file for alignment
+    SamToFastq \  
     -I=$BASE_DIR/outputs/1_adapters/adapters/\${ADAPT_BAM} \
     -FASTQ=/dev/stdout \
     -INTERLEAVE=true \
     -NON_PF=true \
     -TMP_DIR=$BASE_DIR/temp_files | \
-bwa mem -M -t 8 -p $BASE_DIR/ressources/HP_genome_unmasked_01.fa /dev/stdin |
-gatk --java-options "-Xmx68G" \
+bwa mem -M -t 8 -p $BASE_DIR/ressources/HP_genome_unmasked_01.fa /dev/stdin |           # actual alignment step piped into the command, Burrow Whealer Alignment software
+gatk --java-options "-Xmx68G" \                                                         # GATK command to merge BWA output with unaligned bam file informations
     MergeBamAlignment \
     --VALIDATION_STRINGENCY SILENT \
     --EXPECTED_ORIENTATIONS FR \
@@ -226,7 +227,7 @@ gatk --java-options "-Xmx68G" \
     --UNMAP_CONTAMINANT_READS true \
     -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/2_align/*.mapped.bam > $BASE_DIR/outputs/lof/2_align.fofn
+ls -1 $BASE_DIR/outputs/2_align/*.mapped.bam > $BASE_DIR/outputs/lof/2_align.fofn       # create file of list of aligned sample files
 
 
 EOA
@@ -251,15 +252,15 @@ cat > $jobfile3 <<EOA # generate the job file
 #SBATCH --time=3-00:00:00
 
 
-INPUT_MAPPED_BAM=$BASE_DIR/outputs/lof/2_align.fofn
-MAPPED_BAM=\$(cat \${INPUT_MAPPED_BAM} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$MAPPED_BAM
+INPUT_MAPPED_BAM=$BASE_DIR/outputs/lof/2_align.fofn                                     # input the aligned sample file list
+MAPPED_BAM=\$(cat \${INPUT_MAPPED_BAM} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)   # create a job for each sample / each aligned sample file
+echo \$MAPPED_BAM                                                                       # print file name to the job output file
 
-sample1=\${MAPPED_BAM%.*}
+sample1=\${MAPPED_BAM%.*}                                                               # get sample name out of file name 
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # print sample name to job output file
 
-gatk --java-options "-Xmx30G" \
+gatk --java-options "-Xmx30G" \                                                         # GATK command to sort files before tagging
 		SortSam \
 		-I=$BASE_DIR/outputs/2_align/\${MAPPED_BAM} \
 		-O=/dev/stdout \
@@ -267,7 +268,7 @@ gatk --java-options "-Xmx30G" \
 		--CREATE_INDEX=false \
 		--CREATE_MD5_FILE=false \
 		-TMP_DIR=$BASE_DIR/temp_files | \
-gatk --java-options "-Xmx30G" \
+gatk --java-options "-Xmx30G" \                                                         # GATK command to put tags
     SetNmMdAndUqTags \
     --INPUT=/dev/stdin \
     --OUTPUT=$BASE_DIR/outputs/3_duplicates/2_tag/\${sample}.intermediate.bam \
@@ -276,7 +277,7 @@ gatk --java-options "-Xmx30G" \
     -TMP_DIR=$BASE_DIR/temp_files \
     --REFERENCE_SEQUENCE=$BASE_DIR/ressources/HP_genome_unmasked_01.fa.gz
 
-ls -1 $BASE_DIR/outputs/3_duplicates/2_tag/*.bam |xargs -n1 basename > $BASE_DIR/outputs/lof/3_tag.fofn
+ls -1 $BASE_DIR/outputs/3_duplicates/2_tag/*.bam |xargs -n1 basename > $BASE_DIR/outputs/lof/3_tag.fofn # create a file of list of tagged sample files 
 
 EOA
 
@@ -300,15 +301,15 @@ cat > $jobfile4 <<EOA # generate the job file
 #SBATCH --time=15:00:00
 
 
-INPUT_TAGSINTER=$BASE_DIR/outputs/lof/3_tag.fofn
-TAGSINTER=\$(cat \${INPUT_TAGSINTER} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$TAGSINTER
+INPUT_TAGSINTER=$BASE_DIR/outputs/lof/3_tag.fofn                                        # input the list of tagged sample files from previous step
+TAGSINTER=\$(cat \${INPUT_TAGSINTER} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)     # create a job for each sample
+echo \$TAGSINTER                                                                        # print the file to the job output file
 
-sample1=\${TAGSINTER%.*}
+sample1=\${TAGSINTER%.*}                                                                # get sample name from file name
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # print sample name to the job output file
 
-gatk --java-options "-Xmx30G" \
+gatk --java-options "-Xmx30G" \                                                         # GATK Mark Duplicates command
   MarkDuplicates \
   -I=$BASE_DIR/outputs/3_duplicates/2_tag/\${TAGSINTER} \
   -O=$BASE_DIR/outputs/3_duplicates/3_mark/duplicates/\${sample}.dedup.bam \
@@ -316,7 +317,7 @@ gatk --java-options "-Xmx30G" \
   -MAX_FILE_HANDLES=1000  \
   -TMP_DIR=$BASE_DIR/temp_files
 
-ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam > $BASE_DIR/outputs/lof/4_duplicates.fofn
+ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam > $BASE_DIR/outputs/lof/4_duplicates.fofn # create a file of list of the files output by previous command
 
 
 EOA
@@ -341,15 +342,15 @@ cat > $jobfile5 <<EOA # generate the job file
 #SBATCH --time=01:00:00
 
 
-INPUT_DUPLI=$BASE_DIR/outputs/lof/4_duplicates.fofn
-DUPLI=\$(cat \${INPUT_DUPLI} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$DUPLI
+INPUT_DUPLI=$BASE_DIR/outputs/lof/4_duplicates.fofn                                     # input the list of files from the previous steo
+DUPLI=\$(cat \${INPUT_DUPLI} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # create 1 job/sample
+echo \$DUPLI                                                                            # print file name to the job output file
 
-sample1=\${DUPLI%.*}
+sample1=\${DUPLI%.*}                                                                    # get the sample name from file name
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # print sample name to the job output file
 
-gatk --java-options "-Xmx30G" \
+gatk --java-options "-Xmx30G" \                                                         # GATK to build index for adapters and duplicates marked sample sequencing files
   BuildBamIndex \
   -INPUT=\${DUPLI}
 
@@ -361,7 +362,7 @@ EOA
 # --------------------------- COVERAGE ----------------------------------------#
 
 # ------------------------------------------------------------------------------
-# Job a calculates coverage for each of the samples
+# Job a calculates a number of metrics for each of the sample files
 
 jobfilea=a_coverage.tmp # temp file
 cat > $jobfilea <<EOA # generate the job file
@@ -378,18 +379,18 @@ cat > $jobfilea <<EOA # generate the job file
 #SBATCH --time=02:00:00
 
 
-INPUT_COV=$BASE_DIR/outputs/lof/3_3_duplicates.fofn
-COV=\$(cat \${INPUT_COV} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$COV
+INPUT_COV=$BASE_DIR/outputs/lof/4_duplicates.fofn                                       # input the list of clean sequencing files paths from previous steps
+COV=\$(cat \${INPUT_COV} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)                 # create a job per sample 
+echo \$COV                                                                              # print the path to files to each job output files
 
-sample1=\${COV%.*}
+sample1=\${COV%.*}                                                                      # take sample name from file name 
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # print sample name to job output file
 
 PREFIX=\${sample##*/}
-echo \${PREFIX}
+echo \${PREFIX}                                                                         
 
-gatk --java-options "-Xmx30G" \
+gatk --java-options "-Xmx30G" \                                                         # GATK Collect Metric for coverage 
   CollectWgsMetrics \
   -I=\${COV} \
   -O=$BASE_DIR/outputs/coverage/\${PREFIX}.wgsmetrics.txt \
@@ -418,13 +419,13 @@ cat > $jobfileb <<EOA # generate the job file
 #SBATCH --mem-per-cpu=10G
 #SBATCH --time=00:15:00
 
-module load  hpc-env/8.3
-module load R/4.0.2-foss-2019b
+module load  hpc-env/8.3                                                                # load the environment of the cluster where the latest version of R is available
+module load R/4.0.2-foss-2019b                                                          # load the latest version of R available on the cluster
 
-FILES=$BASE_DIR/outputs/coverage/*
-echo \$FILES
+FILES=$BASE_DIR/outputs/coverage/*                                                      # list of files in the folder of metrics
+echo \$FILES                                                                            # print the list to the job output file
 
-for f in \$FILES
+for f in \$FILES                                                                        # extract file name, sample name and the coverage information by iterating through each file in the coverage folder
 do
   echo \$f
   name_file=\${f##*/}
@@ -436,13 +437,13 @@ do
   cov=\$(cat \$f | awk 'FNR == 8 {print \$2}')
   echo \$cov
 
-  echo "\$sample \$cov" >> $BASE_DIR/outputs/coverage/coverage_table
+  echo "\$sample \$cov" >> $BASE_DIR/outputs/coverage/coverage_table                    # store sample name and corresponding coverage to a table text file
 done
 
-Rscript --vanilla $BASE_DIR/R/coverage_hist.R $BASE_DIR/outputs/coverage/coverage_table $BASE_DIR/figures/ $BASE_DIR/outputs/lof/
+Rscript --vanilla $BASE_DIR/R/coverage_hist.R $BASE_DIR/outputs/coverage/coverage_table $BASE_DIR/figures/ $BASE_DIR/outputs/lof/ #run Rscript for histogram
 
-while read line
-do
+while read line                                                                         # read the file output by the Rscript that stores the name of files/samples that have a too low coverage
+do                                                                                      # print the files to remove to a file
   echo \$line
   ls $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/ | grep \$line >> $BASE_DIR/outputs/lof/c_remove.fofn
 done < $BASE_DIR/outputs/lof/b_remove.fofn
@@ -469,13 +470,13 @@ cat > $jobfilec <<EOA # generate the job file
 #SBATCH --time=02:00:00
 
 
-for file in \$(cat $BASE_DIR/outputs/lof/c_remove.fofn)
-do
+for file in \$(cat $BASE_DIR/outputs/lof/c_remove.fofn)                                 # iterate trough lines of the file of list of files to remove 
+do                                                                                      # find files to remove from folder and move them to a new folder
   echo \$file
   mv  $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/\$file $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/removed/
 done
 
-ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam |xargs -n1 basename > $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn
+ls -1 $BASE_DIR/outputs/3_duplicates/3_mark/duplicates/*.bam |xargs -n1 basename > $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn # file of list of new sequencing files to consider for next steps 
 
 
 EOA
@@ -485,8 +486,10 @@ EOA
 # --------------------------- GENOTYPING --------------------------------------#
 
 # Create array size based on files not removed at previous step
-SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')
+SIZE=$(wc $BASE_DIR/outputs/lof/3_3_new_duplicates.fofn | awk '{print $1}')             # get number of files from new list of files to consider for next steps
 echo $SIZE
+
+
 
 # ------------------------------------------------------------------------------
 # Job 6 calculates genotype likelihoods
@@ -506,21 +509,21 @@ cat > $jobfile6 <<EOA # generate the job file
 #SBATCH --time=3-00:00:00
 
 
-INPUT_DUPLI=$BASE_DIR/outputs/lof/3_3_new_duplicates.fofn
-DUPLI=\$(cat \${INPUT_DUPLI} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \$DUPLI
+INPUT_DUPLI=$BASE_DIR/outputs/lof/3_3_new_duplicates.fofn                               # input list of sequencing file
+DUPLI=\$(cat \${INPUT_DUPLI} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # create 1 job/sample
+echo \$DUPLI                                                                            # print file to job output file
 
-sample1=\${DUPLI%.*}
+sample1=\${DUPLI%.*}                                                                    # get sample name from file name 
 sample=\${sample1%.*}
-echo \$sample
+echo \$sample                                                                           # print sample name to job output file
 
-gatk --java-options "-Xmx35g" HaplotypeCaller  \
+gatk --java-options "-Xmx35g" HaplotypeCaller  \                                        # GATK to calculate genotype likelihoods per file/sample
      -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
      -I=$BASE_DIR/outputs/3_duplicates/3_mark/duplicates/\${DUPLI} \
-     -O=$BASE_DIR/outputs/4_likelihood/\${sample}.g.vcf.gz \
+     -O=$BASE_DIR/outputs/4_likelihood/\${sample}.g.vcf.gz \                            # output as a gvcf file
      -ERC GVCF
 
-ls -1 $BASE_DIR/outputs/4_likelihood/*.g.vcf.gz > $BASE_DIR/outputs/lof/4_likelihood.fofn
+ls -1 $BASE_DIR/outputs/4_likelihood/*.g.vcf.gz > $BASE_DIR/outputs/lof/4_likelihood.fofn # create a file of lof for this step
 
 
 EOA
@@ -544,15 +547,15 @@ cat > $jobfile7 <<EOA # generate the job file
 #SBATCH --time=4-00:00:00
 
 
-awk '{print "-V", $1}' $BASE_DIR/outputs/lof/4_likelihood.fofn > $BASE_DIR/outputs/lof/4_likelihood2.fofn
-INPUT_GEN=$(cat $BASE_DIR/outputs/lof/4_likelihood2.fofn)
-echo \${INPUT_GEN}
+awk '{print "-V", $1}' $BASE_DIR/outputs/lof/4_likelihood.fofn > $BASE_DIR/outputs/lof/4_likelihood2.fofn # use file of list of file from previous step as input and put the characters "-V" in front of each line
+INPUT_GEN=$(cat $BASE_DIR/outputs/lof/4_likelihood2.fofn)                               # input the modified file of list of files
+echo \${INPUT_GEN}                                                                      # print the input string to job output file
 
-gatk --java-options "-Xmx85g" \
+gatk --java-options "-Xmx85g" \                                                         # GATK command to combine all the sample files from previous step while aligning to reference genome
       CombineGVCFs \
       -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
       \${INPUT_GEN} \
-      -O=$BASE_DIR/outputs/5_cohort/cohort.g.vcf.gz
+      -O=$BASE_DIR/outputs/5_cohort/cohort.g.vcf.gz                                     # output one file for all the samples
 
 
 EOA
@@ -578,20 +581,20 @@ cat > $jobfile8 <<EOA # generate the job file
 #SBATCH --time=4-00:00:00
 
 
-gatk --java-options "-Xmx85g" \
+gatk --java-options "-Xmx85g" \                                                         # GATK command for genotyping
      GenotypeGVCFs \
      -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
      -V=$BASE_DIR/outputs/5_cohort/cohort.g.vcf.gz \
      -O=$BASE_DIR/6_genotyping/6_1_snp/intermediate.vcf.gz
 
-gatk --java-options "-Xmx85G" \
+gatk --java-options "-Xmx85G" \                                                         # GATK command to select variant positions
      SelectVariants \
      -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
      -V=$BASE_DIR/6_genotyping/6_1_snp/intermediate.vcf.gz \
-     --select-type-to-include=SNP \
+     --select-type-to-include=SNP \                                                     # exclude variants that have deletions or additions, just keep the ones that differ in 1 position 
      -O=$BASE_DIR/outputs/6_genotyping/6_1_snp/raw_var_sites.vcf.gz
 
-rm $BASE_DIR/6_genotyping/6_1_snp/intermediate.*
+rm $BASE_DIR/6_genotyping/6_1_snp/intermediate.*                                        # remove unecessary intermediate files
 
 
 EOA
@@ -615,7 +618,7 @@ cat > $jobfile9 <<EOA # generate the job file
 #SBATCH --time=06:00:00
 
 
-gatk --java-options "-Xmx25G" \
+gatk --java-options "-Xmx25G" \                                                         # GATK command to create metric table with genotyping stats
        VariantsToTable \
        --variant=$BASE_DIR/outputs/6_genotyping/6_1_snp/raw_var_sites.vcf.gz \
        --output=$BASE_DIR/outputs/6_genotyping/6_1_snp/raw_var_sites.table.txt \
@@ -623,7 +626,7 @@ gatk --java-options "-Xmx25G" \
        -F=QD -F=FS -F=MQRankSum -F=ReadPosRankSum \
        --show-filtered
 
-Rscript --vanilla $BASE_DIR/R/filtering_thresholds.R $BASE_DIR/outputs/6_genotyping/6_1_snp/raw_var_sites.table.txt $BASE_DIR/figures/
+Rscript --vanilla $BASE_DIR/R/filtering_thresholds.R $BASE_DIR/outputs/6_genotyping/6_1_snp/raw_var_sites.table.txt $BASE_DIR/figures/ # run Rscript to create graphs of stats needed to determine future thresholds on genotyping file (next step)
 
 EOA
 
@@ -647,7 +650,7 @@ cat > $jobfile10 <<EOA # generate the job file
 #SBATCH --time=12:00:00
 
 
-gatk --java-options "-Xmx75G" \
+gatk --java-options "-Xmx75G" \                                                         # GATK command to filter genotyping file according to graph from previous step
        VariantFiltration \
        -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
        -V=$BASE_DIR/outputs/6_genotyping/6_1_snp/raw_var_sites.vcf.gz \
@@ -663,26 +666,26 @@ gatk --java-options "-Xmx75G" \
        --filter-expression "ReadPosRankSum < -2.0 || ReadPosRankSum > 2.0 " \
        --filter-name "filter_ReadPosRankSum"
 
-gatk --java-options "-Xmx75G" \
+gatk --java-options "-Xmx75G" \                                                         # GATK command to exclude what has been filtered
        SelectVariants \
        -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
        -V=$BASE_DIR/outputs/6_genotyping/6_1_snp/intermediate.vcf.gz \
        -O=$BASE_DIR/outputs/6_genotyping/6_1_snp/intermediate.filterd.vcf.gz \
        --exclude-filtered
 
-vcftools \
+vcftools \                                                                              # VCFTools command to filter on top of the other filtering steps
        --gzvcf $BASE_DIR/outputs/6_genotyping/6_1_snp/intermediate.filterd.vcf.gz \
        --max-missing-count 17 \
        --max-alleles 2 \
        --stdout  \
        --recode | \
-       bgzip > $BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz
+       bgzip > $BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz         # output of the whole step
 
-tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz
+tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz           # create index for genotyping file
 
-rm $BASE_DIR/outputs/6_genotyping/6_1_snp/intermediate.*
+rm $BASE_DIR/outputs/6_genotyping/6_1_snp/intermediate.*                                # remove unecessary file
 
-echo -e "$BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz" > $BASE_DIR/outputs/lof/snp_all.fofn
+echo -e "$BASE_DIR/outputs/6_genotyping/6_1_snp/filterd_bi-allelic.vcf.gz" > $BASE_DIR/outputs/lof/snp_all.fofn # add the end product of genotyping SNP file to a file of list of file to use later
 
 EOA
 
@@ -708,22 +711,22 @@ cat > $jobfile11 <<EOA # generate the job file
 #SBATCH --time=4-00:00:00
 
 
-gatk --java-options "-Xmx85g" \
+gatk --java-options "-Xmx85g" \                                                         # GATK command to genotype files
     GenotypeGVCFs \
-    -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
-    -L=LG${SLURM_ARRAY_TASK_ID} \
+    -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \  
+    -L=LG${SLURM_ARRAY_TASK_ID} \                                                       # because the files take lots of space, genotyping is done per Linkage Group (chromosomes)
     -V=$BASE_DIR/outputs/5_cohort/cohort.g.vcf.gz  \
     -O=$BASE_DIR/6_genotyping/6_2_all/intermediate.vcf.gz \
-    --include-non-variant-sites=true
+    --include-non-variant-sites=true                                                    # this time I include all callable sites not only variants 
 
-gatk --java-options "-Xmx85G" \
+gatk --java-options "-Xmx85G" \                                                         # step to remove indels (additions, deletions) from file
     SelectVariants \
     -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
     -V=$BASE_DIR/6_genotyping/6_2_all/intermediate.vcf.gz \
     --select-type-to-exclude=INDEL \
     -O=$BASE_DIR/6_genotyping/6_2_all/all_sites.LG${SLURM_ARRAY_TASK_ID}.vcf.gz
 
-rm $BASE_DIR/6_genotyping/6_2_all/intermediate.*
+rm $BASE_DIR/6_genotyping/6_2_all/intermediate.*                                        # remove unecessary intermediate files
 
 
 EOA
@@ -747,16 +750,16 @@ cat > $jobfile12 <<EOA # generate the job file
 #SBATCH --time=3-00:00:00
 
 
-ls -1 $BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.* > $BASE_DIR/outputs/lof/14_all.fofn
-awk '{print "-I", $1}' $BASE_DIR/outputs/lof/14_all.fofn > $BASE_DIR/outputs/lof/14_all2.fofn
+ls -1 $BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.* > $BASE_DIR/outputs/lof/14_all.fofn  # create file of list of files from the previous step (file for each chromosomes)
+awk '{print "-I", $1}' $BASE_DIR/outputs/lof/14_all.fofn > $BASE_DIR/outputs/lof/14_all2.fofn # modify list of files to put the character "-I" in front
 
-INPUT_GEN=$(cat $BASE_DIR/outputs/lof/14_all2.fofn)
-echo \${INPUT_GEN}
+INPUT_GEN=$(cat $BASE_DIR/outputs/lof/14_all2.fofn)                                     # input the list of files with special character in front
+echo \${INPUT_GEN}                                                                      # print input to the job output file
 
-gatk --java-options "-Xmx85g" \
+gatk --java-options "-Xmx85g" \                                                         # GATK command to put all the LG (chromosomes) genotytping file into 1 file
        GatherVcfs \
        \${INPUT_GEN} \
-       -O=$BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.vcf.gz
+       -O=$BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.vcf.gz                       # important output 
 
 
 EOA
@@ -780,9 +783,9 @@ cat > $jobfile13 <<EOA # generate the job file
 #SBATCH --time=30:00:00
 
 
-tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.vcf.gz
+tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.vcf.gz                    # create index for allsites genotyping file from previous step
 
-gatk --java-options "-Xmx75G" \
+gatk --java-options "-Xmx75G" \                                                         # filter according to the table of job9
        VariantFiltration \
        -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
        -V=$BASE_DIR/outputs/6_genotyping/6_2_all/all_sites.vcf.gz \
@@ -799,7 +802,7 @@ gatk --java-options "-Xmx75G" \
        --filter-name "filter_ReadPosRankSum"
        --QUIET true &> var_filt.log
 
-gatk --java-options "-Xmx75G" \
+gatk --java-options "-Xmx75G" \                                                         # GATK command to exclude what has been filtered
        SelectVariants \
        -R=$BASE_DIR/ressources/HP_genome_unmasked_01.fa \
        -V=$BASE_DIR/outputs/6_genotyping/6_2_all/intermediate.vcf.gz \
@@ -808,16 +811,16 @@ gatk --java-options "-Xmx75G" \
        --QUIET true \
        --verbosity ERROR  &> var_select.log
 
-vcftools \
+vcftools \                                                                              # VCFTools command to filter on top of the previous filtering steps
        --gzvcf $BASE_DIR/outputs/6_genotyping/6_2_all/intermediate.filterd.vcf.gz \
        --max-missing-count 17 \
        --stdout  \
        --recode | \
-       bgzip > $BASE_DIR/outputs/6_genotyping/6_2_all/filterd.allBP.vcf.gz
+       bgzip > $BASE_DIR/outputs/6_genotyping/6_2_all/filterd.allBP.vcf.gz              # important output 
 
-rm $BASE_DIR/outputs/6_genotyping/6_2_all/intermediate.*
+rm $BASE_DIR/outputs/6_genotyping/6_2_all/intermediate.*                                # remove the unecessary intermediate files 
 
-echo -e "\n$BASE_DIR/outputs/6_genotyping/6_1_snp/filterd.allBP.vcf.gz" >> $BASE_DIR/outputs/lof/snp_all.fofn
+echo -e "\n$BASE_DIR/outputs/6_genotyping/6_1_snp/filterd.allBP.vcf.gz" >> $BASE_DIR/outputs/lof/snp_all.fofn # add the end product of genotyping all sites to a file of list of file to use later
 
 
 
@@ -844,43 +847,45 @@ cat > $jobfile14 <<EOA # generate the job file
 #SBATCH --time=4-00:00:00
 
 
-INPUT_GENO=$BASE_DIR/outputs/lof/snp_all.fofn
-GENO=\$(cat \${INPUT_GENO} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-P=\${GENO%/*}
-echo \${GENO}
-echo \${P}
+INPUT_GENO=$BASE_DIR/outputs/lof/snp_all.fofn                                         # input the list of SNP and allsites genotyping files 
+GENO=\$(cat \${INPUT_GENO} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # create array job for the 2 files
+P=\${GENO%/*}                                                                         # get the appropriate folder from the path to the file
+echo \${GENO}                                                                         # print file path to the job output file 
+echo \${P}                                                                            # print folder name to the job output file
 
-if [[ "\${SLURM_ARRAY_TASK_ID}" == "1" ]]
-then
+if [[ "\${SLURM_ARRAY_TASK_ID}" == "1" ]]                                             # define a prefix according to the job array number (to the file considered)
+then  
   PREFIX="snp"
 else
   PREFIX="all"
 fi
 
-echo \${PREFIX}
+echo \${PREFIX}                                                                       # print prefix to job output file
 
-#echo "PL17_35puepue PL17_35indpue" > $BASE_DIR/outputs/lof/change_sample.txt
+#echo "PL17_35puepue PL17_35indpue" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
 
 
-bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${GENO}
-tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz
+#bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
+#tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
 
-LG=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$1}')
-START=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$4}')
-END=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$5}')
-echo \${LG}
+LG=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$1}') # get LG (chromosomes) corresponding to region of interest to filter from annotation file
+START=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$4}') # get the start position
+END=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$5}') # get the end position
+echo \${LG}                                                                           # print LG, start and end position to job output file 
 echo \${START}
 echo \${END}
 
-vcftools \
+vcftools \                                                                            # VCFTools command to extract a region of interest out of genotyping file
       --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz \
       --chr \${LG} \
       --from-bp \${START} \
       --to-bp \${END} \
       --recode \
-      --out \${P}/\${PREFIX}_filterd_casz1.vcf.gz
+      --out \${P}/\${PREFIX}_filterd_casz1.vcf.gz                                     # important output
 
-echo -e "\${P}/\${PREFIX}_filterd.vcf.gz\n\${P}/\${PREFIX}_filterd_casz1.vcf.gz\n" >> $BASE_DIR/outputs/lof/17_pca.txt
+tabix -p vcf \${P}/\${PREFIX}_filterd_casz1.vcf.gz                                          # create index for the file just created
+
+echo -e "\${P}/\${PREFIX}_filterd.vcf.gz\n\${P}/\${PREFIX}_filterd_casz1.vcf.gz\n" >> $BASE_DIR/outputs/lof/17_pca.txt # add end product to file of list of file
 
 
 EOA
@@ -905,9 +910,9 @@ cat > $jobfiled <<EOA # generate the job file
 #SBATCH --time=1-02:00:00
 
 
-INPUT_PCA=$BASE_DIR/outputs/lof/17_pca.fofn
-PCA=\$(cat \${INPUT_PCA} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-FILE=\${*/%PCA}
+INPUT_PCA=$BASE_DIR/outputs/lof/17_pca.fofn                                           # input the file of list of files (4 files)
+PCA=\$(cat \${INPUT_PCA} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)               # create 1 job per genotyping file (4)
+FILE=\${*/%PCA}                                                                       # extract prefix for further analysis and naming of files
 VCF=\${FILE%.*}
 PREFIX=\${VCF%.*}
 echo \$PCA
@@ -915,10 +920,10 @@ echo \$FILE
 echo \$VCF
 echo \$PREFIX
 
-module load  hpc-env/8.3
-module load R/4.0.2-foss-2019b
+module load  hpc-env/8.3                                                              # load the environment where last version of R is available on the cluster
+module load R/4.0.2-foss-2019b                                                        # load the R version needed
 
-Rscript --vanilla $BASE_DIR/R/pca.R \${PCA} $BASE_DIR/pca/ \${PREFIX}
+Rscript --vanilla $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/pca/ \${PREFIX}                 # run the R script
 
 
 EOA
