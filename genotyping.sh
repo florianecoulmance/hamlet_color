@@ -879,7 +879,7 @@ vcftools --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz --chr \${LG} --from-bp \${START
 
 tabix -p vcf \${P}/\${PREFIX}_filterd_casz1.vcf.gz                                          # create index for the file just created
 
-echo -e "\${P}/\${PREFIX}_filterd.vcf.gz\n\${P}/\${PREFIX}_filterd_casz1.vcf.gz\n" >> $BASE_DIR/outputs/lof/17_pca.txt # add end product to file of list of file
+echo -e "\${P}/\${PREFIX}_filterd.vcf.gz\n\${P}/\${PREFIX}_filterd_casz1.vcf.gz" >> $BASE_DIR/outputs/lof/17_pca.txt # add end product to file of list of file
 
 
 EOA
