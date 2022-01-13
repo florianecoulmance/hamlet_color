@@ -875,13 +875,7 @@ echo \${LG}                                                                     
 echo \${START}
 echo \${END}
 
-vcftools \                                                                            # VCFTools command to extract a region of interest out of genotyping file
-       --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz \
-       --chr \${LG} \
-       --from-bp \${START} \
-       --to-bp \${END} \
-       --recode \
-       --out \${P}/\${PREFIX}_filterd_casz1.vcf.gz                                     # important output
+vcftools --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz --chr \${LG} --from-bp \${START} --to-bp \${END} --recode --out \${P}/\${PREFIX}_filterd_casz1.vcf.gz # VCFTools command to extract a region of interest out of genotyping file
 
 tabix -p vcf \${P}/\${PREFIX}_filterd_casz1.vcf.gz                                          # create index for the file just created
 
