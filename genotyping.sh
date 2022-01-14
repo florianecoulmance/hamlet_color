@@ -906,18 +906,16 @@ cat > $jobfiled <<EOA # generate the job file
 
 INPUT_PCA=$BASE_DIR/outputs/lof/17_pca.fofn                                           # input the file of list of files (4 files)
 PCA=\$(cat \${INPUT_PCA} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)               # create 1 job per genotyping file (4)
-FILE=\${*/%PCA}                                                                       # extract prefix for further analysis and naming of files
-VCF=\${FILE%.*}
-PREFIX=\${VCF%.*}
+FILE=\${PCA##*/}                                                                      # extract prefix for further analysis and naming of files
+PREFIX=\${FILE%%.*}
 echo \$PCA
 echo \$FILE
-echo \$VCF
 echo \$PREFIX
 
 module load  hpc-env/8.3                                                              # load the environment where last version of R is available on the cluster
 module load R/4.0.2-foss-2019b                                                        # load the R version needed
 
-Rscript --vanilla $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/pca/ \${PREFIX}                 # run the R script
+Rscript --vanilla $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/outputs/pca/ \${PREFIX}                 # run the R script
 
 
 EOA
