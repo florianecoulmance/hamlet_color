@@ -28,9 +28,11 @@ args = args[7:9]
 print(args)
 
 vcf_file <- as.character(args[1]) # Path to vcf file
+print(vcf_file)
 output_path <- as.character(args[2]) # Path to the output folder
-out_prefix < as.character(args[3])
-
+print(output_path)
+out_prefix <- as.character(args[3])
+print(out_prefix)
 
 # -------------------------------------------------------------------------------------------------------------------
 # ANALYSIS
