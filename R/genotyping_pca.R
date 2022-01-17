@@ -195,8 +195,3 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)
-
-
-
-
-
