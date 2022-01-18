@@ -914,6 +914,8 @@ echo \$PREFIX
 
 module load  hpc-env/8.3                                                              # load the environment where last version of R is available on the cluster
 module load R/4.0.2-foss-2019b                                                        # load the R version needed
+ml FriBidi
+ml HarfBuzz
 
 mkdir $BASE_DIR/figures/genotyping_pca/
 
