@@ -32,7 +32,7 @@ library(hypoimg)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[7:10]
+args = args[6:9]
 print(args)
 
 vcf_file <- as.character(args[1]) # Path to vcf file
@@ -88,7 +88,7 @@ genotyping_pca_files <- function(vcf,path,prefix) {
   # Save important files for plots
   save(pca,file = str_c(path,prefix,"_pca.RData"))
   pca_tib %>% write_tsv(path = str_c(path,prefix,"_eigenvectors.tsv"))
-  explained_var %>% write_tsv(path = str_c(path,prefix,"_explained_var.tsv"))
+  explained_var %>% write_tsv(path = str_c(path,prefix,"_eixplained_var.tsv"))
 
   # Close files
   snpgdsClose(genofile)
@@ -106,7 +106,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   # create pca plots from pca files previously created
 
   load(str_c(path,prefix,"_pca.RData"))
-  variance <- read_tsv(str_c(path,prefix,"_explained_var.tsv"))
+  variance <- read_tsv(str_c(path,prefix,"_eixplained_var.tsv"))
   names(variance) <- c("index", "variation")
   print(variance)
 
@@ -141,8 +141,9 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 
   # create list of colors to use in plots 
   spec_colors <- c("#000000", "#E69F00","#009E73",
-                  "#F0E442", "#0072B2", "#CC79A7",
-                  '#E67E22','#F772CB','#591402','#3F5202','#1010D4')
+                   "#F0E442", "#0072B2", "#CC79A7",
+                   "#E67E22","#F772CB","#591402",
+                   "#3F5202","#1010D4","#FF3333","#B266FF")
   # PC1 vs. PC2
   p1 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7) + 
         labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
