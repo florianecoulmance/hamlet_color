@@ -904,7 +904,7 @@ cat > $jobfiled <<EOA # generate the job file
 #SBATCH --time=4-02:00:00
 
 
-ml hpc-env/8.3
+ml hpc-env/8.3                                                                        # need to load environments that have the righ ressources for plots 
 ml R/4.0.2-foss-2019b
 #ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
 ml FriBidi
@@ -919,9 +919,9 @@ echo \$FILE
 echo \$PREFIX
 
 
-mkdir $BASE_DIR/figures/genotyping_pca/
+mkdir $BASE_DIR/figures/genotyping_pca/                                               # create an additional folder for the specific plots that will be created
 
-Rscript $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script
+Rscript $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
 
 
 EOA

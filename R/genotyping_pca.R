@@ -57,6 +57,7 @@ genotyping_pca_files <- function(vcf,path,prefix) {
   # Takes a vcf file with genotype SNPs and create pca and associated files
 
   ld_threshold <- 1 # set threshold of linkage desiquilibrium
+  
   # Read the files and convert to pca format
   gds_file <- str_c(path,prefix,".gds")
   snpgdsVCF2GDS(vcf.fn=vcf, out.fn=gds_file, method="biallelic.only")
@@ -69,7 +70,7 @@ genotyping_pca_files <- function(vcf,path,prefix) {
 
   # get eigenvectors
   pca_tib <- pca$eigenvect %>%
-             as_tibble() %>%
+             as_tibble() %>% 
              set_names(nm = str_pad(1:length(names(.)),2,pad = '0') %>%
              str_c("PC",.)) %>%
              mutate(sample = pca$sample.id,
@@ -101,12 +102,14 @@ genotyping_pca_files <- function(vcf,path,prefix) {
 genotyping_pca_plots <- function(path, prefix, pathfigure) {
 
   # create pca plots from pca files previously created
-
+  
+  # load and read the necessary files
   load(str_c(path,prefix,"_pca.RData"))
   variance <- read_tsv(str_c(path,prefix,"_eixplained_var.tsv"))
-  names(variance) <- c("index", "variation")
+  names(variance) <- c("index", "variation") 
   print(variance)
 
+  # modifications in pca files
   data <- data.frame(pca[["eigenvect"]])
   names(data) <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10", "PC11", "PC12", "PC13", "PC14", "PC15")
 
