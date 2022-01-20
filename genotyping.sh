@@ -901,7 +901,7 @@ cat > $jobfiled <<EOA # generate the job file
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=10G
-#SBATCH --time=1-02:00:00
+#SBATCH --time=4-02:00:00
 
 
 ml hpc-env/8.3
