@@ -95,9 +95,6 @@ genotyping_pca_files <- function(vcf,path,prefix) {
   system(str_c("rm ", gds_file))
   showfile.gds(closeall=TRUE)
 
-  # return necessary variables
-  return(pca, explained_var)
-
 }
 
 
@@ -192,7 +189,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 # -------------------------------------------------------------------------------------------------------------------
 
 # Perform PCA
-pca_data, var_data <- genotyping_pca_files(vcf_file,output_path,out_prefix)
+genotyping_pca_files(vcf_file,output_path,out_prefix)
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)
