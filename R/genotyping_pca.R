@@ -141,44 +141,74 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
                    "#F0E442", "#0072B2", "#CC79A7",
                    "#E67E22","#F772CB","#591402",
                    "#3F5202","#1010D4","#FF3333","#B266FF")
+
   # PC1 vs. PC2
-  p1 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7) + 
+  p1 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
         labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
-  p1 <- p1 + scale_color_manual(values=spec_colors,
-                              labels = logos_spec) +
+  p1 <- p1 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
-            guides(color = guide_legend(nrow = 1))
+        guides(color = guide_legend(nrow = 1))
 
   # PC1 vs PC3
-  p2 <- ggplot(data,aes(x=PC1,y=PC3,color=spec)) + geom_point(size = 7) +
+  p2 <- ggplot(data,aes(x=PC1,y=PC3,color=spec)) + geom_point(size = 7, aes(shape=geo)) +
         labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC3, var = ", format(round(variance$variation[3], 1), nsmall = 1), " %"))
-  p2 <- p2 + scale_color_manual(values=spec_colors,
-                                labels = logos_spec) +
-    theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+  p2 <- p2 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=30), legend.key=element_blank()) +
-    guides(color = guide_legend(nrow = 1))
+        guides(color = guide_legend(nrow = 1))
 
   # PC2 vs PC3
-  p3 <- ggplot(data,aes(x=PC2,y=PC3,color=spec)) + geom_point(size = 7) +
+  p3 <- ggplot(data,aes(x=PC2,y=PC3,color=spec)) + geom_point(size = 7, aes(shape=geo)) +
         labs(x = paste0("PC2, var =  ", format(round(variance$variation[2], 1), nsmall = 1), " %") , y = paste0("PC3, var = ", format(round(variance$variation[3], 1), nsmall = 1), " %"))
-  p3 <- p3 + scale_color_manual(values=spec_colors,
-                                labels = logos_spec) +
-    theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+  p3 <- p3 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=30), legend.key=element_blank()) +
-    guides(color = guide_legend(nrow = 1))
+        guides(color = guide_legend(nrow = 1))
   
-  # arrange all plots in pae
-  f <- ggarrange(p1, p2, p3, common.legend = TRUE, legend="bottom",ncol = 3, nrow = 1)
+  # PC1 vs PC2 zoom 1
+  p4 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
+        labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
+  p4 <- p4 + xlim(0, 0.22) + ylim(-0.06,0) 
+  p4 <- p4 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+                  panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
+                  text = element_text(size=30), legend.key=element_blank()) +
+        guides(color = guide_legend(nrow = 1))
 
-  # save figure
+  # PC1 vs PC2 zoom 2
+  p5 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
+        labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
+  p5 <- p5 + xlim(-0.1, 0) + ylim(-0.06,0.125) 
+  p5 <- p5 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+                  panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
+                  text = element_text(size=30), legend.key=element_blank()) +
+        guides(color = guide_legend(nrow = 1))
+
+
+  # arrange all plots in pae
+  f <- ggarrange(p1, p2, p3, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1)
+  g <- ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1)
+
+  # save figures
   hypo_save(filename = paste0(pathfigure,prefix,"_pca.pdf"),
           plot = f,
-          width = 30,
+          width = 40,
           height = 10)
+
+  hypo_save(filename = paste0(pathfigure,prefix,"_pca_zoom.pdf"),
+            plot = g,
+            width = 40,
+            height = 10)
 
 }
 
@@ -189,7 +219,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 # -------------------------------------------------------------------------------------------------------------------
 
 # Perform PCA
-genotyping_pca_files(vcf_file,output_path,out_prefix)
+#genotyping_pca_files(vcf_file,output_path,out_prefix)
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)
