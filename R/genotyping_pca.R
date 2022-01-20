@@ -131,10 +131,10 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
     uni = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='120' /><br>*H. unicolor*")
 
   # create a list of location logo to integrate to plots
-  logos_loc <- c(bel = "Belize", #<img src='/user/doau0129/work/chapter1/ressources/logos/belize.png' width='100' /><br>
-                boc = "Panama", #<img src='/user/doau0129/work/chapter1/ressources/logos/pan.png' width='100' /><br>
-                flo = "Florida", #<img src='/user/doau0129/work/chapter1/ressources/logos/us.png' width='100' /><br>
-                pue = "Puerto Rico") #<img src='/user/doau0129/work/chapter1/ressources/logos/puer.png' width='100' /><br>
+  logos_loc <- c(bel = "<img src='/user/doau0129/work/chapter1/ressources/logos/belize.png' width='100' /><br>*Belize*", 
+                boc = "<img src='/user/doau0129/work/chapter1/ressources/logos/pan.png' width='100' /><br>*Panama*",
+                flo = "<img src='/user/doau0129/work/chapter1/ressources/logos/us.png' width='100' /><br>*Florida*",
+                pue = "<img src='/user/doau0129/work/chapter1/ressources/logos/puer.png' width='100' /><br>*Puerto Rico*")
 
   # create list of colors to use in plots 
   spec_colors <- c("#000000", "#E69F00","#009E73",
