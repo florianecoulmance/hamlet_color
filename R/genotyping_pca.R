@@ -203,12 +203,12 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   hypo_save(filename = paste0(pathfigure,prefix,"_pca.pdf"),
           plot = f,
           width = 40,
-          height = 10)
+          height = 18)
 
   hypo_save(filename = paste0(pathfigure,prefix,"_pca_zoom.pdf"),
             plot = g,
             width = 40,
-            height = 10)
+            height = 18)
 
 }
 
