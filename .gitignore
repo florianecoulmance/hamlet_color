@@ -2,7 +2,6 @@
 images/*
 ./multi*
 ./PC1*
-fst*
 NA*
 slurm*
 logs/*
