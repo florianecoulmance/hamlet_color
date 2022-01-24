@@ -222,7 +222,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   # PC1 vs PC2 zoom 5
   p8 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
         labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
-  p8 <- p8 + xlim(-0.015, -0.01450) + ylim(0.125,0.1) 
+  p8 <- p8 + xlim(-0.015, -0.01450) + ylim(-0.125,0.1) 
   p8 <- p8 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
