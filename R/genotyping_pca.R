@@ -197,10 +197,42 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
                   text = element_text(size=30), legend.key=element_blank()) +
         guides(color = guide_legend(nrow = 1))
 
+  # PC1 vs PC2 zoom 3
+  p6 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
+        labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
+  p6 <- p6 + xlim(-0.0625, 0.0625) + ylim(0.1,0.5) 
+  p6 <- p6 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+                  panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
+                  text = element_text(size=30), legend.key=element_blank()) +
+        guides(color = guide_legend(nrow = 1))
+
+  # PC1 vs PC2 zoom 4
+  p7 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
+        labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
+  p7 <- p7 + xlim(-0.0625, 0.0625) + ylim(-0.05,0.05) 
+  p7 <- p7 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+                  panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
+                  text = element_text(size=30), legend.key=element_blank()) +
+        guides(color = guide_legend(nrow = 1))
+
+  # PC1 vs PC2 zoom 5
+  p8 <- ggplot(data,aes(x=PC1,y=PC2,color=spec)) + geom_point(size = 7, aes(shape=geo)) + 
+        labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
+  p8 <- p8 + xlim(-0.0625, 0.0) + ylim(-0.1,-0.05) 
+  p8 <- p8 + scale_color_manual(values=spec_colors, labels = logos_spec) +
+        scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
+                  panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
+                  text = element_text(size=30), legend.key=element_blank()) +
+        guides(color = guide_legend(nrow = 1))
 
   # arrange all plots in pae
   f <- ggarrange(p1, p2, p3, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1)
-  g <- ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1)
+  g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2)
 
   # save figures
   hypo_save(filename = paste0(pathfigure,prefix,"_pca.pdf"),
