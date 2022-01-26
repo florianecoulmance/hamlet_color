@@ -48,7 +48,7 @@ print(path_figures)
 # -------------------------------------------------------------------------------------------------------------------
 
 
-pairwise_table <- function(file_list) {
+pairwise_table <- function(path,file_list) {
 
   # Takes a list of files and combine their content into 1 table
 
@@ -56,7 +56,7 @@ pairwise_table <- function(file_list) {
              str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
-  data <- purrr::pmap(tibble(file = str_c(file_list),run = run_files),hypo_import_windows) %>%
+  data <- purrr::pmap(tibble(file = str_c(path,file_list),run = run_files),hypo_import_windows) %>%
           bind_rows() %>%
           set_names(., nm = c('CHROM', 'BIN_START', 'BIN_END', 'N_VARIANTS', 'WEIGHTED_FST', 'MEAN_FST', 'GSTART', 'POS', 'GPOS', 'run')) %>%
           separate(run, into =c("loc","pop1","pop2")) %>% 
@@ -247,9 +247,9 @@ files_spec <- files[grepl("^nig_|^pue_", files)]
 print(files_spec)
 
 # Create tables for pairwise fst comparisons
-pairwise_loc <- pairwise_table(files_loc)
+pairwise_loc <- pairwise_table(fst_folder,files_loc)
 print(pairwise_loc)
-pairwise_spec <- pairwise_table(files_spec)
+pairwise_spec <- pairwise_table(fst_folder,files_spec)
 print(pairwise_spec)
 
 # Open the global fst file
