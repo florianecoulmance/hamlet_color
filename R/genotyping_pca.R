@@ -1,6 +1,6 @@
 # by: Floriane Coulmance: 01/05/2020
 # usage:
-# Rscript --vanilla pca.R <vcf_file> <output_path> <out_prefix>
+# Rscript pca.R <vcf_file> <output_path> <out_prefix>
 # -------------------------------------------------------------------------------------------------------------------
 # vcf_file in : 1) $BASE_DIR/ 2) 3) 4) 
 # output_path in : $BASE_DIR/pca/
@@ -246,6 +246,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
             height = 18)
 
 }
+
 
 # -------------------------------------------------------------------------------------------------------------------
 # ANALYSIS
