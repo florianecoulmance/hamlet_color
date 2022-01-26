@@ -241,9 +241,11 @@ files <- dir(fst_folder, pattern = '.50k.windowed.weir.fst.gz')
 print(files)
 
 # Locate the files either corresponding to a location fst or a species fst
-files_loc <- grepl("^bel|boc|puer", files)
+files_loc <- files %>%
+             filter(grepl("^bel|^boc|^puer", files))
 print(files_loc)
-files_spec <- grepl("^nig|pue"), files)
+files_spec <- files %>%
+              filter(grepl("^nig|^pue", files))
 print(files_spec)
 
 # Create tables for pairwise fst comparisons
