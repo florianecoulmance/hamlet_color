@@ -56,6 +56,8 @@ pairwise_table <- function(path,file_list) {
              str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
+  print(run_files)
+  
   data <- purrr::pmap(tibble(file = str_c(path,file_list),run = run_files),hypo_import_windows) %>%
           bind_rows() %>%
           set_names(., nm = c('CHROM', 'BIN_START', 'BIN_END', 'N_VARIANTS', 'WEIGHTED_FST', 'MEAN_FST', 'GSTART', 'POS', 'GPOS', 'run')) %>%
