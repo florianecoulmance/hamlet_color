@@ -180,10 +180,10 @@ legend_creation <- function(table_global, param) {
   
   grob_list <- tibble(dataset = global1$dataset, RUN = global1$run, grob = grobs)
   
-  list_logos <- if(param = "loc")
-    grob_list %>% filter(dataset != "nig" & dataset != "pue")
-  else
-    grob_list %>% filter(dataset != "bel" & dataset != "boc" & dataset != "puer")
+  list_logos <- if(param=="loc")
+                grob_list %>% filter(dataset != "nig" & dataset != "pue")
+                else
+                grob_list %>% filter(dataset != "bel" & dataset != "boc" & dataset != "puer")
   
   return(list_logos)
   
