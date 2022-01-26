@@ -56,7 +56,7 @@ pairwise_table <- function(file_list) {
              str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
-  data <- purrr::pmap(tibble(file = str_c(files),run = run_files),hypo_import_windows) %>%
+  data <- purrr::pmap(tibble(file = str_c(file_list),run = run_files),hypo_import_windows) %>%
           bind_rows() %>%
           set_names(., nm = c('CHROM', 'BIN_START', 'BIN_END', 'N_VARIANTS', 'WEIGHTED_FST', 'MEAN_FST', 'GSTART', 'POS', 'GPOS', 'run')) %>%
           separate(run, into =c("loc","pop1","pop2")) %>% 
@@ -241,9 +241,9 @@ files <- dir(fst_folder, pattern = '.50k.windowed.weir.fst.gz')
 print(files)
 
 # Locate the files either corresponding to a location fst or a species fst
-files_loc <- files[grepl("^bel|^boc|^puer", files)]
+files_loc <- files[grepl("^bel_|^boc_|^puer_", files)]
 print(files_loc)
-files_spec <- files[grepl("^nig|^pue", files)]
+files_spec <- files[grepl("^nig_|^pue_", files)]
 print(files_spec)
 
 # Create tables for pairwise fst comparisons
