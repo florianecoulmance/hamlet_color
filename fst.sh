@@ -414,6 +414,12 @@ cat > $jobfile6 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=32G
 #SBATCH --time=04:30:00
 
+
+ml hpc-env/8.3                                                                        # need to load environments that have the righ ressources for plots 
+ml R/4.0.2-foss-2019b
+ml FriBidi
+ml HarfBuzz
+
 mkdir $BASE_DIR/figures/fst/                                               # create an additional folder for the specific plots that will be created
 
 Rscript $BASE_DIR/R/fst_plots.R $BASE_DIR/outputs/8_fst/ $BASE_DIR/outputs/8_fst/fst_globals.txt $BASE_DIR/figures/fst/

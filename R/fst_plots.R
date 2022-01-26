@@ -15,13 +15,9 @@ library(ggplot2)
 library(tidyverse)
 library(hypogen)
 library(hypoimg)
-library(usethis)
-library(devtools)
 library(dplyr)
 library(plyr)
 library(ggpubr)
-library(vroom)
-
 
 # -------------------------------------------------------------------------------------------------------------------
 # ARGUMENTS
