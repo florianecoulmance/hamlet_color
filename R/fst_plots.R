@@ -18,6 +18,8 @@ library(hypoimg)
 library(dplyr)
 library(plyr)
 library(ggpubr)
+library(vroom)
+
 
 # -------------------------------------------------------------------------------------------------------------------
 # ARGUMENTS
@@ -50,7 +52,7 @@ pairwise_table <- function(file_list) {
 
   # Takes a list of files and combine their content into 1 table
 
-  run_files <- files %>%
+  run_files <- file_list %>%
              str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
