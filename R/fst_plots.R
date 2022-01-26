@@ -30,7 +30,7 @@ library(vroom)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:9]
+args = args[6:8]
 print(args)
 
 fst_folder <- as.character(args[1]) # Path to fst folder
@@ -241,10 +241,10 @@ files <- dir(fst_folder, pattern = '.50k.windowed.weir.fst.gz')
 print(files)
 
 # Locate the files either corresponding to a location fst or a species fst
-pairwise_loc <- list.files(files, pattern = c("^bel", "^boc", "^puer"))
-print(pairwise_loc)
-pairwise_spec <- list.files(files, pattern = c("^nig", "^pue"))
-print(pairwise_spec)
+files_loc <- grepl("^bel|boc|puer", files)
+print(files_loc)
+files_spec <- grepl("^nig|pue"), files)
+print(files_spec)
 
 # Create tables for pairwise fst comparisons
 pairwise_loc <- pairwise_table(files_loc)
