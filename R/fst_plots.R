@@ -56,8 +56,6 @@ pairwise_table <- function(path,file_list) {
              str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
-  print(run_files)
-  
   data <- purrr::pmap(tibble(file = str_c(path,file_list),run = run_files),hypo_import_windows) %>%
           bind_rows() %>%
           set_names(., nm = c('CHROM', 'BIN_START', 'BIN_END', 'N_VARIANTS', 'WEIGHTED_FST', 'MEAN_FST', 'GSTART', 'POS', 'GPOS', 'run')) %>%
@@ -240,6 +238,10 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
 
 # Locate all the files that will be used in plots
 files <- dir(fst_folder, pattern = '.50k.windowed.weir.fst.gz')
+print(files)
+
+# Remove empty files from list of files
+for (f in files) { if (system(paste("wc -l ",fst_folder,f))==1) files[files != f] }
 print(files)
 
 # Locate the files either corresponding to a location fst or a species fst
