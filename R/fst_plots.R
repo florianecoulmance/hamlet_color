@@ -199,12 +199,12 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                                          labels = sprintf("%.2f", sc_ax$breaks))) +
     scale_y_continuous(name = expression(italic('F'[ST])),
                        limits = c(-.1,1),
-                       breaks = c(0,.5,1)) +
-    theme_hypo() +
-    theme(strip.text = element_blank(),
-          legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.bottom = element_text(colour = 'darkgray'))
+                       breaks = c(0,.5,1)) #+
+    # theme_hypo() +
+    # theme(strip.text = element_blank(),
+    #       legend.position = 'none',
+    #       axis.title.x = element_text(),
+    #       axis.text.x.bottom = element_text(colour = 'darkgray'))
   
   hypo_save(filename = paste0(path,prefix,"_fst.pdf"),
             plot = p,
