@@ -55,11 +55,16 @@ pairwise_table <- function(path,file_list) {
              str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
+  print(run_files)
+
   data <- purrr::pmap(tibble(file = str_c(path,file_list),run = run_files),hypo_import_windows) %>%
           bind_rows() %>%
           set_names(., nm = c('CHROM', 'BIN_START', 'BIN_END', 'N_VARIANTS', 'WEIGHTED_FST', 'MEAN_FST', 'GSTART', 'POS', 'GPOS', 'run')) %>%
           separate(run, into =c("loc","pop1","pop2")) %>% 
           mutate(run = str_c(pop1,loc,'-',pop2,loc),run = fct_reorder(run,WEIGHTED_FST))
+  
+  print(data$run)
+  print(n_distinct(data$run))
 
   return(data)
 
@@ -188,7 +193,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
     geom_vline(data = hypogen::hypo_karyotype,
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
-    geom_point(data = table_fst,
+    geom_point(data = table_fst %>% mutate(run = factor(run, levels = levels(global_bar$run_label))),
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
     geom_hypo_grob(data = list_grob,
@@ -206,10 +211,12 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
           axis.title.x = element_text(),
           axis.text.x.bottom = element_text(colour = 'darkgray'))
   
-  hypo_save(filename = paste0(path,prefix,"_fst.pdf"),
+  hypo_save(filename = paste0(path,prefix,"_fst.png"),
             plot = p,
             width = 8,
-            height = 12)
+            height = 12,
+            dpi = 600,
+            type = "cairo")
   
 }
 
