@@ -210,8 +210,13 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
   # Create the plot
   p <- ggplot() +
        facet_wrap(.~run, as.table = TRUE, ncol = 1,dir = 'v') +
-       geom_rect(data = table_global %>%
-                 mutate(xmax = xmax * hypo_karyotype$GEND[23]),
+       geom_rect(data = table_global %>% 
+                        select(weighted_fst, run) %>%
+                        setNames(., nm = c('fst', 'run')) %>%
+                        pmap(., GenomicOriginsScripts::fst_bar_row_run) %>%
+                        bind_rows() %>%
+                        mutate(run = fct_reorder(run,xmax_org)) %>%
+                        mutate(xmax = xmax * hypo_karyotype$GEND[23]),
                  aes(xmin = 0, xmax = xmax,
                  ymin = -Inf, ymax = Inf),
                  color = rgb(1,1,1,0),
