@@ -15,6 +15,7 @@ library(ggplot2)
 library(tidyverse)
 library(hypogen)
 library(hypoimg)
+library(stringr)
 library(dplyr)
 library(plyr)
 library(ggpubr)
@@ -51,8 +52,8 @@ pairwise_table <- function(path,file_list) {
 
   # Takes a list of files and combine their content into 1 table
 
-  run_files <- file_list %>%
-             str_sub(.,1,11) %>%
+  run_files <- file_list %>% str_extract(., "[^.]+") %>%
+             #str_sub(.,1,11) %>%
              str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
 
   print(run_files)
@@ -64,8 +65,10 @@ pairwise_table <- function(path,file_list) {
           mutate(run = str_c(pop1,loc,'-',pop2,loc),run = fct_reorder(run,WEIGHTED_FST))
   
   #print(data$run)
-  print(distinct(data$run))
-  print(n_distinct(data$run))
+  #print(distinct(data$run))
+  #print(n_distinct(data$run))
+  print(unique(data[["run"]]))
+  print(length(unique(data[["run"]])))
 
   return(data)
 
