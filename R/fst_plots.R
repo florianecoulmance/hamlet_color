@@ -189,8 +189,8 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
     geom_hypo_grob(data = list_grob,
-                   aes(grob = grob, x = 1,y = 1),
-                   angle = 0, height = 1, width = 1) +
+                   aes(grob = grob, x = .9,y = .7),
+                   angle = 0, height = .5, width = .16) +
     geom_point(data = table_fst,
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
@@ -208,8 +208,8 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
   
   hypo_save(filename = paste0(path,prefix,"_fst.pdf"),
             plot = p,
-            width = 26,
-            height = 40)
+            width = 8,
+            height = 12)
   
 }
 
