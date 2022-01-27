@@ -184,14 +184,16 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                            scales::pretty_breaks(4))
   
   p <- ggplot() +
-    facet_wrap(run~., ncol = 1,dir = 'v') +
+    facet_wrap(run~., as.table = TRUE, ncol = 1,dir = 'v') +
     geom_vline(data = hypogen::hypo_karyotype,
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
     geom_point(data = table_fst,
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
-    annotation_custom(grob = list_grob$grob) +
+    geom_hypo_grob(data = list_grob,
+                   aes(grob = grob, x = .9,y = .7),
+                   angle = 0, height = .5, width = .16) +
     scale_x_hypo_LG(sec.axis =  sec_axis(~ ./hypo_karyotype$GEND[23],
                                          breaks = (sc_ax$breaks/max(table_global$weighted_fst)),
                                          labels = sprintf("%.2f", sc_ax$breaks))) +
