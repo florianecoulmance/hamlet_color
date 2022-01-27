@@ -208,7 +208,8 @@ rescale_fst <- function (fst) {
   start <- 0
   end <- 1
   fst_max <- max(global_table$weighted_fst)
-  scales::rescale(fst, from = c(0, fst_max), to = c(start, end))
+  fst_min <- min(global_table$weighted_fst)
+  scales::rescale(fst, from = c(fst_min, fst_max), to = c(start, end))
 
 }
 
@@ -216,8 +217,8 @@ rescale_fst <- function (fst) {
 fst_bar_row_run <- function (fst, run) {
 
     # Modified function from GenomicOriginsScripts used to make the global fst in plot
-    tibble::tibble(xmin = rescale_fst(0), xmax = rescale_fst(fst),
-                   xmin_org = 0, xmax_org = fst, ymin = 0, ymax = 0.15, run = run)
+    tibble::tibble(xmin = rescale_fst(fst), xmax = rescale_fst(fst),
+                   xmin_org = fst, xmax_org = fst, ymin = 0, ymax = 0.15, run = run)
 
 }
 
@@ -237,8 +238,9 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                         pmap(., fst_bar_row_run) %>%
                         bind_rows() %>%
                         mutate(run = fct_reorder(run,xmax_org)) %>%
-                        mutate(xmax = xmax * hypo_karyotype$GEND[23]),
-                 aes(xmin = 0, xmax = xmax,
+                        mutate(xmax = xmax * hypo_karyotype$GEND[23],
+                               xmin = xmin * hypo_karyotype$GEND[23]),
+                 aes(xmin = xmin, xmax = xmax,
                  ymin = -Inf, ymax = Inf),
                  color = rgb(1,1,1,0),
                  fill = GenomicOriginsScripts::clr_below) +
