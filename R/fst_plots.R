@@ -87,6 +87,7 @@ fst_global_table <- function(file) {
     relocate(dataset, run, pair1, pair2, weighted_fst, mean_fst) %>%
     filter(weighted_fst != "NaN" & mean_fst != "NaN")
   
+  print(global1$run)
   return(global1)
   
 }
@@ -197,7 +198,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
     geom_vline(data = hypogen::hypo_karyotype,
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
-    geom_point(data = table_fst %>% mutate(run = factor(run, levels = levels(global_bar$run_label))),
+    geom_point(data = table_fst %>% mutate(run = factor(run, levels = levels(table_global$run_label))),
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
     geom_hypo_grob(data = list_grob,
