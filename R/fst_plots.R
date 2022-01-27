@@ -213,6 +213,15 @@ rescale_fst <- function (fst) {
 }
 
 
+fst_bar_row_run <- function (fst, run) {
+
+    # Modified function from GenomicOriginsScripts used to make the global fst in plot
+    tibble::tibble(xmin = rescale_fst(0), xmax = rescale_fst(fst),
+                   xmin_org = 0, xmax_org = fst, ymin = 0, ymax = 0.15, run = run)
+
+}
+
+
 fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
   
   # Take fst data table and global fst table to make a faceted plot
@@ -225,7 +234,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
        geom_rect(data = table_global %>% 
                         select(weighted_fst, run) %>%
                         setNames(., nm = c('fst', 'run')) %>%
-                        pmap(., GenomicOriginsScripts::fst_bar_row_run) %>%
+                        pmap(., fst_bar_row_run) %>%
                         bind_rows() %>%
                         mutate(run = fct_reorder(run,xmax_org)) %>%
                         mutate(xmax = xmax * hypo_karyotype$GEND[23]),
