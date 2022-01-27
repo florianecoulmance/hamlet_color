@@ -19,8 +19,6 @@ library(dplyr)
 library(plyr)
 library(ggpubr)
 library(vroom)
-library(GenomicOriginsScripts)
-
 
 # -------------------------------------------------------------------------------------------------------------------
 # ARGUMENTS
