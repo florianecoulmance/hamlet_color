@@ -193,7 +193,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
     #               angle = 0, height = .5, width = .16) +
     geom_point(data = table_fst,
                aes(x = GPOS, y = WEIGHTED_FST),
-               size=.2) #+
+               size=.2) +
     scale_x_hypo_LG(sec.axis =  sec_axis(~ ./hypo_karyotype$GEND[23],
                                          breaks = (sc_ax$breaks/max(table_global$weighted_fst)),
                                          labels = sprintf("%.2f", sc_ax$breaks))) +
