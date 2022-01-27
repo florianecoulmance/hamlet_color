@@ -215,7 +215,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                  aes(xmin = 0, xmax = xmax,
                  ymin = -Inf, ymax = Inf),
                  color = rgb(1,1,1,0),
-                 fill = clr_below) +
+                 fill = GenomicOriginsScripts::clr_below) +
        geom_vline(data = hypogen::hypo_karyotype,
                   aes(xintercept = GEND),
                   color = hypo_clr_lg) +
