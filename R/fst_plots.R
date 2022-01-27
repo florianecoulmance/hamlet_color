@@ -19,6 +19,7 @@ library(dplyr)
 library(plyr)
 library(ggpubr)
 library(vroom)
+library(GenomicOriginsScripts)
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -180,13 +181,14 @@ legend_creation <- function(table_global, param) {
                                circle_color = 'black',plot_names = TRUE) %>%
                   ggplotGrob())
   
-  grob_list <- tibble(dataset = global1$dataset, RUN = global1$run, grob = grobs)
+  grob_list <- tibble(dataset = table_global$dataset, RUN = table_global$run, grob = grobs)
   
-  list_logos <- if(param=="loc")
+  list_logos <- if(param=="loc") {
                 grob_list %>% filter(dataset != "nig" & dataset != "pue")
-                else
+                } else {
                 grob_list %>% filter(dataset != "bel" & dataset != "boc" & dataset != "puer")
-  
+                }
+
   return(list_logos)
   
 }
@@ -196,7 +198,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
   
   # Take fst data table and global fst table to make a faceted plot
   
-  sc_ax <- scales::cbreaks(c(0,max(table_global$weighted)),
+  sc_ax <- scales::cbreaks(c(0,max(table_global$weighted_fst)),
                            scales::pretty_breaks(4))
   
   p <- ggplot() +
@@ -205,13 +207,13 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
     geom_hypo_grob(data = list_grob,
-                   aes(grob = grob, x = .9,y = .7),
-                   angle = 0, height = .5, width = .16) +
+                   aes(grob = grob, x = 1,y = 1),
+                   angle = 0, height = 1, width = 1) +
     geom_point(data = table_fst,
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
     scale_x_hypo_LG(sec.axis =  sec_axis(~ ./hypo_karyotype$GEND[23],
-                                         breaks = (sc_ax$breaks/max(table_global$weighted)),
+                                         breaks = (sc_ax$breaks/max(table_global$weighted_fst)),
                                          labels = sprintf("%.2f", sc_ax$breaks))) +
     scale_y_continuous(name = expression(italic('F'[ST])),
                        limits = c(-.1,1),
@@ -223,7 +225,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
           axis.text.x.bottom = element_text(colour = 'darkgray'))
   
   hypo_save(filename = paste0(path,prefix,"_fst.pdf"),
-            plot = f,
+            plot = p,
             width = 26,
             height = 40)
   
@@ -241,7 +243,15 @@ files <- dir(fst_folder, pattern = '.50k.windowed.weir.fst.gz')
 print(files)
 
 # Remove empty files from list of files
-for (f in files) { if (system(paste("wc -l ",fst_folder,f))==1) files[files != f] }
+for(f in files){
+  print(f)
+  x <- system(paste0("wc -l ",fst_folder,f),intern=TRUE)
+  print(x)
+  if(grepl("^1",x)){
+  files <- files[files != f]
+  }
+}
+
 print(files)
 
 # Locate the files either corresponding to a location fst or a species fst
@@ -271,7 +281,5 @@ logos_spec <- legend_creation(global_table, "spec")
 print(logos_spec)
 
 # Create fst plots
-fst_plots(pairwise_loc, global_table, logos_loc, "loc")
-fst_plots(pairwise_spec, global_table, logos_spec, "spec")
-
-
+fst_plots(pairwise_loc, global_table, logos_loc, path_figures, "loc")
+fst_plots(pairwise_spec, global_table, logos_spec, path_figures, "spec")
