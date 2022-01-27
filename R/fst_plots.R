@@ -163,7 +163,7 @@ legend_creation <- function(table_global, param) {
                 GenomicOriginsScripts::anno_pair_flag(loc = "pue", left = "pue", right = "uni") %>%
                   ggplotGrob())
   
-  grob_list <- tibble(dataset = table_global$dataset, RUN = table_global$run, grob = grobs)
+  grob_list <- tibble(dataset = table_global$dataset, run = table_global$run, grob = grobs)
   
   list_logos <- if(param=="loc") {
                 grob_list %>% filter(dataset != "nig" & dataset != "pue")
@@ -188,7 +188,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
     geom_vline(data = hypogen::hypo_karyotype,
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
-    geom_point(data = table_fst %>% mutate(run = factor(run, levels = levels(table_global$run))),
+    geom_point(data = table_fst,
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
     geom_hypo_grob(data = list_grob,
