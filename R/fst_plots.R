@@ -63,7 +63,8 @@ pairwise_table <- function(path,file_list) {
           separate(run, into =c("loc","pop1","pop2")) %>% 
           mutate(run = str_c(pop1,loc,'-',pop2,loc),run = fct_reorder(run,WEIGHTED_FST))
   
-  print(data$run)
+  #print(data$run)
+  print(distinct(data$run))
   print(n_distinct(data$run))
 
   return(data)
