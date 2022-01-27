@@ -83,100 +83,84 @@ fst_global_table <- function(file) {
 }
 
 
+anno_pair_spe <- function (spe, left, right,
+                           circle_color = NA,
+                           circle_fill_left = "white",
+                           circle_fill_right = "lightgray",
+                           circle_lwd = 0.5, plot_names = FALSE,
+                           plot_name_size = 3,
+                           font_family = "sans", ...) {
+  
+  # Modified function from GenomicOriginsScripts to get 2 flags around 1 species
+
+  nr_left <- which(hypo_flag$geo %>% str_sub(.,1,3) == left)
+  
+  nr_right <- which(hypo_flag$geo %>% str_sub(.,1,3) == right)
+  
+  nr_spe <- which((hypo_img$spec %>% str_sub(.,1,3)) == spe)
+  
+  p <- ggplot() +
+    theme_void() +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(limits = c(-0.4, 0.38)) +
+    annotation_custom(hypo_flag$flag[[nr_right]], xmin = 0.5, xmax = 1.02, ymin = -Inf, ymax = Inf) +
+    annotation_custom(hypo_flag$flag[[nr_left]], xmin = -1.02, xmax = -0.5, ymin = -Inf, ymax = Inf)+
+    annotation_custom(hypo_img$l[[nr_spe]], xmin = -0.3, xmax = .3, ymin = -Inf, ymax = Inf) +
+    coord_cartesian(xlim = c(-1.1,1.1))
+
+  return(p)
+
+}
+
 legend_creation <- function(table_global, param) {
   
   # Creates the legend for each panel with logos
   
-  grobs <- list(hypo_anno_pair('indigo','maya',
-                               circle_color = 'black',plot_names = TRUE) %>%
+  grobs <- list(GenomicOriginsScripts::anno_pair_flag(loc = "bel", left = "ind", right = "may") %>%
                   ggplotGrob(),
-                hypo_anno_pair('indigo','nigricans',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "bel", left = "ind", right = "nig") %>%
                   ggplotGrob(),
-                hypo_anno_pair('indigo','puella',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "bel", left = "ind", right = "pue") %>%
                   ggplotGrob(),
-                hypo_anno_pair('maya','nigricans',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "bel", left = "may", right = "nig") %>%
                   ggplotGrob(),
-                hypo_anno_pair('maya','puella',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "bel", left = "may", right = "pue") %>%
                   ggplotGrob(),
-                hypo_anno_pair('nigricans','puella',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "bel", left = "nig", right = "pue") %>%
                   ggplotGrob(),
-                hypo_anno_pair('nigricans','puella',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "pan", left = "nig", right = "pue") %>%
                   ggplotGrob(),
-                hypo_anno_pair('nigricans','unicolor',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "pan", left = "nig", right = "uni") %>%
                   ggplotGrob(),
-                hypo_anno_pair('puella','unicolor',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "pan", left = "pue", right = "uni") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'belize', right = 'puerto_rico',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="nig",left= "bel",right="pue") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'panama', right = 'belize',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="nig",left= "pan",right="bel") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'panama', right = 'puerto_rico',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="nig",left= "pan",right="pue") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'usa', right = 'belize',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="nig",left= "usa",right="bel") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'usa', right = 'panama',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="nig",left= "usa",right="pan") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'belize', right = 'puerto_rico',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="pue",left= "bel",right="pue") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'panama', right = 'belize',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="pue",left= "pan",right="bel") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'panama', right = 'puerto_rico',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="pue",left= "pan",right="pue") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'usa', right = 'belize',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="pue",left= "usa",right="bel") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'usa', right = 'panama',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="pue",left= "usa",right="pan") %>%
                   ggplotGrob(),
-                hypo_anno_flag_pair(left= 'usa', right = 'puerto_rico',
-                                    flag_lwd = 1, flag_line_color = 'black',
-                                    circle_color = 'black', plot_names = TRUE,
-                                    plot_name_size = 5) %>%
+                anno_pair_spe(spe ="pue",left= "usa",right="pue") %>%
                   ggplotGrob(),
-                hypo_anno_pair('chlorurus','puella',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "pue", left = "chl", right = "pue") %>%
                   ggplotGrob(),
-                hypo_anno_pair('chlorurus','unicolor',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "pue", left = "chl", right = "uni") %>%
                   ggplotGrob(),
-                hypo_anno_pair('puella','unicolor',
-                               circle_color = 'black',plot_names = TRUE) %>%
+                GenomicOriginsScripts::anno_pair_flag(loc = "pue", left = "pue", right = "uni") %>%
                   ggplotGrob())
   
   grob_list <- tibble(dataset = table_global$dataset, RUN = table_global$run, grob = grobs)
