@@ -188,9 +188,9 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
     geom_vline(data = hypogen::hypo_karyotype,
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
-    geom_hypo_grob(data = list_grob,
-                   aes(grob = grob, x = .9,y = .7),
-                   angle = 0, height = .5, width = .16) +
+    #geom_hypo_grob(data = list_grob,
+    #               aes(grob = grob, x = .9,y = .7),
+    #               angle = 0, height = .5, width = .16) +
     geom_point(data = table_fst,
                aes(x = GPOS, y = WEIGHTED_FST),
                size=.2) +
