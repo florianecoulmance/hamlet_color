@@ -184,7 +184,7 @@ fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
                            scales::pretty_breaks(4))
   
   p <- ggplot() +
-    facet_wrap(. ~ run, ncol = 1,dir = 'v') +
+    facet_wrap(run~., ncol = 1,dir = 'v') +
     geom_vline(data = hypogen::hypo_karyotype,
                aes(xintercept = GEND),
                color = hypo_clr_lg) +
