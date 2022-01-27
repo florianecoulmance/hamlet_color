@@ -201,6 +201,18 @@ legend_creation <- function(table_global, param) {
 }
 
 
+rescale_fst <- function (fst) {
+
+  # Modified function from GenomicOriginsScripts used internaly by the GenomicOriginsScripts::fst_bar_row_run function
+
+  start <- 0
+  end <- 1
+  fst_max <- max(global_table$weighted_fst)
+  scales::rescale(fst, from = c(0, fst_max), to = c(start, end))
+
+}
+
+
 fst_plots <- function(table_fst, table_global, list_grob, path, prefix) {
   
   # Take fst data table and global fst table to make a faceted plot
