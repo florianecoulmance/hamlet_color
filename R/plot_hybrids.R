@@ -96,7 +96,7 @@ getPofZ <- function(res_paths) {
              str_remove("newHyb.") %>% 
              str_remove(".80SNPs.txt_Results/") %>%
              sub(".*/", "", .)
-print(runname)
+  print(runname)
   
   pops <- c(str_sub(runname,1,6),str_sub(runname,-6,-1)) # Get each population of the pairwise comparison separately
   print(pops)
@@ -273,7 +273,7 @@ print(sub_dir)
 fold_paths <- get_subfolder(base_dir, sub_dir)
 print(fold_paths)
 
-p_loc <- c("boc", "bel", "por") %>% map(plot_loc)
+p_loc <- c("boc", "bel", "pue") %>% map(plot_loc)
 print(p_loc)
 
 # bocdat <- p_loc[[1]]$data
