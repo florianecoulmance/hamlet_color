@@ -49,7 +49,9 @@ get_subfolder <- function(path, dir_list) {
   # Takes a list of directory and find path to each of their subsirectories
   
   res_folders <- list() # Create empty list to store path to folders
-  
+  i <- 0
+  print(i)
+
   # Loop through list of folder in base directory to retrieve important sub folders
   for (folder in dir_list) {
     
@@ -70,7 +72,9 @@ get_subfolder <- function(path, dir_list) {
     result_folder <- paste0(path,folder,"/NH.Results/newHyb.",runname,".80SNPs.txt_Results/")
     print(result_folder)
 
-    res_folders[[folder]] <- result_folder
+    i <- i+1
+    print(i)
+    res_folders[[i]] <- result_folder
     print(res_folders)
 
     
