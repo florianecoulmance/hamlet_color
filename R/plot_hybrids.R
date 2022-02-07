@@ -12,6 +12,7 @@
 rm(list = ls())
 
 # Load needed library
+library(GenomicOriginsScripts)
 library(paletteer)
 library(ggthemes)
 library(prismatic)
