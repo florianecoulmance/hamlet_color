@@ -55,12 +55,12 @@ get_subfolder <- function(path, dir_list) {
     
     label <- str_split(folder, fixed("_")) # Split folder name to get each element separated by "_"
     print(label)
-    print(label[0])
-    print(label[1])
-    print(label[2])
-    pop1 <- label[0] # Get 1st population from the pairwise comparison
+    print(label[[1]][1])
+    print(label[[1]][2])
+    print(label[[1]][3])
+    pop1 <- label[[1]][1] # Get 1st population from the pairwise comparison
     print(pop1)
-    pop2 <- label[1] # Get 2nd population from the pairwise comparison
+    pop2 <- label[[1]][2] # Get 2nd population from the pairwise comparison
     print(pop2)
     
     runname <- paste0(pop1,"_",pop2) # Get the pairwise comparison label
