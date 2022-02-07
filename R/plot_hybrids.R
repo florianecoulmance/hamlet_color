@@ -95,7 +95,7 @@ getPofZ <- function(res_paths) {
   runname <- res_paths %>% 
              #str_remove("newHyb.") %>% 
              str_remove(".80SNPs.txt_Results/") %>%
-             sub("^.+newHyb",) %>%
+             sub("^.+newHyb", "") %>%
              str_remove(".")
   print(runname)
   
