@@ -116,8 +116,8 @@ getPofZ <- function(res_paths) {
     mutate(IndivName = vroom::vroom(str_c(res_paths, inds), 
                                     delim = ',',
                                     col_names =  c('IndivName'))[,1] %>%
-             unname() %>%
-             unlist())
+                                                 unname() %>%
+                                                 unlist())
   
   # Rename column names for big table
   bin_tib <- tibble(bin_generic = c(colN, "F1", "F2"),
@@ -125,13 +125,13 @@ getPofZ <- function(res_paths) {
   
   # Create final data table
   data <- NHres %>%
-    pivot_longer(names_to = 'bin_generic',
-                 values_to= "post_prob",
-                 cols = c(-indNR, -IndivName)) %>%
-    left_join(bin_tib) %>%
-    mutate(run = runname,
-           loc = str_sub(run,-3,-1),
-           ind_order = str_c(str_sub(IndivName,-6,-1),"_",str_sub(IndivName,1,-7)))
+          pivot_longer(names_to = 'bin_generic',
+                       values_to= "post_prob",
+                       cols = c(-indNR, -IndivName)) %>%
+          left_join(bin_tib) %>%
+          mutate(run = runname,
+                 loc = str_sub(run,-3,-1),
+                 ind_order = str_c(str_sub(IndivName,-6,-1),"_",str_sub(IndivName,1,-7)))
   
   return(data)
   
