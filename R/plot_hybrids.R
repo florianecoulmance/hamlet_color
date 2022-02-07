@@ -93,7 +93,7 @@ getPofZ <- function(res_paths) {
   
   # Get the pairwise comparison label
   runname <- res_paths %>% 
-             sub("^.+/", "") %>%
+             #sub("^.+/", "") %>%
              str_remove("newHyb.") %>% 
              str_remove(".80SNPs.txt_Results")
   print(runname)
