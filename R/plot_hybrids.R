@@ -18,6 +18,7 @@ library(prismatic)
 library(patchwork)
 library(ggtext)
 library(hypoimg)
+library(stringr)
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -92,11 +93,9 @@ getPofZ <- function(res_paths) {
   
   # Get the pairwise comparison label
   runname <- res_paths %>% 
-    #gsub(".*/","") %>% 
-    gsub(".*(newHyb)", "") %>% 
-    #gsub(".*\.", "") %>% 
-    #str_remove("newHyb.") %>% 
-    str_remove(".80SNPs.txt_Results")
+             sub("^.+/", "") %>%
+             str_remove("newHyb.") %>% 
+             str_remove(".80SNPs.txt_Results")
   print(runname)
   
   pops <- c(str_sub(runname,1,6),str_sub(runname,-6,-1)) # Get each population of the pairwise comparison separately
