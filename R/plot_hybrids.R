@@ -133,7 +133,7 @@ getPofZ <- function(res_paths) {
 }
 
 
-plot_loc <- function(fold_paths = fold_paths, loc){
+plot_loc <- function(loc){
   
   # Takes a list of files and subset according to locations to create a plot for the considered location
   
