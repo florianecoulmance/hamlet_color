@@ -141,7 +141,7 @@ plot_loc <- function(loc){
   
   # Takes a list of files and subset according to locations to create a plot for the considered location
   
-  print(fold_paths[str_sub(fold_paths,-22,-20) == loc])
+  print(fold_paths[str_sub(fold_paths,-23,-21) == loc])
   
   # Create big data table combining all files from different pairwise comparison and keep track of pairwise comparison label 
   data <- map_dfr(.x = fold_paths[str_sub(fold_paths,-22,-20) == loc],
