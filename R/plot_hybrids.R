@@ -53,6 +53,7 @@ get_subfolder <- function(path, dir_list) {
   # Loop through list of folder in base directory to retrieve important sub folders
   for (folder in dir_list) {
     
+    print(folder)
     label <- str_split(folder, fixed("_")) # Split folder name to get each element separated by "_"
     print(label)
     print(label[[1]][1])
@@ -68,10 +69,13 @@ get_subfolder <- function(path, dir_list) {
     
     result_folder <- paste0(path,folder,"/NH.Results/newHyb.",runname,".80SNPs.txt_Results/")
     print(result_folder)
+
+    res_folders[[folder]] <- result_folder
+    print(res_folders)
+
     
   }
   
-  res_folders[folder] <- result_folder
   print(res_folders)
   return(res_folders)
   
