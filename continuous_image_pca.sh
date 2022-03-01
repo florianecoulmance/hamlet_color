@@ -73,7 +73,7 @@ echo $MASK_FILE
 mkdir $BASE_DIR/images/
 mkdir $BASE_DIR/images/continuous/
 mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/
-mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET
+mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/
 
 # Repo for the corresponding dataset
 mkdir $BASE_DIR/figures/
@@ -88,16 +88,20 @@ mkdir $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/
 # -------------------------------------------------
 
 # Modify images according to color space, perform PCA files and create heatmaps per PCs
-/Users/fco/miniconda3/bin/python3 python/phenotype_continuous.py \
-         # we need to have the folder with subfolders where the images aligned are (to put in the documentation)
-         # this should be in $BASE_DIR/ressources/images/... and then the normal software folder tree $ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/
-         $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/
-         $BASE_DIR/ressources/images/$MASK_FILE
+/user/doau0129/miniconda3/bin/python3 ./python/phenotype_continuous.py \
+         $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/ \
+         $BASE_DIR/ressources/images/$MASK_FILE \
          $COLOR_SPACE \
          $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
          $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
          $MASK \
-         $OVERALL_DAT \
+         $DATASET \
+
+# Load necessary environment
+ml hpc-env/8.3
+ml R/4.0.2-foss-2019b
+ml FriBidi
+ml HarfBuzz
 
 # Create the image metadata table to use in further GWAS, plot the PCA
 Rscript R/phenotype_continuous_pca.R \
@@ -108,5 +112,5 @@ Rscript R/phenotype_continuous_pca.R \
          ${DATASET}_var.csv \
          $BASE_DIR/metadata/image_metadata.tsv \
          $MASK \
-         $OVERALL_DAT \
+         $DATASET \
          $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
