@@ -1,16 +1,21 @@
 #!/usr/bin/python
-# ----------------------------------------------------------------------------------------------
+# by: Floriane Coulmance: 11/05/2021
 # usage : 
-# pythonm3 python/image_pca_heatmap.py
-#          /Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/left_54off_59on/3-registred/Modalities/RGB/all/
-#          /Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/full_mask.tif
-#          AB
-#          /Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/images/AB_fullm_left_54off_59on/
-#          /Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/AB_fullm_left_54off_59on/
-#          fullm
-#          54off_59on
+# pythonm3 python/phenotype_continuous.py <IMAGE_PATH> <MASK_PATH> <COLOR_SPACE> <OUTPUT_PATH> <FIGURE_PATH> <MASK_LABEL> <DATA_LABEL>
 # ----------------------------------------------------------------------------------------------
+# IMAGE_PATH : $BASE_DIR/ressources/images/left_54off_59on/3-registred/Modalities/RGB/(all, on, off, barred, unbarred)/
+# MASK_PATH : $BASE_DIR/ressources/images/(body_mask.tif, full_mask.tif)
+# COLOR_SPACE : LAB, L, AB
+# OUTPUT_PATH : $BASE_DIR/images/continuous/LAB/$DATASET/
+# FIGURE_PATH : $BASE_DIR/figures/7_gxp/continuous/LAB/$DATASET/
+# MASK_LABEL : bodym or fullm
+# DATA_LABEL : left_54off, left_59on, left_54off_59on, left_38barred, left_75unbarred
 # ----------------------------------------------------------------------------------------------
+
+
+
+# ********** Import all necessary library *********
+# -------------------------------------------------
 
 from PIL import Image
 import seaborn as sns
@@ -31,6 +36,7 @@ import numpy as np
 
 
 
+# FUNCTIONS ------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
@@ -299,6 +305,8 @@ def plot_abseigen(feature, effect, res_path, m_name, data_name):
 
 
 
+# MAIN -----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 
@@ -335,6 +343,7 @@ def main():
 
 
 
+# GET ARGUMENTS AND EXECUTE MAIN ---------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------
@@ -345,11 +354,9 @@ if __name__ == "__main__":
     arguments = len(sys.argv) - 1 # <-- count the arguments
     print ("The script is called with %i arguments" % (arguments))
     
-    # path_images = "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/left_54off_59on/3-registred/Modalities/RGB/"
     path_images = sys.argv[1] # <-- give path to the aligned images
     print(path_images)
 
-    # mask = cv2.imread("/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/convert_png/smallDatasetl1/mask1.tif", 0)
     mask = cv2.imread(sys.argv[2], 0) # <-- open the mask file
     print(mask)
 

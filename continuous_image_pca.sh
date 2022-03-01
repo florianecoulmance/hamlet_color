@@ -1,0 +1,112 @@
+#!/bin/bash
+# by: Floriane Coulmance: 11/05/2021
+# usage:
+# sbatch continuous_image_pca.sh -i PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j AB -k fullm -l 54off_59on -m all -n left
+# sbatch continuous_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <MASK> -l <DATA> -m <SUB_DATA> -n <SIDE>
+# ------------------------------------------------------------------------------
+# PATH corresponds to the path to the base directory, all outputs and necessary
+# folder will be created by the script 
+# COLOR_SPACE : LAB, AB or L
+# MASK : bodym (for mask without fins), fullm (for mask including all fins)
+# DATA : 54off_59on, 54off, 59on, 38barred, 75unbarred
+# SUB_DATA : all, on, off, barred, unbarred
+# SIDE : left
+# ------------------------------------------------------------------------------
+
+
+
+# ********** Allow to enter bash options **********
+# -------------------------------------------------
+
+while getopts i:j:k:l:m:n: option
+do
+case "${option}"
+in
+i) BASE_DIR=${OPTARG};; # get the base directory path
+j) COLOR_SPACE=${OPTARG};; # get the color space type
+k) MASK=${OPTARG};; # get the mask type
+l) DATA=${OPTARG};; # get the dataset type
+m) SUB_DATA=${OPTARG};; # get the dataset type
+n) SIDE=${OPTARG};; # get the dataset type
+esac
+done
+
+
+
+# ********* Create necessary variables *********
+# -------------------------------------------------
+
+# To get the right label for output file
+OVERALL_DAT="${SIDE}_${DATA}"
+echo $OVERALL_DAT
+
+# To get the right dataset in the software output folder where all combinations of dataset are found
+ALIGN_FOLDER="left_54off_59on"
+echo $ALIGN_FOLDER
+
+# Create appropriate name to give to the output folder name
+DATASET="${COLOR_SPACE}_${MASK}_${DATA}"
+echo $DATASET
+
+# FILES_NAME="${COLOR_SPACE}_${MASK}_${DATA}"
+# echo $FILES_NAME
+
+# Find the appropriate mask file according to parameter given
+if [ "$MASK" = "fullm" ];
+then
+  MASK_FILE=full_mask.tif
+elif [ "$MASK" = "bodym" ];
+then
+  MASK_FILE=body_mask.tif
+else
+  echo "choose appropriate option"
+fi
+
+echo $MASK_FILE
+
+
+
+# ********* Create necessary repositories *********
+# -------------------------------------------------
+
+# Repo for pca outputs
+mkdir $BASE_DIR/images/
+mkdir $BASE_DIR/images/continuous/
+mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/
+mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET
+
+# Repo for the corresponding dataset
+mkdir $BASE_DIR/figures/
+mkdir $BASE_DIR/figures/7_gxp/
+mkdir $BASE_DIR/figures/7_gxp/continuous/
+mkdir $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/
+mkdir $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/
+
+
+
+# ********* Run commands *********
+# -------------------------------------------------
+
+# Modify images according to color space, perform PCA files and create heatmaps per PCs
+/Users/fco/miniconda3/bin/python3 python/phenotype_continuous.py \
+         # we need to have the folder with subfolders where the images aligned are (to put in the documentation)
+         # this should be in $BASE_DIR/ressources/images/... and then the normal software folder tree $ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/
+         $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/
+         $BASE_DIR/ressources/images/$MASK_FILE
+         $COLOR_SPACE \
+         $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
+         $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
+         $MASK \
+         $OVERALL_DAT \
+
+# Create the image metadata table to use in further GWAS, plot the PCA
+Rscript R/phenotype_continuous_pca.R \
+         $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
+         $COLOR_SPACE \
+         $BASE_DIR/metadata/ \
+         ${DATASET}_PCs.csv \
+         ${DATASET}_var.csv \
+         $BASE_DIR/metadata/image_metadata.tsv \
+         $MASK \
+         $OVERALL_DAT \
+         $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \

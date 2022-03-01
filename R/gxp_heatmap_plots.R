@@ -1,10 +1,11 @@
 #!/usr/bin/env Rscript
-# by: Floriane Coulmance: 24/02/2021
+# by: Floriane Coulmance: 01/03/2022
 # usage:
-# Rscript gxp_plots.R <data_path> <figure_path>
+# Rscript gxp_plots.R <data_path> <figure_path> <dataset>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
-# figure_path in : $BASE_DIR/outputs/7_gxp/$DATASET/figures/
+# figure_path in : $BASE_DIR/outputs/7_gxp/figures/$DATASET/
+# dataset in : LAB_fullm_left_54off_59on
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -19,6 +20,9 @@ library(hypogen)
 library(hypoimg)
 library(dplyr)
 library(plyr)
+library(stringr)
+library(png)
+library(grid)
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -34,9 +38,10 @@ args = args[6:7]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
-#data_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+print(data_path)
 figure_path <- as.character(args[2]) # Path to the figure folder
-#figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/"
+print(figure_path)
+
 
 # -------------------------------------------------------------------------------------------------------------------
 # FUNCTIONS
@@ -45,33 +50,14 @@ figure_path <- as.character(args[2]) # Path to the figure folder
 # -------------------------------------------------------------------------------------------------------------------
 
 
-plotgwas <- function(dataset,path) {
-  p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
-    geom_hypo_LG() +
-    geom_point(data = dataset, aes(x = GPOS, y = AVG_P), size = .1) +
-    scale_fill_hypo_LG_bg() +
-    scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p_value)'))) +
-    theme_hypo() +
-    theme(legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'))
-  
-  hypo_save(filename = paste0(path,"assoc50k_plink_plots.png"), type="cairo",
-            plot = p,
-            width = 8,
-            height = 8)
-}
-
-
-concat_files <- function(f,p) {
+concat_files_gem <- function(f,p) {
   count = 0
   l <- list()
   for (file in f) {
     count = count + 1 
-    run_files <- file %>%
-      str_sub(.,end=-21) %>%
-      str_replace(.,pattern = '([a-z]{3})-([a-z]{3})-([a-z]{3})', '\\2\\1-\\3\\1')
+    run_files <- file %>% 
+                 str_match(., "[.]\\s*(.*?)\\s*.50k") %>%
+                 .[,2]
     print(run_files)
     d <- read.table(paste0(p,file), header=TRUE)
     d$RUN <- run_files
@@ -84,6 +70,27 @@ concat_files <- function(f,p) {
 }
 
 
+plot_g_h <- function(table,path,prefix,trait) {
+  p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
+    geom_hypo_LG() +
+    geom_point(data = table, aes(x = GPOS, y = AVG_p_wald), size = .1) +
+    scale_fill_hypo_LG_bg() +
+    scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    theme_hypo() +
+    theme(legend.position = 'none',
+          axis.title.x = element_text(),
+          axis.text.x.top= element_text(colour = 'darkgray'))
+
+    # im <- paste0(figure_path+dataset+"_"+trait+".png")
+    img <- readPNG(paste0(path+prefix+"_"+trait+".png"))
+    g <- rasterGrob(img, interpolate=TRUE)
+
+    plot <- p+g 
+
+
+}
+
 
 # -------------------------------------------------------------------------------------------------------------------
 # ANALYSIS
@@ -92,16 +99,47 @@ concat_files <- function(f,p) {
 # -------------------------------------------------------------------------------------------------------------------
 
 
-files <- list.files(data_path, pattern = "assoc.50k.5k.txt.gz")
-print(files)
-traits <- list("PC1", "PC10", "PC11", "PC12", "PC13", "PC14", "PC15", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9")
-print(traits)
-files_l <- concat_files(files,data_path)
-names(files_l) <- traits
-files <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
-files$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
-plotgwas(files,figure_path)
+traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+
+count = 0
+l <- list()
+for (trait in traits) {
+    print(trait)
+    count = count + 1 
+
+    f <- list.files(data_path, pattern = "$trait.|lmm.50k.5k.txt.gz|assoc.50k.5k.txt.gz|mvplink.50k.5k.txt.gz")
+    print(f)
+    model <- list("GEMMA", "PLINK", "MV PLINK")
+    print(model)
+    files_l <- concat_files_gem(f,data_path)
+    names(files_l) <- model
+    f <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+    f$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
+
+    l[[count]]=assign(trait,f)
+
+}
+
+print(head(l))
+
+p <- vector('list', len(l))
+print(p)
 
 
+for (d in l) {
+  print(d)
+  print(head(d))
+
+  p[[d]] <- plot_g_h(d,figure_path,dataset,d)
+
+}
+
+
+plot_final <- grid.arrange(p[[1]], p[[2]], ..., p[[N]], nrow = 1, ncol =2)
+
+hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
+          plot = plot_final,
+          width = 8,
+          height = 8)
 
 

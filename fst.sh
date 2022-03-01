@@ -1,11 +1,12 @@
 #!/bin/bash
 # by: Floriane Coulmance: 06/04/2021
 # usage:
-# gxp.sh -i <PATH> -j <JOB_ID> -k <DATASET_NAME>
+# sbatch fst.sh -i <PATH> -j <JOB_ID>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script
-# JOB_ID corresponds string ids from where you want  the script to be ran
+# JOB_ID corresponds to ids of jobs from where you want the analysis to be ran
+# within the pipeline
 # ------------------------------------------------------------------------------
 
 
@@ -19,7 +20,6 @@ case "${option}"
 in
 i) BASE_DIR=${OPTARG};; # get the base directory path
 j) JID_RES=${OPTARG};; # get the jobid from which you want to resume
-k) DATASET=${OPTARG};; # get the dataset type
 esac
 done
 
@@ -30,9 +30,6 @@ done
 
 # Repo for gxp outputs
 mkdir $BASE_DIR/outputs/8_fst/
-
-# Repo for the corresponding dataset
-mkdir $BASE_DIR/outputs/8_fst/$DATASET/
 
 
 
@@ -71,38 +68,38 @@ echo \${SP}                                                                     
 if [ \${SP} = "nig" ];                                                                          # find samples to keep in genotyping file
 then
   echo \${SP}
-  vcfsamplenames \${INPUT} | grep nig > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop             # find samples corresponding to H. nigricans for each location
+  vcfsamplenames \${INPUT} | grep nig > $BASE_DIR/outputs/8_fst/\${SP}.pop             # find samples corresponding to H. nigricans for each location
 fi
 
 if [ \${SP} = "pue" ];                                                                          # find samples corresponding to H. puella for each location
 then
   echo \${SP}
-  vcfsamplenames \${INPUT} | grep pue | grep -v abe | grep -v chl | grep -v gem | grep -v gum | grep -v gut | grep -v ind | grep -v may | grep -v nig | grep -v ran | grep -v tan | grep -v uni > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop
+  vcfsamplenames \${INPUT} | grep pue | grep -v abe | grep -v chl | grep -v gem | grep -v gum | grep -v gut | grep -v ind | grep -v may | grep -v nig | grep -v ran | grep -v tan | grep -v uni > $BASE_DIR/outputs/8_fst/\${SP}.pop
 fi
 
 if [ \${SP} = "bel" ];                                                                          # find all species within Belize that have enough entries
 then
   echo \${SP}
-  vcfsamplenames \${INPUT} | grep bel | grep -v abe | grep -v chl | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v tan | grep -v uni > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop
+  vcfsamplenames \${INPUT} | grep bel | grep -v abe | grep -v chl | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v tan | grep -v uni > $BASE_DIR/outputs/8_fst/\${SP}.pop
 fi
 
 if [ \${SP} = "boc" ];                                                                          # find all species within Bocas (Panama) that have enough entries
 then
   echo \${SP}
-  vcfsamplenames \${INPUT} | grep boc | grep -v abe | grep -v chl | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v tan | grep -v ind | grep -v may > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop
+  vcfsamplenames \${INPUT} | grep boc | grep -v abe | grep -v chl | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v tan | grep -v ind | grep -v may > $BASE_DIR/outputs/8_fst/\${SP}.pop
 fi
 
 if [ \${SP} = "puer" ];                                                                         # find all species within Puerto Rico that have enough entries
 then
   echo \${SP}
-  vcfsamplenames \${INPUT} | grep pue | grep -v abe | grep -v nig | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v ind | grep -v may | grep -v bel | grep -v boc  > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop
+  vcfsamplenames \${INPUT} | grep pue | grep -v abe | grep -v nig | grep -v flo | grep -v gem | grep -v gum | grep -v gut | grep -v ran | grep -v ind | grep -v may | grep -v bel | grep -v boc  > $BASE_DIR/outputs/8_fst/\${SP}.pop
 fi
 
 vcftools --gzvcf \${INPUT} \                                                                    # create SNP dataset for each of the 5 datasets above
-      --keep $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop \                                      # keep samples corresponding to each dataset
+      --keep $BASE_DIR/outputs/8_fst/\${SP}.pop \                                      # keep samples corresponding to each dataset
       --mac 3 \   
       --recode \
-      --stdout | gzip > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}.vcf.gz                          # output as vcf file
+      --stdout | gzip > $BASE_DIR/outputs/8_fst/\${SP}.vcf.gz                          # output as vcf file
 
 
 EOA
@@ -133,7 +130,7 @@ echo \${INPUT_VCF}
 vcfsamplenames \${INPUT_VCF} | \                                                                # get all samples from input file and modify to get a table that is tab separated
        grep "abe\\|gum\\|ind\\|may\\|nig\\|pue\\|ran\\|uni\\|gem\\|flo\\|chl\\|tan\\|gut" | \
        awk '{print \$1"\\t"\$1}' | \
-       sed 's/\\t.*\\(...\\)\\(...\\)\$/\\t\\1\\t\\2/g' > $BASE_DIR/outputs/8_fst/$DATASET/hamlets.pop.txt
+       sed 's/\\t.*\\(...\\)\\(...\\)\$/\\t\\1\\t\\2/g' > $BASE_DIR/outputs/8_fst/hamlets.pop.txt
 
 
 EOA
@@ -161,10 +158,10 @@ INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz             
 echo \${INPUT_VCF}
 
 
-INPUT_POP=$BASE_DIR/outputs/8_fst/$DATASET/hamlets.pop.txt                                      # input the list of samples table created at the previous step
+INPUT_POP=$BASE_DIR/outputs/8_fst/hamlets.pop.txt                                      # input the list of samples table created at the previous step
 echo \${INPUT_POP}
 
-awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/8_fst/$DATASET/pop.txt           # from samples file modify and create an intermediate file with hamlet population names
+awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/8_fst/pop.txt           # from samples file modify and create an intermediate file with hamlet population names
 
 for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo nigpue puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
   grep \$k pop.txt | cut -f 1 > $BASE_DIR/outputs/fst/pop.\$k.txt
@@ -202,7 +199,7 @@ POP="--weir-fst-pop $BASE_DIR/outputs/fst/pop.abebel.txt \                      
 vcftools --gzvcf \${INPUT_VCF} \                                                                # use VCFTOOLS to calculate FST by SNP
       \$POP \
      --stdout  2> multi_fst_snp.log | \
-     gzip > $BASE_DIR/outputs/8_fst/$DATASET/multi_fst_snp.tsv.gz
+     gzip > $BASE_DIR/outputs/8_fst/multi_fst_snp.tsv.gz
 
      # fst 50kb window
      # ---------------
@@ -211,7 +208,7 @@ vcftools --gzvcf \${INPUT_VCF} \                                                
      --fst-window-step 5000 \
      --fst-window-size 50000 \
      --stdout  2> multi_fst.50k.log | \
-     gzip > $BASE_DIR/outputs/8_fst/$DATASET/multi_fst.50k.tsv.gz
+     gzip > $BASE_DIR/outputs/8_fst/multi_fst.50k.tsv.gz
 
      # fst 10kb window
      # ---------------
@@ -220,10 +217,10 @@ vcftools --gzvcf \${INPUT_VCF} \                                                
      --fst-window-step 1000 \
      --fst-window-size 10000 \
      --stdout  2> multi_fst.10k.log | \
-     gzip > $BASE_DIR/outputs/8_fst/$DATASET/multi_fst.10k.tsv.gz
+     gzip > $BASE_DIR/outputs/8_fst/multi_fst.10k.tsv.gz
 
 
-Rscript \$BASE_DIR/R/table_fst_outliers.R multi_fst.50k.tsv.gz $BASE_DIR/outputs/8_fst/$DATASET/ # creates table of outlier positions/regions from FST values _ find original R code here : https://github.com/k-hench/hamlet_radiation/blob/master/R/table_fst_outliers.R, output is fst_outliers_998.tsv
+Rscript \$BASE_DIR/R/table_fst_outliers.R multi_fst.50k.tsv.gz $BASE_DIR/outputs/8_fst/ # creates table of outlier positions/regions from FST values _ find original R code here : https://github.com/k-hench/hamlet_radiation/blob/master/R/table_fst_outliers.R, output is fst_outliers_998.tsv
 
 
 EOA
@@ -332,34 +329,34 @@ echo \${SP}                                                                     
 echo \${LOC1}
 echo \${LOC2}
 
-POP=$BASE_DIR/outputs/8_fst/$DATASET/\${SP}.pop                                                # input the list of samples correponding to the dataset (either a species or a location)
+POP=$BASE_DIR/outputs/8_fst/\${SP}.pop                                                # input the list of samples correponding to the dataset (either a species or a location)
 echo \${POP}
 
-VCF=$BASE_DIR/outputs/8_fst/$DATASET/\${SP}.vcf.gz                                             # input the SNP genotyping file correponding to the dataset (with only the sample listed in the dataset)
+VCF=$BASE_DIR/outputs/8_fst/\${SP}.vcf.gz                                             # input the SNP genotyping file correponding to the dataset (with only the sample listed in the dataset)
 echo \${VCF}
 
 
-grep \${LOC1} \${POP} > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}_pop1.txt     # create subfiles for each dataset with list of samples correponding to 1 component of pairwise combination
-grep \${LOC2} \${POP} > $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}_pop2.txt     # this will be used as an input for FST calculations
+grep \${LOC1} \${POP} > $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt     # create subfiles for each dataset with list of samples correponding to 1 component of pairwise combination
+grep \${LOC2} \${POP} > $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt     # this will be used as an input for FST calculations
 
 
 vcftools --gzvcf \${VCF} \                                                                     # use VCFTOOLS to calculate pairwise FST
-      --weir-fst-pop $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
-      --weir-fst-pop $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
+      --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
+      --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
       --fst-window-step 5000 \                                                                 # use SNP windows of 50kb
       --fst-window-size 50000 \
-      --out $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}.50k.log
+      --out $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.50k.log
 
 vcftools --gzvcf \${VCF} \                  
-      --weir-fst-pop $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
-      --weir-fst-pop $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
+      --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
+      --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
       --fst-window-size 10000 \                                                                # use SNP windows of 10kb
       --fst-window-step 1000 \
-      --out $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}.10k 2> $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}.10k.log
+      --out $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.10k 2> $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.10k.log
 
 
-gzip $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}.50k.windowed.weir.fst           # zip both windowed vcf files created 
-gzip $BASE_DIR/outputs/8_fst/$DATASET/\${SP}_\${LOC1}_\${LOC2}.10k.windowed.weir.fst
+gzip $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.50k.windowed.weir.fst           # zip both windowed vcf files created 
+gzip $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.10k.windowed.weir.fst
 
 
 EOA
@@ -383,15 +380,15 @@ cat > $jobfile5 <<EOA # generate the job file
 #SBATCH --time=04:30:00
 
 
-cd $BASE_DIR/outputs/8_fst/$DATASET/                                                           # move to folder where log files from FST calculation can be found
+cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
 
-cat $BASE_DIR/outputs/8_fst/$DATASET/\*.50k.log | \                                            # find lines where mean and weighted FST estimates are reported
+cat $BASE_DIR/outputs/8_fst/\*.50k.log | \                                            # find lines where mean and weighted FST estimates are reported
     grep -E 'Weir and Cockerham|--out' | \
     grep -A 3 50k | \
     sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
     paste - - - | \
     cut -f 1,3,5 | \
-    sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/8_fst/$DATASET/fst_globals.txt            # create global FST file as a table with entry for each pairwise comparison (24 rows in total) and columns for name of the comparison, mean FST, weighted FST (3 columns) 
+    sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/8_fst/fst_globals.txt            # create global FST file as a table with entry for each pairwise comparison (24 rows in total) and columns for name of the comparison, mean FST, weighted FST (3 columns) 
 
 
 EOA

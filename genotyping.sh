@@ -1,11 +1,12 @@
 #!/bin/bash
 # by: Floriane Coulmance: 01/04/2020
 # usage:
-# sbatch gxp.sh -i <PATH> -j <JOB_ID>
+# sbatch genotyping.sh -i <PATH> -j <JOB_ID>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script
-# JOB_ID corresponds string ids from where you want  the script to be ran
+# JOB_ID corresponds to ids of jobs from where you want the analysis to be ran
+# within the pipeline
 # ------------------------------------------------------------------------------
 
 

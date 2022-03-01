@@ -39,7 +39,7 @@ vcf_file <- as.character(args[1]) # Path to vcf file
 print(vcf_file)
 output_path <- as.character(args[2]) # Path to the output folder
 print(output_path)
-out_prefix <- as.character(args[3]) # string for naming outputs
+out_prefix <- as.character(args[3]) # String for naming outputs
 print(out_prefix)
 figure_path <- as.character(args[4]) # Path to the figure folder
 print(figure_path)
@@ -230,11 +230,11 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
                   text = element_text(size=30), legend.key=element_blank()) +
         guides(color = guide_legend(nrow = 1))
 
-  # arrange all plots in pae
+  # Arrange all plots in pae
   f <- ggarrange(p1, p2, p3, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1)
   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2)
 
-  # save figures
+  # Save figures
   hypo_save(filename = paste0(pathfigure,prefix,"_pca.pdf"),
           plot = f,
           width = 40,
