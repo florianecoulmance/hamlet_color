@@ -15,6 +15,19 @@
 
 
 
+# Slurm parameters
+#SBATCH --job-name=continuous_images.tmp
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/continuous_images_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/continuous_images_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=22G
+#SBATCH --time=04:00:00
+
+
+
 # ********** Allow to enter bash options **********
 # -------------------------------------------------
 
