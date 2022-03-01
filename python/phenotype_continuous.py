@@ -142,7 +142,7 @@ def modify_image(im_path, bo_mask, bl_mask, effect):
 
 # ----------------------------------------------------------------------------------------------
 
-def save_modifiedImage(pix_arr, bo_mask, lof, effect, res_path, m_name, data_name):
+def save_modifiedImage(pix_arr, bo_mask, lof, effect, res_path, data_name):
     '''
     Save the flatten & modified images table with sample names
     '''
@@ -162,7 +162,7 @@ def save_modifiedImage(pix_arr, bo_mask, lof, effect, res_path, m_name, data_nam
     pixel_table["images"] = lof
     # print(pixel_table.shape)
     # print(pixel_table)
-    pixel_table.to_csv(res_path+effect+'_'+m_name+'_'+data_name+'_modifiedImage.csv')
+    pixel_table.to_csv(res_path+data_name+'_modifiedImage.csv')
 
 
 
@@ -184,7 +184,7 @@ def Pca(pix_arr):
 
 # ----------------------------------------------------------------------------------------------
 
-def save_pcpict(pixels, flist, effect, res_path, m_name, data_name):
+def save_pcpict(pixels, flist, res_path, data_name):
     '''
     Save the reconstructed PC images table to result directory
     '''
@@ -195,13 +195,13 @@ def save_pcpict(pixels, flist, effect, res_path, m_name, data_name):
     principalDF["images"] = flist # <-- add the sample columns corresponding to the images
     # print(principalDF.shape)
     # print(principalDF)
-    principalDF.to_csv(res_path+effect+'_'+m_name+'_'+data_name+'_PCs.csv') # <-- save the dataframe to result folder with specific name
+    principalDF.to_csv(res_path+data_name+'_PCs.csv') # <-- save the dataframe to result folder with specific name
 
 
 
 # ----------------------------------------------------------------------------------------------
 
-def variances(pca, effect, res_path, m_name, data_name):
+def variances(pca, res_path, data_name):
     '''
     Save the variance explained for each PCs and the cumulative variance
     '''
@@ -210,16 +210,16 @@ def variances(pca, effect, res_path, m_name, data_name):
     var_cum = pca.explained_variance_ratio_.cumsum() # <-- gets the cumulative variance explained 
 
     varDF = pd.DataFrame(var_explained) # <-- makes a dataframe of explained variance per PCs
-    varDF.to_csv(res_path+effect+'_'+m_name+'_'+data_name+'_var.csv') # <-- saves the dataframe of explained variance by PCs to result directory
+    varDF.to_csv(res_path+data_name+'_var.csv') # <-- saves the dataframe of explained variance by PCs to result directory
 
     varcumDF = pd.DataFrame(var_cum) # <-- makes a dataframe of cumulative explained variance
-    varcumDF.to_csv(res_path+effect+'_'+m_name+'_'+data_name+'_varcum.csv') # <-- save the cumulative explained variance table to result diretory
+    varcumDF.to_csv(res_path+data_name+'_varcum.csv') # <-- save the cumulative explained variance table to result diretory
 
 
 
 # ----------------------------------------------------------------------------------------------
 
-def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, m_name, data_name):
+def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     '''
     Create the fish heatmap corresponding to the importance of each pixels in the PCs variations
     '''
@@ -287,13 +287,13 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, m_name, data_name
     ax.set(yticks=[]) # <-- remove y ticks 
     fig.subplots_adjust(right=.9)  # <-- Add space so the colorbar doesn't overlap the plot
 
-    plt.savefig(res_path+effect+'_'+m_name+'_'+data_name+"_PC"+str(component)+".png") # <-- save in appropriate figure folder with region id as file title
+    plt.savefig(res_path+data_name+"_PC"+str(component)+".png") # <-- save in appropriate figure folder with region id as file title
 
 
 
 # ----------------------------------------------------------------------------------------------
 
-def plot_abseigen(feature, effect, res_path, m_name, data_name):
+def plot_abseigen(feature, res_path, data_name):
     '''
     Save in table the absolute eigenvalues for each PC
     '''
@@ -301,7 +301,7 @@ def plot_abseigen(feature, effect, res_path, m_name, data_name):
     n_row = 15 # <-- number of rows for the table
     row_name = ['PC{}'.format(i+1) for i in range(n_row)] # <-- set row names based on number
     eigvectDF = pd.DataFrame(data=feature, index=row_name) # <-- make dataframe with absolute eigenvalues
-    eigvectDF.to_csv(res_path+effect+'_'+m_name+'_'+data_name+'_evect_abs.csv') # <-- save the dataframe in result folder
+    eigvectDF.to_csv(res_path+data_name+'_evect_abs.csv') # <-- save the dataframe in result folder
 
 
 
@@ -318,28 +318,28 @@ def main():
     bool_mask, rgb_mask, mask_blur = blur_mask(mask)
 
     arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, color_space)
-    save_modifiedImage(arr_modified, bool_mask, list_f, color_space, path_results, mask_name, dataset)
+    save_modifiedImage(arr_modified, bool_mask, list_f, color_space, path_results, dataset)
 
     pca_im, new_arr = Pca(arr_modified)
-    save_pcpict(new_arr, list_f, color_space, path_results, mask_name, dataset)
+    save_pcpict(new_arr, list_f, path_results, dataset)
 
-    variances(pca_im, color_space, path_results, mask_name, dataset)
+    variances(pca_im, path_results, dataset)
     
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 2, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 3, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 4, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 5, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 6, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 7, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 8, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 9, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 10, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 11, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 12, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 13, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 14, color_space, path_figures, mask_name, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 15, color_space, path_figures, mask_name, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 2, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 3, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 4, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 5, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 6, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 7, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 8, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 9, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 10, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 11, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 12, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 13, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 14, color_space, path_figures, dataset)
+    plot_heatmap(bool_mask, rgb_mask, pca_im, 15, color_space, path_figures, dataset)
 
 
 
