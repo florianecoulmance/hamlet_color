@@ -71,7 +71,7 @@ plot_pca <- function(data, center_points, variance, fig_path, effect, m_type, da
   # Function to plot PCA from dataframe and centroids of groups 
 
   p <- ggplot(data,aes(x=PC1.x,y=PC2.x,color=spec)) +
-       geom_point(size = 7) +
+       geom_point(size = 3) +
        scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                    "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
                                    "ind" = '#66CCFF', "pue" = '#FFCC00', "flo" = '#33FFCC', "tan" = '#333333',
@@ -92,22 +92,22 @@ plot_pca <- function(data, center_points, variance, fig_path, effect, m_type, da
                           breaks = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue",
                                      "flo", "tan", "uni")) +
        # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
-       geom_point(data=center_points,size=3) +
+       geom_point(data=center_points,size=7) +
        geom_segment(aes(x=PC1.y, y=PC2.y, xend=PC1.x, yend=PC2.x, colour=spec), size = 0.1) +
        theme(legend.position="bottom",legend.title=element_blank(),
              legend.box = "vertical", legend.text =  element_markdown(size = 15),
              panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
-             text = element_text(size=15), legend.key=element_blank()) +
-       guides(color = guide_legend(nrow = 1)) +
+             text = element_text(size=20), legend.key=element_blank()) +
+       guides(color = guide_legend(nrow = 2)) +
        labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") ,
-            y = paste0("PC2, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %")) +
-       ggtitle(paste0("PCA ", dat))
+            y = paste0("PC2, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %")) #+
+       #ggtitle(paste0("PCA ", dat))
   
   # Save figure
   hypo_save(filename = paste0(fig_path, dat, "_pca.png"), type = "cairo",
             plot = p,
             width = 15,
-            height = 8)
+            height = 10)
 
 }
 
