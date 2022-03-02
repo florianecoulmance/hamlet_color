@@ -88,7 +88,7 @@ mkdir $BASE_DIR/images/continuous/
 mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/
 mkdir $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/
 
-# Repo for the corresponding dataset
+# Repo for the figures
 mkdir $BASE_DIR/figures/
 mkdir $BASE_DIR/figures/7_gxp/
 mkdir $BASE_DIR/figures/7_gxp/continuous/

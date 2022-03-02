@@ -1,11 +1,11 @@
 #!/usr/bin/env Rscript
 # by: Floriane Coulmance: 01/03/2022
 # usage:
-# Rscript gxp_plots.R <data_path> <figure_path> <dataset>
+# Rscript gxp_heatmap_plots.R <data_path> <figure_path> <dataset>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
-# figure_path in : $BASE_DIR/outputs/7_gxp/figures/$DATASET/
-# dataset in : LAB_fullm_left_54off_59on
+# figure_path in : $BASE_DIR/figures/7_gxp/figures/$TYPE/$COLOR_SPACE/$DATASET
+# dataset in : LAB_fullm_54off_59on
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 

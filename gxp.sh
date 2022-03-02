@@ -7,8 +7,8 @@
 # folder will be created by the script
 # JOB_ID corresponds to ids of jobs from where you want the analysis to be ran
 # within the pipeline
-# DATASET : can be looking like LAB_fullm_left_54off_59on (for continuous
-# phenotype analysis) or like fullm_k7_color0 (for discrete phenotype analysis),
+# DATASET : can be looking like LAB_fullm_54off_59on (for continuous
+# phenotype analysis) or like RGB_fullm_k7_color0 (for discrete phenotype analysis),
 # it should be prefix of metadata file
 # ------------------------------------------------------------------------------
 
@@ -29,6 +29,24 @@ done
 
 
 
+# ********* Create necessary variables *********
+# -------------------------------------------------
+
+# Get color space variable from dataset name
+COLOR_SPACE="${DATASET%%_*}"
+echo $COLOR_SPACE
+
+if [[ $DATASET == *"k"* ]];
+then
+  TYPE="discrete"
+else
+  TYPE="continuous"
+fi
+
+echo $TYPE
+
+
+
 # ********* Create necessary repositories *********
 # -------------------------------------------------
 
@@ -38,6 +56,12 @@ mkdir $BASE_DIR/outputs/7_gxp/
 # Repo for the corresponding dataset
 mkdir $BASE_DIR/outputs/7_gxp/$DATASET/
 
+# Repo for the figures
+mkdir $BASE_DIR/figures/
+mkdir $BASE_DIR/figures/7_gxp/
+mkdir $BASE_DIR/figures/7_gxp/$TYPE/
+mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/
+mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/
 
 
 # ********* Jobs creation *************************
@@ -123,7 +147,7 @@ sort -k1 \${fam}                                                                
 # Merge genotyping binary .fam file and phenotype file
 awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10, \$11, \$12, \$13, \$14, \$15}' \${pheno} | \
 sort -k1 | \
-join \${fam} | \
+join \${fam} stdout | \
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16, \$17, \$18, \$19, \$20, \$21}' \
 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate
 
@@ -440,22 +464,20 @@ ml HarfBuzz
 ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
 ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.assoc.50k.5k.txt.gz > $BASE_DIR/outputs/lof/assoc_50k.fofn
 
-mkdir $BASE_DIR/figures/7_gxp/
-mkdir $BASE_DIR/figures/7_gxp/$DATASET/
 
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ univariate_gemma
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC1
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC2
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC3
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC4
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC5
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC6
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC7
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC8
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_PC9
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ multivariate_plink_byPCs
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_gemma
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC2
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC3
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC4
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC5
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC6
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC7
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC8
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC9
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_byPCs
 
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$DATASET/ univariate_plink
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_plink
 
 EOA
 
@@ -522,12 +544,12 @@ echo \${MASK}
 T="1.7"
 echo \${T}
 
-mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/
-mkdir $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/
+mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/
+mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/
 mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/
 
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$DATASET/\${T}/\${NAME}/ \${EFF}
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
+python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/ \${EFF}
 
 
 EOA
