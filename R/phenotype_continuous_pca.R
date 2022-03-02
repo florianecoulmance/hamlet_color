@@ -71,31 +71,31 @@ plot_pca <- function(data, center_points, variance, fig_path, effect, m_type, da
   # Function to plot PCA from dataframe and centroids of groups 
 
   p <- ggplot(data,aes(x=PC1.x,y=PC2.x,color=spec)) +
-       geom_point(size = 1) +
+       geom_point(size = 7) +
        scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                    "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
                                    "ind" = '#66CCFF', "pue" = '#FFCC00', "flo" = '#33FFCC', "tan" = '#333333',
                                    "uni" = '#66CC00'),
-                          labels = c("nig" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_nigricans.l.cairo.png' width='25' /><br>*H. nigricans*",
-                                     "chl" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_chlorurus.l.cairo.png' width='25' /><br>*H. chlorurus*",
-                                     "abe" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_aberrans.l.cairo.png' width='25' /><br>*H. aberrans*",
-                                     "gut" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_guttavarius.l.cairo.png' width='25' /><br>*H. guttavarius*",
-                                     "gum" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gumigutta.l.cairo.png' width='25' /><br>*H. gummigutta*",
-                                     "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='25' /><br>*H. randallorum*",
-                                     "gem" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gemma.l.cairo.png' width='25' /><br>*H. gemma*",
-                                     "may" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_maya.l.cairo.png' width='25' /><br>*H. maya*",
-                                     "ind" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_indigo.l.cairo.png' width='25' /><br>*H. indigo*",
-                                     "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='25' /><br>*H. puella*",
-                                     "flo" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_floridae.l.cairo.png' width='25' /><br>*H. floridae*",
-                                     "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_tan.l.cairo.png' width='25' /><br>*Tan hamlet*",
-                                     "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='25' /><br>*H. unicolor*"),
+                          labels = c("nig" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_nigricans.l.cairo.png' width='70' /><br>*H. nigricans*",
+                                     "chl" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_chlorurus.l.cairo.png' width='70' /><br>*H. chlorurus*",
+                                     "abe" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_aberrans.l.cairo.png' width='70' /><br>*H. aberrans*",
+                                     "gut" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_guttavarius.l.cairo.png' width='70' /><br>*H. guttavarius*",
+                                     "gum" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gumigutta.l.cairo.png' width='70' /><br>*H. gummigutta*",
+                                     "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='70' /><br>*H. randallorum*",
+                                     "gem" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gemma.l.cairo.png' width='70' /><br>*H. gemma*",
+                                     "may" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_maya.l.cairo.png' width='70' /><br>*H. maya*",
+                                     "ind" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_indigo.l.cairo.png' width='70' /><br>*H. indigo*",
+                                     "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='70' /><br>*H. puella*",
+                                     "flo" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_floridae.l.cairo.png' width='70' /><br>*H. floridae*",
+                                     "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_tan.l.cairo.png' width='70' /><br>*Tan hamlet*",
+                                     "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='70' /><br>*H. unicolor*"),
                           breaks = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue",
                                      "flo", "tan", "uni")) +
        # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
-       geom_point(data=center_points,size=7) +
+       geom_point(data=center_points,size=3) +
        geom_segment(aes(x=PC1.y, y=PC2.y, xend=PC1.x, yend=PC2.x, colour=spec), size = 0.1) +
        theme(legend.position="bottom",legend.title=element_blank(),
-             legend.box = "vertical", legend.text =  element_markdown(size = 7),
+             legend.box = "vertical", legend.text =  element_markdown(size = 15),
              panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
              text = element_text(size=15), legend.key=element_blank()) +
        guides(color = guide_legend(nrow = 1)) +
@@ -106,7 +106,7 @@ plot_pca <- function(data, center_points, variance, fig_path, effect, m_type, da
   # Save figure
   hypo_save(filename = paste0(fig_path, dat, "_pca.png"), type = "cairo",
             plot = p,
-            width = 12,
+            width = 15,
             height = 8)
 
 }
