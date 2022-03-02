@@ -146,8 +146,9 @@ sort -k1 \${fam}                                                                
 
 # Merge genotyping binary .fam file and phenotype file
 awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10, \$11, \$12, \$13, \$14, \$15}' \${pheno} | \
-sort -k1 | \
-join \${fam} stdout | \
+sort -k1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
+
+join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 | \
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16, \$17, \$18, \$19, \$20, \$21}' \
 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate
 
