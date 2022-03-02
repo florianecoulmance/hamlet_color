@@ -367,7 +367,7 @@ echo \${COL}
 # echo \${P}
 
 # Run the MVPLINK command on the combinations of multivariate traits
-/user/doau0129/work/software/plink.multivariate --file $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi --mqfam --mult-pheno $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen --pheno-name \${COL} --out $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total
+/user/doau0129/work/software/plink.multivariate --file $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi --mqfam --mult-pheno $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen --pheno-name \${COL} --out $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}
 
 
 EOA
@@ -406,7 +406,7 @@ echo \${MV}
 NAME="\$(cut -d ' ' -f 1 <<<"\${MV}")"                                                # Find the name of the combination
 echo \${NAME}
 
-FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total.mqfam.total          # Input output of mvplink analysis
+FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mqfam.total          # Input output of mvplink analysis
 echo \${FILE}
 
 # Pre clean the output file
