@@ -64,23 +64,27 @@ cat > $jobfile0 <<EOA # generate the job file
 
 INPUT_BI=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                    # Input the bi allelic genotyping file
 
-vcftools \                                                                            # Convert the genotyping file to plink format
+# Convert the genotyping file to plink format
+vcftools \
       --gzvcf \${INPUT_BI} \
       --plink \
       --out $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink
 
-plink \                                                                               # Conver to hapmap / not mandatory to run
+# Conver to hapmap / not mandatory to run
+plink \
       --file $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink \
       --recode12 \
       --out $BASE_DIR/outputs/7_gxp/$DATASET/hapmap
 
-plink \                                                                               # Convert plink genotyping file to binary files to be used in GWAS
+# Convert plink genotyping file to binary files to be used in GWAS
+plink \
     --noweb \
     --file $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink \
     --make-bed \
     --out $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary
 
-cp $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam \                            # Save a copy of the binary .fam file
+# Save a copy of the binary .fam file
+cp $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam \
    $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_sauvegarde.fam
 
 
@@ -137,7 +141,9 @@ cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map                      
 cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
 
 P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam                                    # Input the just created genotype + phenotype file
-awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15}' \${P} \    # Select needed column for MVPLINK analysis and output to .phen file with same naming as previous step
+
+# Select needed column for MVPLINK analysis and output to .phen file with same naming as previous step
+awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15}' \${P} \
 > $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
 
 var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10"                                # Add column name row to file 
@@ -219,7 +225,6 @@ sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATAS
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lmm.assoc.txt | \
       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lmm.GxP.txt.gz
 
-
   # 5) run univariate plink
 plink --bfile \${BASE_NAME}_\${TRAITS} --assoc --allow-no-sex --out $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}
 
@@ -271,7 +276,8 @@ echo \${lmm}
 
 pli=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.qassoc                                # Input the univariate plink result file
 
-awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9}' \${pli} | \                 # Format the univariate plink result file
+# Format the univariate plink result file
+awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9}' \${pli} | \
 cut -d ' ' -f 2,3,6-9 | \
 sed 's/SNP BP /CHROM POS /g' | \
 awk '{sub(/\:.*$/,"",\$1); print \$0}' | \
@@ -378,7 +384,8 @@ echo \${NAME}
 FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.plink.mqfam.total.mqfam.total          # Input output of mvplink analysis
 echo \${FILE}
 
-awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8}' \${FILE} | \                     # Pre clean the output file
+# Pre clean the output file
+awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8}' \${FILE} | \
 cut -d ' ' -f 2,3,6-9 | \
 sed 's/SNP BP /CHROM POS /g' | \
 awk '{sub(/\:.*$/,"",\$1); print \$0}' | \
