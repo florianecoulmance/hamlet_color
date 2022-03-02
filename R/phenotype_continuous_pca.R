@@ -9,7 +9,7 @@
 # variance_file in : PCA variance table in $BASE_DIR/images/continuous/LAB/$DATASET/
 # im_file_path : $BASE_DIR/metadata/image_metadata.tsv
 # mask : mask label in bodym or fullm
-# data_label : left_54off_59on
+# data_label : LAB_fullm_54off_59on
 # figure_path : $BASE_DIR/figures/7_gxp/continuous/LAB/$DATASET/
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
@@ -94,14 +94,18 @@ plot_pca <- function(data, center_points, variance, fig_path, effect, m_type, da
        # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
        geom_point(data=center_points,size=0.1) +
        geom_segment(aes(x=PC1.y, y=PC2.y, xend=PC1.x, yend=PC2.x, colour=spec), size = 0.1) +
-       theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 6)) +
+       theme(legend.position="bottom",legend.title=element_blank(),
+             legend.box = "vertical",legend.text =  element_markdown(size = 7),
+             legend.text =  element_markdown(size = 30), panel.background = element_blank(),
+             panel.border = element_rect(colour = "black", fill=NA, size=1),
+             text = element_text(size=30), legend.key=element_blank()) +
        guides(color = guide_legend(nrow = 1)) +
        labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") ,
             y = paste0("PC2, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %")) +
-       ggtitle(paste0("PCA ", effect, ", ", m_type, ", ", dat))
+       ggtitle(paste0("PCA ", dat))
   
   # Save figure
-  hypo_save(filename = paste0(fig_path, effect, "_", m_type, "_", dat, "_pca.pdf"),
+  hypo_save(filename = paste0(fig_path, dat, "_pca.png"), type = "cairo",
             plot = p,
             width = 12,
             height = 8)
@@ -134,7 +138,7 @@ write_metadata_gxp <- function(PCs, path_meta, effect, m_type, dat) {
   PCs$X <- NULL
   
   # Save phenotype metadata table to metadata folder
-  write.table(PCs,paste0(path_meta, effect, "_", m_type, "_", dat, "_PCs.csv"),sep=";",row.names=FALSE, quote = FALSE)
+  write.table(PCs,paste0(path_meta, dat, "_PCs.csv"),sep=";",row.names=FALSE, quote = FALSE)
   
   # Return the table in a R variable
   return(PCs)
