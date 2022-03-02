@@ -95,9 +95,8 @@ plot_pca <- function(data, center_points, variance, fig_path, effect, m_type, da
        geom_point(data=center_points,size=0.1) +
        geom_segment(aes(x=PC1.y, y=PC2.y, xend=PC1.x, yend=PC2.x, colour=spec), size = 0.1) +
        theme(legend.position="bottom",legend.title=element_blank(),
-             legend.box = "vertical",legend.text =  element_markdown(size = 7),
-             legend.text =  element_markdown(size = 30), panel.background = element_blank(),
-             panel.border = element_rect(colour = "black", fill=NA, size=1),
+             legend.box = "vertical", legend.text =  element_markdown(size = 30),
+             panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
              text = element_text(size=30), legend.key=element_blank()) +
        guides(color = guide_legend(nrow = 1)) +
        labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") ,
