@@ -139,21 +139,20 @@ fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam                       
 pheno=$BASE_DIR/metadata/${DATASET}_PCs.csv                                           # Path to the phenotype file
 echo \${pheno}
 
-tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 PC13 PC14 PC15)                # Create file with list of PCs for further job array steps
+tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)                # Create file with list of PCs for further job array steps
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
 
 sort -k1 \${fam}                                                                      # Sort the .fam file on the individuals' labels column
 
 # Merge genotyping binary .fam file and phenotype file
-awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10, \$11, \$12, \$13, \$14, \$15}' \${pheno} | \
+awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' \${pheno} | \
 sort -k1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
 
 join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 | \
-awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16, \$17, \$18, \$19, \$20, \$21}' \
+awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16}' \
 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate
 
 # Format the merged file for use in GWAS
-echo -e 'label Within_family_ID ID_father ID_mother Sex PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 PC13 PC14 PC15' \
 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate \
 >> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
 
