@@ -288,10 +288,11 @@ INPUT_TR=$BASE_DIR/outputs/lof/pcs.fofn                                         
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 echo \${TRAITS}
 
-rm \${BASE_NAME}_\${TRAITS}.bed                                                       # Remove the previously duplicated files
-rm \${BASE_NAME}_\${TRAITS}.bim
-rm \${BASE_NAME}_\${TRAITS}.log
-rm \${BASE_NAME}_\${TRAITS}.nosex
+rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.bed                                                       # Remove the previously duplicated files
+rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.bim
+rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.log
+rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.nosex
+rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.fam
 
 lm=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz                          # Path to GEMMA lm output file
 echo \${lm}
@@ -464,6 +465,8 @@ ml HarfBuzz
 ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
 ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.assoc.50k.5k.txt.gz > $BASE_DIR/outputs/lof/assoc_50k.fofn
 
+rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.tmp
+rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.nosex
 
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_gemma
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
