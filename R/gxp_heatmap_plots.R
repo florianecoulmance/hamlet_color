@@ -100,12 +100,17 @@ plot_g_h <- function(table,path,prefix,trait) {
 
 
 traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+print(traits)
 
 count = 0
 l <- list()
+print(count)
+print(l)
+
 for (trait in traits) {
     print(trait)
-    count = count + 1 
+    count = count + 1
+    print(count)
 
     f <- list.files(data_path, pattern = "$trait.|lmm.50k.5k.txt.gz|assoc.50k.5k.txt.gz|mvplink.50k.5k.txt.gz")
     print(f)
@@ -134,6 +139,7 @@ for (d in l) {
 
 }
 
+print(p)
 
 plot_final <- grid.arrange(p[[1]], p[[2]], ..., p[[N]], nrow = 1, ncol =2)
 
@@ -143,3 +149,49 @@ hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cair
           height = 8)
 
 
+
+
+
+
+img <- readPNG(paste0(figure_path+dataset+"_pca.png"))
+pca_plot <- rasterGrob(img, interpolate=TRUE)
+
+
+PC1 <- list("PC1.mvplink.50k.5k.txt.gz")
+f1 <- read.table(paste0(data_path,PC1), header=TRUE)
+f1 <- bind_rows(PC1, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+f1$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
+
+pc1 <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
+    geom_hypo_LG() +
+    geom_point(data = f1, aes(x = GPOS, y = AVG_p_wald), size = .1) +
+    scale_fill_hypo_LG_bg() +
+    scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    theme_hypo() +
+    theme(legend.position = 'none',
+          axis.title.x = element_text(),
+          axis.text.x.top= element_text(colour = 'darkgray'))
+
+
+PC2 <- list("PC2.mvplink.50k.5k.txt.gz")
+f2 <- read.table(paste0(data_path,PC2), header=TRUE)
+f2 <- bind_rows(PC2, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+f2$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
+
+pc2 <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
+    geom_hypo_LG() +
+    geom_point(data = f2, aes(x = GPOS, y = AVG_p_wald), size = .1) +
+    scale_fill_hypo_LG_bg() +
+    scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    theme_hypo() +
+    theme(legend.position = 'none',
+          axis.title.x = element_text(),
+          axis.text.x.top= element_text(colour = 'darkgray'))
+
+# Arranging the plot
+ggarrange(pca_plot, NULL, pc1, pc2, 
+          ncol = 2, nrow = 2,  align = "hv", 
+          widths = c(2, 1), heights = c(1, 2),
+          common.legend = TRUE)
