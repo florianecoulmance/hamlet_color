@@ -247,8 +247,6 @@ sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATAS
   # 5) run univariate plink
 plink --bfile \${BASE_NAME}_\${TRAITS} --assoc --allow-no-sex --out $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}
 
-ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/\*.qassoc > $BASE_DIR/outputs/lof/assoc.fofn
-
 
 EOA
 
