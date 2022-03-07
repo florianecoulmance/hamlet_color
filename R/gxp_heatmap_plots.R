@@ -71,7 +71,7 @@ concat_files_gem <- function(f,p) {
 }
 
 
-plot_g_h <- function(table,path,prefix,trait) {
+plot_g_h <- function(table,path,prefix,tr) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
     geom_hypo_LG() +
     geom_point(data = table, aes(x = GPOS, y = AVG_p_wald), size = .1) +
@@ -84,7 +84,7 @@ plot_g_h <- function(table,path,prefix,trait) {
           axis.text.x.top= element_text(colour = 'darkgray'))
 
     # im <- paste0(figure_path+dataset+"_"+trait+".png")
-    img <- readPNG(paste0(path+prefix+"_"+trait+".png"))
+    img <- readPNG(paste0(path,prefix,"_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
     plot <- p+g 
@@ -137,12 +137,17 @@ for (trait in traits) {
 p <- vector('list', 10)
 print(p)
 
-
+count = 0
+print(count)
 for (d in l) {
   #print(d)
-  print(head(d))
 
-  p[[d]] <- plot_g_h(d,figure_path,dataset,d)
+  print(head(d))
+  count = count + 1
+  print(count)
+  trait <- traits[count]
+  print(trait)
+  p[[d]] <- plot_g_h(d,figure_path,dataset,trait)
 
 }
 
