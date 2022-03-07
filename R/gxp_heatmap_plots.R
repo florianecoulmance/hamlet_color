@@ -121,11 +121,11 @@ for (trait in traits) {
     print(model)
     files_l <- concat_files_gem(f,data_path)
     names(files_l) <- model
-    print(head(files_l))
+    #print(head(files_l))
 
     f <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
     f$range <- do.call(paste, c(f[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
-    print(head(f))
+    #print(head(f))
 
     l[[count]]=assign(trait,f)
 
