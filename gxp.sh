@@ -459,8 +459,6 @@ ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outpu
 ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.assoc.50k.5k.txt.gz > $BASE_DIR/outputs/lof/assoc_50k.fofn
 
 rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.tmp
-rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.nosex
-
 
 Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET
 
