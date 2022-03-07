@@ -155,7 +155,7 @@ for (d in l) {
 
 print(p)
 
-plot_final <- grid.arrange(p[[1]], p[[2]], p[[3]], p[[4]], p[[5]], p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], nrow = 1, ncol =2)
+plot_final <- grid.arrange(p[[1]], p[[2]], p[[3]], p[[4]], p[[5]], p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], nrow = 5, ncol =2)
 
 hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
           plot = plot_final,
