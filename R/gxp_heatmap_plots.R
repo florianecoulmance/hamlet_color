@@ -112,7 +112,8 @@ for (trait in traits) {
     count = count + 1
     print(count)
 
-    f <- list.files(data_path, pattern = "$trait.|lmm.50k.5k.txt.gz|assoc.50k.5k.txt.gz|mvplink.50k.5k.txt.gz")
+    f <- list.files(data_path, pattern = "lmm.50k.5k.txt.gz|assoc.50k.5k.txt.gz|mvplink.50k.5k.txt.gz")
+    f <- f[grep(trait, names(f))]  
     print(f)
     model <- list("GEMMA", "PLINK", "MV PLINK")
     print(model)
