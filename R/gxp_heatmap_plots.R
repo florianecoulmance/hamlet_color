@@ -148,7 +148,7 @@ for (d in l) {
   print(count)
   trait <- traits[count]
   print(trait)
-  p[[d]] <- plot_g_h(d,figure_path,dataset,trait)
+  p[[count]] <- plot_g_h(d,figure_path,dataset,trait)
 
 }
 
