@@ -34,13 +34,14 @@ library(grid)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:7]
+args = args[6:8]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
 print(data_path)
 figure_path <- as.character(args[2]) # Path to the figure folder
 print(figure_path)
+dataset <- as.character(args[3])
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -131,14 +132,14 @@ for (trait in traits) {
 
 }
 
-print(head(l))
+#print(head(l))
 
 p <- vector('list', 10)
 print(p)
 
 
 for (d in l) {
-  print(d)
+  #print(d)
   print(head(d))
 
   p[[d]] <- plot_g_h(d,figure_path,dataset,d)
