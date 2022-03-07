@@ -114,7 +114,7 @@ for (trait in traits) {
 
     f <- list.files(data_path, pattern = "lmm.50k.5k.txt.gz|assoc.50k.5k.txt.gz|mvplink.50k.5k.txt.gz")
     print(f)
-    f <- f[grep(trait, names(f))]  
+    f <- f[grepl(paste0(trait,"."), names(f))]  
     print(f)
     model <- list("GEMMA", "PLINK", "MV PLINK")
     print(model)
