@@ -301,7 +301,7 @@ sed 's/SNP BP /CHROM POS /g' | \
 awk '{sub(/\:.*$/,"",\$1); print \$0}' | \
 awk '{if (\$3!="NA"){ print}}' | \
 body sort -k1,1 -k2,2n | \
-gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.assoc.txt.gz
+gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz
 
 win5=50000                                                                            # Create 2 sets of parameters for GWAS average
 step5=5000
@@ -313,14 +313,14 @@ step1=1000
 echo \${win1}
 echo \${step1}
 
-$BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}                                  # Run the average over genome window for both lm and lmm GEMMA results and each set of parameters
-$BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
-$BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
-$BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
+# $BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}                                  # Run the average over genome window for both lm and lmm GEMMA results and each set of parameters
+# $BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
+# $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
+# $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
 
 # Run the average over genome window for univariate PLINK results and each set of parameters
-$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.assoc.txt.gz \${win5} \${step5}
-$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.assoc.txt.gz \${win1} \${step1}
+$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win5} \${step5}
+$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win1} \${step1}
 
 
 EOA
