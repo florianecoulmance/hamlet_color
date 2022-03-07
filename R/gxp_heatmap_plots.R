@@ -111,11 +111,12 @@ for (trait in traits) {
     print(trait)
     count = count + 1
     print(count)
-
-    f <- list.files(data_path, pattern = "lmm.50k.5k.txt.gz|assoc.50k.5k.txt.gz|mvplink.50k.5k.txt.gz")
+    string <- paste0(trait,".lmm.50k.5k.txt.gz|",trait,".assoc.50k.5k.txt.gz|",trait,".mvplink.50k.5k.txt.gz")
+    print(string)
+    f <- list.files(data_path, pattern = string)
     print(f)
-    f <- f[grepl(paste0(trait,"."), names(f))]  
-    print(f)
+    # f <- f[grepl(paste0(trait,"."), names(f))]  
+    # print(f)
     model <- list("GEMMA", "PLINK", "MV PLINK")
     print(model)
     files_l <- concat_files_gem(f,data_path)
