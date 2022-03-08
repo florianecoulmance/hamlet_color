@@ -89,7 +89,9 @@ plot_g_h <- function(table,path,prefix,tr) {
     img <- readPNG(paste0(path,prefix,"_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
-    plot <- p+g 
+    plot <- p+g
+    
+    return(plot) 
 
 
 }
