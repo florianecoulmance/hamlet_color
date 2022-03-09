@@ -95,14 +95,14 @@ concat_files_gem <- function(f,p) {
 plot_g_h <- function(table,path,prefix,tr) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
     geom_hypo_LG() +
-    geom_point(data = table, aes(x = GPOS, y = AVG_P), size = .01) +
+    geom_point(data = table, aes(x = GPOS, y = AVG_P), size = .001) +
     scale_fill_hypo_LG_bg() +
     scale_x_hypo_LG(name = "Linkage Groups") +
     scale_y_continuous(name = expression(italic('-log(p-value)'))) +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'),
+          axis.text.x.top= element_text(colour = 'darkgray', size = 1),
           plot.margin = unit(c(0,0,0,0), "cm")) 
     
 
@@ -177,8 +177,8 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
   
   hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
             plot = plot_final,
-            width = 8,
-            height = 8)
+            width = 20,
+            height = 30)
   
 }
 
