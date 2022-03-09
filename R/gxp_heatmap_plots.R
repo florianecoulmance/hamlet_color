@@ -108,7 +108,7 @@ plot_g_h <- function(table,path,prefix,tr) {
 
     # im <- paste0(figure_path+dataset+"_"+trait+".png")
     img <- readPNG(paste0(path,prefix,"_",tr,".png"))
-    grid.raster(img[10:50,20:90,])
+    img <- grid.raster(img[10:50,20:90,])
     g <- rasterGrob(img, interpolate=TRUE)
 
     plot <- p + g + ggtitle(tr) + theme(plot.title = element_text(hjust = 0.8))
