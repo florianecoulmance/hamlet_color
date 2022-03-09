@@ -1,11 +1,13 @@
 #!/usr/bin/env Rscript
 # by: Floriane Coulmance: 01/03/2022
 # usage:
-# Rscript gxp_heatmap_plots.R <data_path> <figure_path> <dataset>
+# Rscript gxp_heatmap_plots.R <data_path> <figure_path> <dataset> <metadata> <im_path>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # figure_path in : $BASE_DIR/figures/7_gxp/figures/$TYPE/$COLOR_SPACE/$DATASET
 # dataset in : LAB_fullm_54off_59on
+# metadata in : $BASE_DIR/metadata/
+# im_path in : $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -15,16 +17,14 @@ rm(list = ls())
 
 # Load needed library
 library(ggplot2)
-library(patchwork)
 library(tidyverse)
-library(gridExtra)
 library(hypogen)
 library(hypoimg)
 library(dplyr)
 library(plyr)
 library(stringr)
 library(png)
-library(grid)
+library(ggpubr)
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ library(grid)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:8]
+args = args[6:10]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
@@ -44,6 +44,16 @@ print(data_path)
 figure_path <- as.character(args[2]) # Path to the figure folder
 print(figure_path)
 dataset <- as.character(args[3])
+print(dataset)
+metadata <- as.character(args[4])
+print(metadata)
+im_path <- as.character(args[5])
+print(im_path)
+# data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
+# figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
+# dataset <- "LAB_fullm_PC1-2"
+# metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/"
+# im_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/images/continuous/LAB/LAB_fullm_left_54off_59on/"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -64,36 +74,181 @@ concat_files_gem <- function(f,p) {
     print(run_files)
     d <- read.table(paste0(p,file), header=TRUE)
     d$RUN <- run_files
+    print(colnames(d))
+    if ("AVG_p_wald" %in% colnames(d)) {
+      #d %>% rename(AVG_p_wald = AVG_P)
+      names(d)[names(d) == "AVG_p_wald"] <- "AVG_P"
+    }
     #assign(run_files,d)
     l[[count]]=assign(run_files,d)
     print(head(d))
     #print(l)
   }
+  
   return(l)
+  
 }
 
 
 plot_g_h <- function(table,path,prefix,tr) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
     geom_hypo_LG() +
-    geom_point(data = table, aes(x = GPOS, y = AVG_p_wald), size = .1) +
+    geom_point(data = table, aes(x = GPOS, y = AVG_P), size = .1) +
     scale_fill_hypo_LG_bg() +
     scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    scale_y_continuous(name = expression(italic('-log(p-value)'))) +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'))
 
     # im <- paste0(figure_path+dataset+"_"+trait+".png")
-    img <- readPNG(paste0(path,prefix,"_",tr,".png"))
+    img <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_left_54off_59on/LAB_fullm_left_54off_59on_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
     plot <- p+g
     
     return(plot) 
 
+}
 
+
+univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
+  
+  # Function to create a dataframe with the 3 univariate analyses 
+  # per PCs of the phenotype PCA
+  
+  count = 0
+  print(count)
+  
+  l <- list()
+  print(l)
+  
+  for (trait in trait_list) {
+    print(trait)
+    count = count + 1
+    print(count)
+    string <- paste0(trait,".lmm.50k.5k.txt.gz|",trait,".assoc.50k.5k.txt.gz|",trait,".mvplink.50k.5k.txt.gz")
+    print(string)
+    f <- list.files(path_univariate, pattern = string)
+    print(head(f))
+    # f <- f[grepl(paste0(trait,"."), names(f))]  
+    # print(f)
+    model <- list("PLINK", "GEMMA", "MV PLINK")
+    print(model)
+    files_l <- concat_files_gem(f,path_univariate)
+    names(files_l) <- model
+    #print(head(files_l))
+    
+    f <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+    f$range <- do.call(paste, c(f[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
+    #print(head(f))
+    
+    l[[count]]=assign(trait,f)
+  }
+  
+  # Create set of plots for each phenotype PCs and arrange them in 1 plot
+  
+  p <- vector('list', 10)
+  print(p)
+  
+  count = 0
+  print(count)
+  
+  for (d in l) {
+    #print(d)
+    print(head(d))
+    count = count + 1
+    print(count)
+    trait <- trait_list[count]
+    print(trait)
+    p[[count]] <- plot_g_h(d,fig_path,dat,trait)
+  }
+  
+  plot_final <- ggarrange(p[[1]], p[[2]], p[[3]], p[[4]], p[[5]],
+                          p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], 
+                          ncol = 2, nrow = 5,  align = "hv",
+                          common.legend = TRUE)
+  
+  
+  hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
+            plot = plot_final,
+            width = 8,
+            height = 8)
+  
+}
+
+
+plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path, dat) {
+  
+  # Function to plot PCA from dataframe and centroids of groups 
+  
+  p <- ggplot(data,aes(x=PC1.x,y=PC2.x,color=spec)) +
+    geom_point(size = 3) +
+    scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
+                                "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
+                                "ind" = '#66CCFF', "pue" = '#FFCC00', "flo" = '#33FFCC', "tan" = '#333333',
+                                "uni" = '#66CC00'),
+                       labels = c("nig" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_nigricans.l.cairo.png' width='70' /><br>*H. nigricans*",
+                                  "chl" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_chlorurus.l.cairo.png' width='70' /><br>*H. chlorurus*",
+                                  "abe" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_aberrans.l.cairo.png' width='70' /><br>*H. aberrans*",
+                                  "gut" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_guttavarius.l.cairo.png' width='70' /><br>*H. guttavarius*",
+                                  "gum" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gumigutta.l.cairo.png' width='70' /><br>*H. gummigutta*",
+                                  "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='70' /><br>*H. randallorum*",
+                                  "gem" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gemma.l.cairo.png' width='70' /><br>*H. gemma*",
+                                  "may" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_maya.l.cairo.png' width='70' /><br>*H. maya*",
+                                  "ind" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_indigo.l.cairo.png' width='70' /><br>*H. indigo*",
+                                  "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='70' /><br>*H. puella*",
+                                  "flo" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_floridae.l.cairo.png' width='70' /><br>*H. floridae*",
+                                  "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_tan.l.cairo.png' width='70' /><br>*Tan hamlet*",
+                                  "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='70' /><br>*H. unicolor*"),
+                       breaks = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue",
+                                  "flo", "tan", "uni")) +
+    # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
+    geom_point(data=center_points,size=7) +
+    geom_segment(aes(x=PC1.y, y=PC2.y, xend=PC1.x, yend=PC2.x, colour=spec), size = 0.1) +
+    theme(legend.position="bottom",legend.title=element_blank(),
+          legend.box = "vertical", legend.text =  element_markdown(size = 15),
+          panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
+          text = element_text(size=20), legend.key=element_blank(),
+          legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
+    guides(color = guide_legend(nrow = 2)) +
+    labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") ,
+         y = paste0("PC2, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %")) #+
+  #ggtitle(paste0("PCA ", dat))
+  
+  
+  # Additional plots of GWAS corresponding to each PCA axis
+  pc1 <- ggplot() + geom_hypo_LG() +
+    geom_point(data = file_pc1, aes(x = GPOS, y = AVG_P), size = .1) +
+    scale_fill_hypo_LG_bg() +
+    scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    theme_hypo() +
+    theme(legend.position = 'none',
+          axis.title.x = element_text(),
+          axis.text.x.top= element_text(colour = 'darkgray'),
+          plot.margin = unit(c(0.5,0,0.5,0), "cm"))
+  
+  pc2 <- ggplot() + geom_hypo_LG() +
+    geom_point(data = file_pc2, aes(x = GPOS, y = AVG_P), size = .1) +
+    scale_fill_hypo_LG_bg() +
+    scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    theme_hypo() +
+    theme(legend.position = 'none',
+          axis.title.x = element_text(),
+          axis.text.x.top= element_text(colour = 'darkgray'),
+          plot.margin = unit(c(0,0.5,0,0.1), "cm")) +
+    rotate()
+  
+  
+  # Arranging the plot
+  ggarrange(pc1, NULL, p, pc2, 
+            ncol = 2, nrow = 2,  align = "hv",
+            widths = c(3, 1), heights = c(1, 3),
+            common.legend = TRUE, legend = "bottom")
+  
 }
 
 
@@ -104,110 +259,50 @@ plot_g_h <- function(table,path,prefix,tr) {
 # -------------------------------------------------------------------------------------------------------------------
 
 
+# Determine the list of traits to analyse
 traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
 print(traits)
 
-count = 0
-l <- list()
-print(count)
-print(l)
-
-for (trait in traits) {
-    print(trait)
-    count = count + 1
-    print(count)
-    string <- paste0(trait,".lmm.50k.5k.txt.gz|",trait,".assoc.50k.5k.txt.gz|",trait,".mvplink.50k.5k.txt.gz")
-    print(string)
-    f <- list.files(data_path, pattern = string)
-    print(head(f))
-    # f <- f[grepl(paste0(trait,"."), names(f))]  
-    # print(f)
-    model <- list("PLINK", "GEMMA", "MV PLINK")
-    print(model)
-    files_l <- concat_files_gem(f,data_path)
-    names(files_l) <- model
-    #print(head(files_l))
-
-    f <- bind_rows(files_l, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
-    f$range <- do.call(paste, c(f[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
-    #print(head(f))
-
-    l[[count]]=assign(trait,f)
-
-}
-
-#print(head(l))
-
-p <- vector('list', 10)
-print(p)
-
-count = 0
-print(count)
-for (d in l) {
-  #print(d)
-
-  print(head(d))
-  count = count + 1
-  print(count)
-  trait <- traits[count]
-  print(trait)
-  p[[count]] <- plot_g_h(d,figure_path,dataset,trait)
-
-}
-
-print(p)
-
-plot_final <- grid.arrange(p[[1]], p[[2]], p[[3]], p[[4]], p[[5]], p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], nrow = 5, ncol =2)
-
-hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
-          plot = plot_final,
-          width = 8,
-          height = 8)
+# Analyses of 10 univariate PCs and their heatmaps
+univariate_plots(data_path, traits, figure_path, dataset)
 
 
+# Analyses of image PCA and gwas of PC1 and PC2
+# Open all needed files
+pca_pheno <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";")
+# pca_pheno <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/LAB_fullm_left_54off_59on_PCs.csv", sep = ";")
+var <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ",")
+# var <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/images/continuous/LAB/LAB_fullm_left_54off_59on/LAB_fullm_left_54off_59on_var.csv", sep = ",")
+im <- read.table(file = paste0(metadata, "image_metadata.tsv"), sep = '\t', header = TRUE)
+# im <- read.table(file = "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/image_metadata.tsv", sep = '\t', header = TRUE)
 
+# Create a column with image name without suffix
+im["im"] <- gsub('.{4}$', '', im$image)
 
+# Combine PCs info with image info and calculate centroids for each species group 
+meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
+centroids <- aggregate(cbind(PC1,PC2)~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
+centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
+centroids["PC2.x"] <- centroids["PC2"]
 
-
-img <- readPNG(paste0(figure_path+dataset+"_pca.png"))
-pca_plot <- rasterGrob(img, interpolate=TRUE)
-
-
+# Get the PC1 GWAS plot for the univariate GWAS done with MVPLINK
 PC1 <- list("PC1.mvplink.50k.5k.txt.gz")
 f1 <- read.table(paste0(data_path,PC1), header=TRUE)
-f1 <- bind_rows(PC1, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
-f1$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
+f1 <- f1 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+f1$range <- do.call(paste, c(f1[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
-pc1 <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
-    geom_hypo_LG() +
-    geom_point(data = f1, aes(x = GPOS, y = AVG_p_wald), size = .1) +
-    scale_fill_hypo_LG_bg() +
-    scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
-    theme_hypo() +
-    theme(legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'))
-
-
+# Get the PC2 GWAS plot for the univariate GWAS done with MVPLINK
 PC2 <- list("PC2.mvplink.50k.5k.txt.gz")
 f2 <- read.table(paste0(data_path,PC2), header=TRUE)
-f2 <- bind_rows(PC2, .id = 'id') %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
-f2$range <- do.call(paste, c(files[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
+f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
+f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
-pc2 <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
-    geom_hypo_LG() +
-    geom_point(data = f2, aes(x = GPOS, y = AVG_p_wald), size = .1) +
-    scale_fill_hypo_LG_bg() +
-    scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
-    theme_hypo() +
-    theme(legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'))
+# Plot the phenotype PCA and save it as figure
+p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, figure_path, dataset)
 
-# Arranging the plot
-ggarrange(pca_plot, NULL, pc1, pc2, 
-          ncol = 2, nrow = 2,  align = "hv", 
-          widths = c(2, 1), heights = c(1, 2),
-          common.legend = TRUE)
+# Save the plot
+hypo_save(filename = paste0(figure_path,"PC1_PC2_univariate_gwas.pdf"),
+          plot = p,
+          width = 12.5,
+          height = 12.5)
