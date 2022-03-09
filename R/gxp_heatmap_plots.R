@@ -95,20 +95,22 @@ concat_files_gem <- function(f,p) {
 plot_g_h <- function(table,path,prefix,tr) {
   p <- ggplot() + facet_wrap(RUN~., ncol = 1, dir = 'v', strip.position="right") +
     geom_hypo_LG() +
-    geom_point(data = table, aes(x = GPOS, y = AVG_P), size = .1) +
+    geom_point(data = table, aes(x = GPOS, y = AVG_P), size = .01) +
     scale_fill_hypo_LG_bg() +
     scale_x_hypo_LG(name = "Linkage Groups") +
     scale_y_continuous(name = expression(italic('-log(p-value)'))) +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'))
+          axis.text.x.top= element_text(colour = 'darkgray'),
+          plot.margin = unit(c(0,0,0,0), "cm")) 
+    
 
     # im <- paste0(figure_path+dataset+"_"+trait+".png")
     img <- readPNG(paste0(path,prefix,"_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
-    plot <- p+g
+    plot <- p + g
     
     return(plot) 
 
@@ -169,7 +171,7 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
   
   plot_final <- ggarrange(p[[1]], p[[2]], p[[3]], p[[4]], p[[5]],
                           p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], 
-                          ncol = 2, nrow = 5,  align = "hv",
+                          ncol = 2, nrow = 5,  align = "v",
                           common.legend = TRUE)
   
   
