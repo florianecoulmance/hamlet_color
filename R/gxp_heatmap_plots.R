@@ -18,6 +18,7 @@ rm(list = ls())
 # Load needed library
 library(ggplot2)
 library(patchwork)
+library(ggtext)
 library(tidyverse)
 library(hypogen)
 library(hypoimg)
