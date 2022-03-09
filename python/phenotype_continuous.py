@@ -273,7 +273,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     rgb_im[b_m] = color_mask # <-- fill the positions of the black and white numpy image where the boolean mask is TRUE with the color values
 
     
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=(10,8))
     im = ax.imshow(rgb_im)
     cax = fig.add_axes([0.910, 0.100, 0.009, 0.775]) # <-- create ax for the colorbar scale
     cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='vertical') # <-- Create a colorbar axes
@@ -285,9 +285,11 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     ax.set_yticklabels([]) # <-- remove y tick labels
     ax.set(xticks=[]) # <-- remove x ticks
     ax.set(yticks=[]) # <-- remove y ticks 
-    fig.subplots_adjust(right=.9)  # <-- Add space so the colorbar doesn't overlap the plot
-
-    plt.savefig(res_path+data_name+"_PC"+str(component)+".png") # <-- save in appropriate figure folder with region id as file title
+    fig.subplots_adjust(top = 0, bottom = 0, right=.9, left = 0, 
+            hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
+    
+    plt.margins(0,0)
+    plt.savefig(res_path+data_name+"_PC"+str(component)+".png", bbox_inches = 'tight', pad_inches = 0) # <-- save in appropriate figure folder with region id as file title
 
 
 
