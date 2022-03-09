@@ -103,7 +103,7 @@ plot_g_h <- function(table,path,prefix,tr) {
           axis.text.x.top= element_text(colour = 'darkgray'))
 
     # im <- paste0(figure_path+dataset+"_"+trait+".png")
-    img <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_left_54off_59on/LAB_fullm_left_54off_59on_",tr,".png"))
+    img <- readPNG(paste0(path,prefix,"_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
     plot <- p+g
