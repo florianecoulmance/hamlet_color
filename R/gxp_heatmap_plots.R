@@ -102,7 +102,7 @@ plot_g_h <- function(table,path,prefix,tr) {
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray', size = 1),
+          axis.text.x.top= element_text(colour = 'darkgray', size = 8),
           plot.margin = unit(c(0,0,0,0), "cm")) 
     
 
@@ -110,7 +110,7 @@ plot_g_h <- function(table,path,prefix,tr) {
     img <- readPNG(paste0(path,prefix,"_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
-    plot <- p + g
+    plot <- p + g + ggtitle(tr) + theme(plot.title = element_text(hjust = 0.8))
     
     return(plot) 
 
