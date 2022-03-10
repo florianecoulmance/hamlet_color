@@ -289,7 +289,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
             hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
     
     plt.margins(0,0)
-    plt.savefig(res_path+data_name+"_PC"+str(component)+".png", bbox_inches = 'tight', pad_inches = 0) # <-- save in appropriate figure folder with region id as file title
+    plt.savefig(res_path+data_name+"_PC"+str(component)+".png") # <-- save in appropriate figure folder with region id as file title
 
 
 
