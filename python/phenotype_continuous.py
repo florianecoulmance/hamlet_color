@@ -271,11 +271,15 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     
     rgb_im = np.array(rgb_m) # <-- transform the black and white input image as a numpy array
     rgb_im[b_m] = color_mask # <-- fill the positions of the black and white numpy image where the boolean mask is TRUE with the color values
-
     
-    fig, ax = plt.subplots(figsize=(12,8))
-    im = ax.imshow(rgb_im)
-    cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
+    print(rgb_im.shape)
+
+    img_cropped = rgb_im[77:141, 57:121, :]
+
+    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(4,4), gridspec_kw={"height_ratios":[1, 0.05]})
+    #fig, ax = plt.subplots(figsize=(12,8))
+    im = ax.imshow(img_cropped)
+    #cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
     cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='horizontal') # <-- Create a colorbar axes
     #ax.despine(left=True, bottom=True) # <-- remove x and y lines
     #fig.patch.set_visible(False)
