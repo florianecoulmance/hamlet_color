@@ -275,7 +275,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     
     fig, ax = plt.subplots(figsize=(10,8))
     im = ax.imshow(rgb_im)
-    cax = fig.add_axes([0.001, 0.01, 0.05, 0.775]) # <-- create ax for the colorbar scale
+    cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
     cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='horizontal') # <-- Create a colorbar axes
     #ax.despine(left=True, bottom=True) # <-- remove x and y lines
     #fig.patch.set_visible(False)
