@@ -274,9 +274,9 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     
     print(rgb_im.shape)
 
-    img_cropped = rgb_im[77:141, 57:121, :]
+    img_cropped = rgb_im[200:800, 300:1600, :]
 
-    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(4,4), gridspec_kw={"height_ratios":[1, 0.05]})
+    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,12), gridspec_kw={"height_ratios":[1, 0.05]})
     #fig, ax = plt.subplots(figsize=(12,8))
     im = ax.imshow(img_cropped)
     #cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
@@ -284,6 +284,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     #ax.despine(left=True, bottom=True) # <-- remove x and y lines
     #fig.patch.set_visible(False)
     ax.axis('off')
+    cb.outline.set_visible(False) # <-- remove colorbar outline
     ax.set(xlabel=None) # <-- remove x label
     ax.set_xticklabels([]) # <-- remove x tick labels
     ax.set_yticklabels([]) # <-- remove y tick labels
