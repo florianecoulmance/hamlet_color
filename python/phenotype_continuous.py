@@ -274,9 +274,9 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     
     print(rgb_im.shape)
 
-    img_cropped = rgb_im[200:800, 300:1600, :]
+    img_cropped = rgb_im[200:800, 200:1400, :]
 
-    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,12), gridspec_kw={"height_ratios":[1, 0.05]})
+    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05]})
     #fig, ax = plt.subplots(figsize=(12,8))
     im = ax.imshow(img_cropped)
     #cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
