@@ -274,9 +274,9 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     
     print(rgb_im.shape)
 
-    img_cropped = rgb_im[200:600, 240:1350, :]
+    img_cropped = rgb_im[200:700, 240:1350, :]
 
-    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05]})
+    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05],"wspace":0, "hspace":0})
     #fig, ax = plt.subplots(figsize=(12,8))
     im = ax.imshow(img_cropped)
     #cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
@@ -290,8 +290,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     ax.set_yticklabels([]) # <-- remove y tick labels
     ax.set(xticks=[]) # <-- remove x ticks
     ax.set(yticks=[]) # <-- remove y ticks 
-    #fig.subplots_adjust(top = 0.9, bottom = 0, right=0, left = 0, 
-    #        hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
+    #fig.subplots_adjust(hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
     
     plt.margins(0,0)
     plt.savefig(res_path+data_name+"_PC"+str(component)+".png",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
