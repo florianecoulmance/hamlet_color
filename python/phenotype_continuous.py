@@ -290,7 +290,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     ax.set_yticklabels([]) # <-- remove y tick labels
     ax.set(xticks=[]) # <-- remove x ticks
     ax.set(yticks=[]) # <-- remove y ticks 
-    #fig.subplots_adjust(hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
+    fig.subplots_adjust(hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
     
     plt.margins(0,0)
     plt.savefig(res_path+data_name+"_PC"+str(component)+".png",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
