@@ -178,7 +178,7 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
   hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
             plot = plot_final,
             width = 20,
-            height = 25)
+            height = 23)
   
 }
 
