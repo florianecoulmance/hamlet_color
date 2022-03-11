@@ -110,7 +110,7 @@ plot_g_h <- function(table,path,prefix,tr) {
     img <- readPNG(paste0(path,prefix,"_",tr,".png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
-    plot <- p + g + ggtitle(tr) + theme(plot.title = element_text(hjust = 0.8))
+    plot <- ggarrange(p, g, ncol = 2, nrow = 1, widths = c(1.5, 1)) + ggtitle(tr) + theme(plot.title = element_text(hjust = 0.8))
     
     return(plot) 
 
