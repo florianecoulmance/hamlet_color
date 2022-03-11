@@ -275,7 +275,7 @@ univariate_plots(data_path, traits, figure_path, dataset)
 # Open all needed files
 pca_pheno <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";")
 # pca_pheno <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/LAB_fullm_left_54off_59on_PCs.csv", sep = ";")
-var <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ",")
+var <- read.csv(paste0(im_path, dataset, "_var.csv"), sep = ",")
 # var <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/images/continuous/LAB/LAB_fullm_left_54off_59on/LAB_fullm_left_54off_59on_var.csv", sep = ",")
 im <- read.table(file = paste0(metadata, "image_metadata.tsv"), sep = '\t', header = TRUE)
 # im <- read.table(file = "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/image_metadata.tsv", sep = '\t', header = TRUE)
