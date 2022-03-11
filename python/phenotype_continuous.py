@@ -33,6 +33,7 @@ import pandas as pd
 import cv2
 from sklearn.decomposition import PCA
 import numpy as np
+from matplotlib import gridspec
 
 
 
@@ -276,9 +277,9 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
 
     img_cropped = rgb_im[200:700, 240:1350, :]
 
-    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05],"wspace":0, "hspace":0})
+    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05]})
     #fig, ax = plt.subplots(figsize=(12,8))
-    im = ax.imshow(img_cropped)
+    ax.imshow(img_cropped)
     #cax = fig.add_axes([0.001, 0.01, 0.775, 0.05]) # <-- create ax for the colorbar scale
     cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='horizontal') # <-- Create a colorbar axes
     #ax.despine(left=True, bottom=True) # <-- remove x and y lines
@@ -290,7 +291,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     ax.set_yticklabels([]) # <-- remove y tick labels
     ax.set(xticks=[]) # <-- remove x ticks
     ax.set(yticks=[]) # <-- remove y ticks 
-    fig.subplots_adjust(hspace = 0, wspace = 0)  # <-- Add space so the colorbar doesn't overlap the plot
+    fig.subplots_adjust(hspace = 0.01, wspace = 0.01)  # <-- Add space so the colorbar doesn't overlap the plot
     
     plt.margins(0,0)
     plt.savefig(res_path+data_name+"_PC"+str(component)+".png",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
