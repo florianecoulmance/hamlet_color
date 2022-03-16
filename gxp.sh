@@ -399,7 +399,7 @@ echo \${MV}
 NAME="\$(cut -d ' ' -f 1 <<<"\${MV}")"                                                # Find the name of the combination
 echo \${NAME}
 
-FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mqfam.total          # Input output of mvplink analysis
+FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mqfam.total                            # Input output of mvplink analysis
 echo \${FILE}
 
 # Pre clean the output file
@@ -488,7 +488,6 @@ cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=7_zooms.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-55
 #SBATCH --output=$BASE_DIR/logs/7_zooms_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/7_zooms_%A_%a.err
 #SBATCH --nodes=1
@@ -503,19 +502,15 @@ ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
 ml FriBidi
 ml HarfBuzz
 
+# Input the multivariate analysis of choice
+AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_10.mvplink.50k.5k.txt.gz
 
-ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
-
-INPUT_AVG=$BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
-
-#Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
-AVG=\$(cat \${INPUT_AVG} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-echo \${AVG}
-
+# Extract name of the multivariate analysis, color space and mask names
 B=\$(basename "\${AVG}")
 echo \${B}
 NAME=\${B%%.*}
 echo \${NAME}
+
 EFF=${DATASET%%_*}
 echo \${EFF}
 
@@ -524,29 +519,90 @@ echo \${C}
 M=\${C%%_*}
 echo \${M}
 
-
+# Based on mask name, input mask file
 if [ "\${M}" = "fullm" ];
 then
-  MASK=$BASE_DIR/ressources/full_mask.tif
+  MASK=$BASE_DIR/ressources/images/full_mask.tif
 elif [ "\${M}" = "bodym" ]
 then
-  MASK=$BASE_DIR/ressources/body_mask.tif
+  MASK=$BASE_DIR/ressources/images/body_mask.tif
 else
   echo "please verify your dataset folder spelling in the specified -k parameter"
 fi
 
+echo \${MASK}
+
+# Create appropriate subfolders 
+mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/
+mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/
+
+# Run the R and python plot analyses
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 8 create heatmaps for most associated SNPs
+
+jobfile8=8_heat.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=8_heat.tmp
+#SBATCH --partition=carl.p
+#SBATCH --array=1-24
+#SBATCH --output=$BASE_DIR/logs/8_heat_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/8_heat_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=40G
+#SBATCH --time=04:00:00
+
+
+# Input the multivariate analysis of choice
+AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_10.mvplink.50k.5k.txt.gz
+
+# Extract name of the multivariate analysis, color space and mask names
+B=\$(basename "\${AVG}")
+echo \${B}
+NAME=\${B%%.*}
+echo \${NAME}
+
+EFF=${DATASET%%_*}
+echo \${EFF}
+
+C=${DATASET#*_}
+echo \${C}
+M=\${C%%_*}
+echo \${M}
+
+# Based on mask name, input mask file
+if [ "\${M}" = "fullm" ];
+then
+  MASK=$BASE_DIR/ressources/images/full_mask.tif
+elif [ "\${M}" = "bodym" ]
+then
+  MASK=$BASE_DIR/ressources/images/body_mask.tif
+else
+  echo "please verify your dataset folder spelling in the specified -k parameter"
+fi
 
 echo \${MASK}
 
-T="1.7"
-echo \${T}
+chr=(01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24)
 
-mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/
-mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/
-mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/
+# Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+LG=\${chr[\${SLURM_ARRAY_TASK_ID}]}
+echo \${LG}
 
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/ \${NAME} \${T}
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/ \${EFF}
+
+FILE_N="\${NAME}_LG\${LG}"
+echo \${FILE_N}
+
+python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
 
 
 EOA
@@ -556,7 +612,7 @@ EOA
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   0_convert_plink : DONE         **"
 else
@@ -564,7 +620,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   1_prep          : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -575,7 +631,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   2_gemma         : DONE         **"
 elif [ "$JID_RES" = "jid2" ]
@@ -586,7 +642,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   3_windows       : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
@@ -597,7 +653,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ] || [ "$JID_RES" = "jid11" ] || [ "$JID_RES" = "jid12" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   4_mvplink       : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
@@ -608,7 +664,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   5_slider        : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -619,7 +675,7 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid7" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
 then
   echo "*****   6_plots         : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
@@ -630,12 +686,24 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid7" ];
+if [ "$JID_RES" = "jid8" ];
+then
+  echo "*****   7_zooms         : DONE         **"
+elif [ "$JID_RES" = "jid7" ]
 then
   jid7=$(sbatch ${jobfile7})
 else
   jid7=$(sbatch --dependency=afterok:${jid6##* } ${jobfile7})
 fi
+ 
+
+if [ "$JID_RES" = "jid8" ];
+then
+  jid8=$(sbatch ${jobfile8})
+else
+  jid8=$(sbatch --dependency=afterok:${jid7##* } ${jobfile8})
+fi
+
 
 
 
@@ -644,3 +712,79 @@ fi
 
 rm *tmp
 # rm -r $BASE_DIR/outputs/lof/
+
+
+
+
+
+
+
+
+
+# # ------------------------------------------------------------------------------
+# # Job 7 create zoom plot on region of interest
+
+# jobfile7=7_zooms.tmp # temp file
+# cat > $jobfile7 <<EOA # generate the job file
+# #!/bin/bash
+# #SBATCH --job-name=7_zooms.tmp
+# #SBATCH --partition=carl.p
+# #SBATCH --array=1-55
+# #SBATCH --output=$BASE_DIR/logs/7_zooms_%A_%a.out
+# #SBATCH --error=$BASE_DIR/logs/7_zooms_%A_%a.err
+# #SBATCH --nodes=1
+# #SBATCH --ntasks=1
+# #SBATCH --cpus-per-task=1
+# #SBATCH --mem-per-cpu=40G
+# #SBATCH --time=04:00:00
+
+
+# ml hpc-env/8.3
+# ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
+# ml FriBidi
+# ml HarfBuzz
+
+
+# ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
+
+# INPUT_AVG=$BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
+
+# #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
+# AVG=\$(cat \${INPUT_AVG} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
+# echo \${AVG}
+
+# B=\$(basename "\${AVG}")
+# echo \${B}
+# NAME=\${B%%.*}
+# echo \${NAME}
+# EFF=${DATASET%%_*}
+# echo \${EFF}
+
+# C=${DATASET#*_}
+# echo \${C}
+# M=\${C%%_*}
+# echo \${M}
+
+
+# if [ "\${M}" = "fullm" ];
+# then
+#   MASK=$BASE_DIR/ressources/full_mask.tif
+# elif [ "\${M}" = "bodym" ]
+# then
+#   MASK=$BASE_DIR/ressources/body_mask.tif
+# else
+#   echo "please verify your dataset folder spelling in the specified -k parameter"
+# fi
+
+
+# echo \${MASK}
+
+
+# mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/
+# mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/
+
+# Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
+# python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/ \${EFF}
+
+
+# EOA
