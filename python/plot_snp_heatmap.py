@@ -18,7 +18,7 @@ import pandas as pd
 import cv2
 from sklearn.decomposition import PCA
 import numpy as np
-from image_pca_heatmap import blur_mask, modify_image, Pca
+from phenotype_continuous import blur_mask, modify_image, Pca
 
 
 
