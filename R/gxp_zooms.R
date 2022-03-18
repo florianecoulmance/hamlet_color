@@ -252,11 +252,11 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
              aes(x = MID_POS, y = LOG_P, color = gxp_clr),
              size = 0.1, stroke = 0.2) +
   geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
-                            %>% filter(row_number(desc(LOG_P)) <= 5),
+                            %>% filter(row_number(desc(LOG_P)) <= 1),
              color ="red",
              aes(x=MID_POS, y=LOG_P, label = RANGE)) +
   geom_text_repel(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
-                                 %>% filter(row_number(desc(LOG_P)) <= 5),
+                                 %>% filter(row_number(desc(LOG_P)) <= 1),
                   aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE),
                   segment.color = 'red', min.segment.length = 0.5, segment.size = 0.05,
                   color = "Red", size=1.7, hjust = -1, nudge_x = -1.5) +
@@ -328,7 +328,7 @@ save_snp <- function (lg, start, end, outlier_id, ...) {
   # Create table with most associated SNPs
   
   data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500) %>%
-                     filter(row_number(desc(LOG_P)) <= 5) %>%
+                     filter(row_number(desc(LOG_P)) <= 1) %>%
                      dplyr::summarise(CHROM = CHROM, POS = POS, LOG_P = LOG_P, WEIGHTS = WEIGHTS,
                                       RUN = RUN, RANGE = RANGE, GSTART = GSTART, MID_POS = MID_POS,
                                       BIN_START = BIN_START, BIN_END = BIN_END) %>%
