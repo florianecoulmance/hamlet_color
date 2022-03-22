@@ -562,6 +562,11 @@ cat > $jobfile8 <<EOA # generate the job file
 #SBATCH --time=04:00:00
 
 
+ml hpc-env/8.3
+ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
+ml FriBidi
+ml HarfBuzz
+
 # Input the multivariate analysis of choice
 AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_10.mvplink.50k.5k.txt.gz
 
@@ -602,7 +607,7 @@ CHROM="LG\${LG}"
 FILE_N="\${NAME}_LG\${LG}"
 echo \${FILE_N}
 
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
+#python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
 Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
 
 

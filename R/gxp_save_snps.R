@@ -216,7 +216,7 @@ for (i in 1:length(chr[[1]])) {
   if (nb != 0) {
     save_snp_table(region_table, data_path, pc, threshold, chrom)
   } else {
-    print("this chromosome does not have peaks")
+    print(paste0(chrom, " does not have peaks"))
   }
   
 }
