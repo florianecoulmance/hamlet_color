@@ -1,11 +1,12 @@
 # by: Floriane Coulmance: 15/04/2021
 # usage:
-# Rscript gxp_zooms.R <data_path> <data_file> <figure_path> <pc>
+# Rscript gxp_zooms.R <data_path> <data_file> <figure_path> <pc> <chromosome>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # data_file in : *mvplink.50k.5k.txt.gz
 # figure_path in : $BASE_DIR/outputs/figures/7_gxp/$DATASET/
 # pc in : 55 names of univariate and multivariate PCs association analysis
+# chromosome in one of the 24 hamlets Linkage Group
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -42,13 +43,14 @@ library(igraph)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:9]
+args = args[6:10]
 print(args)
 
 data_path <- as.character(args[1]) # Path to data folder with GWAS files
 data_file <- as.character(args[2]) # Name of the GWAS 50kb windowed-averaged file
 figure_path <- as.character(args[3]) # Path to the figure folder
 pc <- as.character(args[4]) # Name of the multivariate GWAS
+chrom <- as.character(args[5]) # Name of the considered chromosome
 # data_path <- "/Volumes/FLO/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # data_file <- "PC1_10.mvplink.50k.5k.txt.gz"
 # figure_path <- "/Volumes/FLO/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
@@ -284,13 +286,17 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   # Pannel for GWAS SNPs zoomed
   p_snp <- plot_panel_gxp_snp(lg = lg, start = start, end = end, trait = pcs)
   
+  #Pannel for heatmap
+  img <- readPNG(heatmap)
+  g <- rasterGrob(img, interpolate=TRUE)
+
   # Assemble all panels
   if (text) {
-    p_curtain <- cowplot::plot_grid(p_g, p_gxp, p_snp, ncol = 1, align = "v",
+    p_curtain <- cowplot::plot_grid(p_g, p_gxp, p_snp, g, ncol = 1, align = "v",
                                     rel_heights = c(1, rep(0.8, 7)))
   }
   else {
-    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(),
+    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g + no_title(),
                                     ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)))
   }
   
@@ -323,34 +329,6 @@ plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
 }
 
 
-save_snp <- function (lg, start, end, outlier_id, ...) {
-  
-  # Create table with most associated SNPs
-  
-  data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500) %>%
-                     filter(row_number(desc(LOG_P)) <= 1) %>%
-                     dplyr::summarise(CHROM = CHROM, POS = POS, LOG_P = LOG_P, WEIGHTS = WEIGHTS,
-                                      RUN = RUN, RANGE = RANGE, GSTART = GSTART, MID_POS = MID_POS,
-                                      BIN_START = BIN_START, BIN_END = BIN_END) %>%
-                     mutate(ID = outlier_id)
-  
-}
-
-
-save_snp_table <- function(table, path, name, t, chromosome) {
-  
-  # Save the most associated SNPs of regions of high association
-  
-  a <- table %>% filter(outlier_id %in% outlier_pick) %>%
-                 pmap(save_snp) %>%
-                 do.call(rbind, .)
-
-  write.table(a, file = paste0(path, name, "/", name, "_", chromosome, ".snp.txt"), sep = " ",
-              row.names = FALSE, col.names = TRUE, quote = FALSE)
-  
-}
-
-
 # -------------------------------------------------------------------------------------------------------------------
 # ANALYSIS
 
@@ -379,76 +357,64 @@ gxp_data <- prep_file(data_file,data_path)
 data_snp <- paste0(pc,".mvplink.logarithm.txt.gz") 
 gxp_snp <- prep_file(data_snp,data_path)
 
-# Make a list of LG (Linkage Groups aka chromosome) names
-chr <- (unique(as.vector(gxp_data[c("CHROM")])))
-# print(chr["CHROM"])
-# print(chr[[1]][1])
 
-# Loop over each LG in the hamlet genome
-for (i in 1:length(chr[[1]])) {
-  # print(i)
-  chrom <- chr[[1]][i] # Get the chromosome name
-  # print(chrom)
-  
-  # Change threshold for LG08 (because messy chromosome)
-  if (chrom == "LG08") {
-    threshold <- 1.9
-  } else {
-    threshold <- 1
-  }
-  
-  # print(threshold)
-  
-  # Select LG regions where the association signal is the highest
-  thresh <- gxp_data[gxp_data[,"CHROM"] == chrom,]
-  thresh <- thresh[thresh[, "LOG_P"] >= threshold,]
-  # print(thresh)
-  
-  # Create table with regions of interest
-  region_table <- threshold_table(thresh) %>% 
-                  setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos"))
-  
-  # List outlier regions' names
-  outlier_pick <- region_table$outlier_id
-  # print(outlier_pick)
-  
-  nb <- length(outlier_pick) # count nb of regions 
-  # print(nb)
-  
-  region_label_tibbles <- tibble(outlier_id = outlier_pick, label = letters[1:nb]) # prepare panels letters for plots
-
-  # Determine the dimension and grid layout regarding the nb of region to plot 
-  if (nb <= 4) {
-    row = 1
-    heights = c(1, 1)
-  } else if (nb <= 8 & nb > 4) {
-    row = 2
-    heights = c(2, 2)
-  } else if (nb <= 12 & nb > 8) {
-    row = 3
-    heights = c(3, 3)
-  } else if (nb <= 16 & nb > 12) {
-    row = 4
-    heights = c(4, 4)
-  } else if (nb <= 20 & nb > 16) {
-    row = 5
-    heights = c(5, 5)
-  } else if (nb <= 24 & nb > 20) {
-    row = 6
-    heights = c(6, 6)
-  } else if (nb <= 28 & nb > 24) {
-    row = 7
-    heights = c(7, 7)
-  } else {
-    print("nb of snp too elevated, change -log(p_val) threshold")
-  }
-  
-  # Plot and save as table GWAS peaks for the LG
-  if (nb != 0) {
-    plot_regions(region_table, outlier_pick, region_label_tibbles, figure_path, pc, chrom)
-    save_snp_table(region_table, data_path, pc, threshold, chrom)
-  } else {
-    print("this chromosome does not have peaks")
-  }
-  
+# Change threshold for LG08 (because messy chromosome)
+if (chrom == "LG08") {
+  threshold <- 1.9
+} else {
+  threshold <- 1
 }
+# print(threshold)
+
+# Select LG regions where the association signal is the highest
+thresh <- gxp_data[gxp_data[,"CHROM"] == chrom,]
+thresh <- thresh[thresh[, "LOG_P"] >= threshold,]
+# print(thresh)
+
+# Create table with regions of interest
+region_table <- threshold_table(thresh) %>% 
+                setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos")) %>%
+                mutate(heatmap = paste0(outlier_id,"_heatmaps.png"))
+
+# List outlier regions' names
+outlier_pick <- region_table$outlier_id
+# print(outlier_pick)
+
+nb <- length(outlier_pick) # count nb of regions 
+# print(nb)
+
+region_label_tibbles <- tibble(outlier_id = outlier_pick, label = letters[1:nb]) # prepare panels letters for plots
+
+# Determine the dimension and grid layout regarding the nb of region to plot 
+if (nb <= 4) {
+  row = 1
+  heights = c(1, 1)
+} else if (nb <= 8 & nb > 4) {
+  row = 2
+  heights = c(2, 2)
+} else if (nb <= 12 & nb > 8) {
+  row = 3
+  heights = c(3, 3)
+} else if (nb <= 16 & nb > 12) {
+  row = 4
+  heights = c(4, 4)
+} else if (nb <= 20 & nb > 16) {
+  row = 5
+  heights = c(5, 5)
+} else if (nb <= 24 & nb > 20) {
+  row = 6
+  heights = c(6, 6)
+} else if (nb <= 28 & nb > 24) {
+  row = 7
+  heights = c(7, 7)
+} else {
+  print("nb of snp too elevated, change -log(p_val) threshold")
+}
+
+# Plot and save as table GWAS peaks for the LG
+if (nb != 0) {
+  plot_regions(region_table, outlier_pick, region_label_tibbles, figure_path, pc, chrom)
+} else {
+  print("this chromosome does not have peaks")
+}
+

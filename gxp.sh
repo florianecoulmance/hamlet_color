@@ -483,13 +483,13 @@ EOA
 # ------------------------------------------------------------------------------
 # Job 7 create zoom plot on region of interest
 
-jobfile7=7_zooms.tmp # temp file
+jobfile7=7_snps.tmp # temp file
 cat > $jobfile7 <<EOA # generate the job file
 #!/bin/bash
-#SBATCH --job-name=7_zooms.tmp
+#SBATCH --job-name=7_snps.tmp
 #SBATCH --partition=carl.p
-#SBATCH --output=$BASE_DIR/logs/7_zooms_%A_%a.out
-#SBATCH --error=$BASE_DIR/logs/7_zooms_%A_%a.err
+#SBATCH --output=$BASE_DIR/logs/7_snps_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/7_snps_%A_%a.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
@@ -537,7 +537,7 @@ mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/
 mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/
 
 # Run the R and python plot analyses
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
+Rscript $BASE_DIR/R/gxp_save_snps.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
 
 
 EOA
@@ -598,11 +598,12 @@ chr=(01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24)
 LG=\${chr[\${SLURM_ARRAY_TASK_ID}]}
 echo \${LG}
 
-
+CHROM="LG\${LG}"
 FILE_N="\${NAME}_LG\${LG}"
 echo \${FILE_N}
 
 python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
 
 
 EOA

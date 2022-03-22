@@ -156,12 +156,6 @@ def plot_heat(im_table, figure_path, region_id):
     Creates a panel of 5 heatmaps per regions corresponding to the 5 highest associated SNPs of the region
     '''
 
-    g = sns.FacetGrid(im_table, col="SNP", col_wrap = 2, height = 4) # <-- create facetgrid per SNP
-    
-    cax = g.fig.add_axes([0.910, 0.100, 0.009, 0.775]) # <-- create ax for the colorbar scale
-    
-    bounds = [-0.005, 0, 0.005] # <-- create min and max for the colorbar scale
-
     norm = matplotlib.colors.Normalize(-0.005,0.005) # <-- norm to use further to create own color map
 
     # create own colormap gradient
@@ -174,24 +168,33 @@ def plot_heat(im_table, figure_path, region_id):
         [norm( 0.005), "darkred"]]
     
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors) # <-- with gradient create the colormap for heatmaps
+    bounds = [-0.005, 0, 0.005] # <-- create min and max for the colorbar scale
 
-    cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='vertical') # <-- Create a colorbar axes
+    print(im_table["IMAGE"].values[0].shape)
+
+    # g = sns.FacetGrid(im_table, col="SNP", col_wrap = 2, height = 4) # <-- create facetgrid per SNP
+    # cax = g.fig.add_axes([0.910, 0.100, 0.009, 0.775]) # <-- create ax for the colorbar scale
+    fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05]})
+    ax.imshow(im_table["IMAGE"].values[0])
+    cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='horizontal') # <-- Create a colorbar axes
     
-    g.map(lambda x, **kwargs : (plt.imshow(x.values[0]),plt.grid(False)), # <-- feed each subplot with the heatmap image correponding to each SNP
-                                'IMAGE', cbar_ax=cmap, vmin=-0.005, vmax=0.005) 
-
-    g.fig.tight_layout() # <-- tights the subplots between them
-    g.despine(left=True, bottom=True) # <-- remove x and y lines
-    g.set(xlabel=None) # <-- remove x label
-    g.set_xticklabels([]) # <-- remove x tick labels
-    g.set_yticklabels([]) # <-- remove y tick labels
-    g.set(xticks=[]) # <-- remove x ticks
-    g.set(yticks=[]) # <-- remove y ticks 
-    g.fig.subplots_adjust(right=.9)  # <-- Add space so the colorbar doesn't overlap the plot
+    # g.map(lambda x, **kwargs : (plt.imshow(x.values[0]),plt.grid(False)), # <-- feed each subplot with the heatmap image correponding to each SNP
+    #                            'IMAGE', cbar_ax=cmap, vmin=-0.005, vmax=0.005) 
+    
+    ax.axis('off')
+    cb.outline.set_visible(False) # <-- remove colorbar outline
+    fig.tight_layout() # <-- tights the subplots between them
+    #g.despine(left=True, bottom=True) # <-- remove x and y lines
+    ax.set(xlabel=None) # <-- remove x label
+    ax.set_xticklabels([]) # <-- remove x tick labels
+    ax.set_yticklabels([]) # <-- remove y tick labels
+    ax.set(xticks=[]) # <-- remove x ticks
+    ax.set(yticks=[]) # <-- remove y ticks 
+    fig.subplots_adjust(hspace = 0.01, wspace = 0.01)  # <-- Add space so the colorbar doesn't overlap the plot
 
     # plt.show()
-
-    g.savefig(figure_path+region_id+"_heatmaps.pdf") # <-- save in appropriate figure folder with region id as file title
+    plt.margins(0,0)
+    plt.savefig(figure_path+region_id+"_heatmaps.pdf",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
 
 
 
@@ -235,7 +238,7 @@ def main():
     for i, region in enumerate(region_list) :
         print(i)
         print(region)
-        df = snp_arr[snp_arr["ID"].str.contains(region)] # <-- find rows in table that have the same region id and make a subset of this table for the region
+        df = snp_arr[snp_arr["ID"] == region] # <-- find rows in table that have the same region id and make a subset of this table for the region
 
         wei = df["WEIGHTS"].values.tolist() # <-- make a list of weight list from the WEIGHT column of the region table
         print(wei)
