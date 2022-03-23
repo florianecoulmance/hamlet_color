@@ -4,7 +4,7 @@
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # data_file in : *mvplink.50k.5k.txt.gz
-# figure_path in : $BASE_DIR/outputs/figures/7_gxp/$DATASET/
+# figure_path in : $BASE_DIR/outputs/figures/7_gxp/$DATASET/\${NAME}
 # pc in : 55 names of univariate and multivariate PCs association analysis
 # chromosome in one of the 24 hamlets Linkage Group
 # -------------------------------------------------------------------------------------------------------------------
@@ -375,7 +375,9 @@ thresh <- thresh[thresh[, "LOG_P"] >= threshold,]
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>% 
                 setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos")) %>%
-                mutate(heatmap = paste0(outlier_id,"_heatmaps.png"))
+                mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png"))
+
+print(head(region_table))
 
 # List outlier regions' names
 outlier_pick <- region_table$outlier_id
