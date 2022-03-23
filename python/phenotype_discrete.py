@@ -120,7 +120,7 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
         print(Y.shape)
         print(Y)
 
-        pixel_array[i, :, :] = Y
+        pixel_array[i, :] = Y
 
 
     df = pixel_array.reshape((-1,3))

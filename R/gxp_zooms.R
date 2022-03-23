@@ -273,7 +273,7 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
 }
 
 
-plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, ...) {
+plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, heatmap, ...) {
   
   # Create zoom plots into GWAS peak regions for one particular LG, with all necessary 
   
@@ -288,6 +288,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   p_snp <- plot_panel_gxp_snp(lg = lg, start = start, end = end, trait = pcs)
   
   #Pannel for heatmap
+  print(heatmap)
   img <- readPNG(heatmap)
   g <- rasterGrob(img, interpolate=TRUE)
 
@@ -377,7 +378,7 @@ region_table <- threshold_table(thresh) %>%
                 setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos")) %>%
                 mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png"))
 
-print(region_table["heatmap"][1])
+print(region_table["heatmap"][[1]])
 
 # List outlier regions' names
 outlier_pick <- region_table$outlier_id
