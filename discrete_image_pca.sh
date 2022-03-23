@@ -84,9 +84,7 @@ mkdir $BASE_DIR/figures/7_gxp/discrete/$COLOR_SPACE/$DATASET/
 # -------------------------------------------------
 
 # Modify images according to color space, perform PCA files and create heatmaps per PCs
-/user/doau0129/miniconda3/bin/python3 python/phenotype_discrete.py \
-         # we need to have the folder with subfolders where the images aligned are (to put in the documentation)
-         # this should be in $BASE_DIR/ressources/images/... and then the normal software folder tree $ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/
+/user/doau0129/miniconda3/bin/python3 ./python/phenotype_discrete.py \
          $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/ \
          $BASE_DIR/ressources/images/$MASK_FILE \
          $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/discrete/$COLOR_SPACE/$DATASET/ \
@@ -103,7 +101,7 @@ ml FriBidi
 ml HarfBuzz
 
 # Create the image metadata table to use in further GWAS, plot the PCA
-for folder in $BASE_DIR/images/discrete/$COLOR_SPACE/$DATASET/*/
+for folder in $BASE_DIR/images/discrete/$COLOR_SPACE/$DATASET/\*/
 do
 
   echo "$folder"
