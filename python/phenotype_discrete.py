@@ -69,9 +69,9 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
     '''
 
     file_list = [f for f in os.listdir(im_path) if f.endswith('.png')] # --> list all image files in the folder
-    # print(file_list)
+    print(file_list)
 
-    # print(bo_mask.sum())
+    print(bo_mask.sum())
 
     # --> assuming we are working in RGB or LAB only,
     #     create an empty array of the shape of a 3 channels image
@@ -80,26 +80,26 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
     else:
         print("specify correct effect")
        
-    # print(pixel_array.shape)
+    print(pixel_array.shape)
 
     # --> loop through image and modify according to parameter, 
     #      store modifications in array previously created
     for i, f in enumerate(file_list): 
-        # print(i, f)
+        print(i, f)
         image = cv2.imread(im_path+f)
-        # print(image.shape)
+        print(image.shape)
 
         image_mask = image.copy()
-        # print(image_mask.shape)
+        print(image_mask.shape)
 
         image_mask[bo_mask == 0] = (11, 102, 35)
-        # print(image_mask.shape)
+        print(image_mask.shape)
 
         image_mask = cv2.GaussianBlur(image_mask,(5,5),cv2.BORDER_DEFAULT)
-        # print(image_mask.shape)
+        print(image_mask.shape)
 
         image_mask[bo_mask == 0] = image_mask[bo_mask == 0] / bl_mask[bo_mask == 0]
-        # print(image_mask.shape)
+        print(image_mask.shape)
 
         if (effect == "RGB"):
             im=cv2.cvtColor(image_mask,cv2.COLOR_BGR2RGB)
@@ -108,22 +108,22 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
         else:
             print("specify a correct effect")
 
-        # print(im.shape) 
+        print(im.shape) 
 
         Z = im[bo_mask].reshape((-1,3))
-        # print(Z.shape)
+        print(Z.shape)
 
         Y = np.float32(Z)
-        # print(Y.shape)
+        print(Y.shape)
 
         pixel_array[i, :] = Y
 
 
     df = pixel_array.reshape((-1,3))
-    # print(df.shape)
+    print(df.shape)
 
     df1 = np.float32(df)
-    # print(df1.shape)
+    print(df1.shape)
 
     return file_list, im, pixel_array, df1
 
