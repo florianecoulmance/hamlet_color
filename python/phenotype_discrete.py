@@ -108,13 +108,17 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
         else:
             print("specify a correct effect")
 
+        print(im)
         print(im.shape) 
+        print(im[bo_mask].shape)
 
         Z = im[bo_mask].reshape((-1,3))
         print(Z.shape)
+        print(Z)
 
         Y = np.float32(Z)
         print(Y.shape)
+        print(Y)
 
         pixel_array[i, :] = Y
 
