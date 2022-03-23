@@ -1,8 +1,8 @@
 #!/bin/bash
 # by: Floriane Coulmance: 11/05/2021
 # usage:
-# sbatch continuous_image_pca.sh -i <PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j RGB -k 7 -l all -m bodym
-# sbatch continuous_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <CLUSTER_NUMBER> -l <SUB_DATA> -m <MASK>
+# sbatch discrete_image_pca.sh -i <PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j RGB -k 7 -l all -m fullm
+# sbatch discrete_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <CLUSTER_NUMBER> -l <SUB_DATA> -m <MASK>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script 
@@ -84,7 +84,7 @@ mkdir $BASE_DIR/figures/7_gxp/discrete/$COLOR_SPACE/$DATASET/
 # -------------------------------------------------
 
 # Modify images according to color space, perform PCA files and create heatmaps per PCs
-/Users/fco/miniconda3/bin/python3 python/phenotype_discrete.py \
+/user/doau0129/miniconda3/bin/python3 python/phenotype_discrete.py \
          # we need to have the folder with subfolders where the images aligned are (to put in the documentation)
          # this should be in $BASE_DIR/ressources/images/... and then the normal software folder tree $ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/
          $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/ \
@@ -95,6 +95,12 @@ mkdir $BASE_DIR/figures/7_gxp/discrete/$COLOR_SPACE/$DATASET/
          $CLUSTER_NUMBER \
          $COLOR_SPACE \
          $MASK \
+
+# Load necessary environment
+ml hpc-env/8.3
+ml R/4.0.2-foss-2019b
+ml FriBidi
+ml HarfBuzz
 
 # Create the image metadata table to use in further GWAS, plot the PCA
 for folder in $BASE_DIR/images/discrete/$COLOR_SPACE/$DATASET/*/
