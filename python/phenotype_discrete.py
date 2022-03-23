@@ -76,7 +76,7 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
     # --> assuming we are working in RGB or LAB only,
     #     create an empty array of the shape of a 3 channels image
     if (effect == "LAB") or (effect == "RGB"):
-        pixel_array = np.full((len(file_list), bo_mask.sum() * 3), np.NaN) # 546434 694722
+        pixel_array = np.full((len(file_list), bo_mask.sum()), np.NaN) 
     else:
         print("specify correct effect")
        
@@ -120,7 +120,7 @@ def images_vector(im_path, bo_mask, bl_mask, effect):
         print(Y.shape)
         print(Y)
 
-        pixel_array[i, :] = Y
+        pixel_array[i, :, :] = Y
 
 
     df = pixel_array.reshape((-1,3))
