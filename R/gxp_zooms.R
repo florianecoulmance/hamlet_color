@@ -371,7 +371,7 @@ if (chrom == "LG08") {
 # Select LG regions where the association signal is the highest
 thresh <- gxp_data[gxp_data[,"CHROM"] == chrom,]
 thresh <- thresh[thresh[, "LOG_P"] >= threshold,]
-# print(thresh)
+print(thresh)
 
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>% 
