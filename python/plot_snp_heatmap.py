@@ -171,11 +171,14 @@ def plot_heat(im_table, figure_path, region_id):
     bounds = [-0.005, 0, 0.005] # <-- create min and max for the colorbar scale
 
     print(im_table["IMAGE"].values[0].shape)
+    img_cropped = im_table["IMAGE"].values[0][200:700, 240:1350, :]
+    print(img_cropped.shape)
 
     # g = sns.FacetGrid(im_table, col="SNP", col_wrap = 2, height = 4) # <-- create facetgrid per SNP
     # cax = g.fig.add_axes([0.910, 0.100, 0.009, 0.775]) # <-- create ax for the colorbar scale
     fig, (ax, cax) = plt.subplots(nrows=2,figsize=(12,10), gridspec_kw={"height_ratios":[1, 0.05]})
-    ax.imshow(im_table["IMAGE"].values[0])
+    #ax.imshow(im_table["IMAGE"].values[0])
+    ax.imshow(img_cropped)
     cb = matplotlib.colorbar.ColorbarBase(cax, cmap=cmap, norm=norm, ticks = bounds, orientation='horizontal') # <-- Create a colorbar axes
     
     # g.map(lambda x, **kwargs : (plt.imshow(x.values[0]),plt.grid(False)), # <-- feed each subplot with the heatmap image correponding to each SNP
@@ -194,7 +197,7 @@ def plot_heat(im_table, figure_path, region_id):
 
     # plt.show()
     plt.margins(0,0)
-    plt.savefig(figure_path+region_id+"_heatmaps.pdf",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
+    plt.savefig(figure_path+region_id+"_heatmaps.png",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
 
 
 
