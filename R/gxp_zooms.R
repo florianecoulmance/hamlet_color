@@ -278,7 +278,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   # Create zoom plots into GWAS peak regions for one particular LG, with all necessary 
   print(outlier_id, outlier_nr, lg, start, end, label, trait)
   print(heatmap)
-  
+
   # Annotation pannel
   p_g <- plot_panel_anno_flo(lg = lg, outlier_id = outlier_id, label = label,
                              start = start, end = end, genes = cool_genes)
@@ -377,8 +377,8 @@ print(thresh)
 
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>% 
-                setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos")) %>%
-                mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png"))
+                mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png") %>%
+                setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos", "heatmap"))
 
 print(region_table["heatmap"][[1]])
 print(region_table)
