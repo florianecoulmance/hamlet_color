@@ -377,7 +377,7 @@ region_table <- threshold_table(thresh) %>%
                 setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos")) %>%
                 mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png"))
 
-print(region_table["heatmap"])
+print(head(region_table))
 
 # List outlier regions' names
 outlier_pick <- region_table$outlier_id
