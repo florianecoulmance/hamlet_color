@@ -377,7 +377,7 @@ print(thresh)
 
 # Create table with regions of interest
 region_table <- threshold_table(thresh) %>% 
-                mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png") %>%
+                mutate(heatmap = paste0(figure_path,outlier_id,"_heatmaps.png")) %>%
                 setNames(., nm = c("outlier_id", "lg", "start", "end", "gstart", "gend", "gpos", "heatmap"))
 
 print(region_table["heatmap"][[1]])
