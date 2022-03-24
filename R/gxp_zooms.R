@@ -276,7 +276,7 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
 plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, heatmap, ...) {
   
   # Create zoom plots into GWAS peak regions for one particular LG, with all necessary 
-  print(outlier_id, outlier_nr, lg, start, end, label)
+  print(outlier_id, outlier_nr, lg, start, end)
   print(heatmap)
 
   # Annotation pannel
