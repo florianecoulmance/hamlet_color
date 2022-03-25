@@ -218,7 +218,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
     guides(color = guide_legend(nrow = 2)) +
     labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") ,
-         y = paste0("PC5, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %")) #+
+         y = paste0("PC5, var = ", format(round(variance$X0[5] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   
