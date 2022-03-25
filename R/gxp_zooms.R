@@ -17,8 +17,8 @@ rm(list = ls())
 # Load needed library
 library(broom, lib.loc=.libPaths()[-1])
 library(dbplyr, lib.loc=.libPaths()[-1])
-#library(broom)
-#library(dbplyr)
+# library(broom)
+# library(dbplyr)
 library(GenomicOriginsScripts)
 library(ggplot2)
 library(ggrepel)
@@ -52,11 +52,11 @@ data_file <- as.character(args[2]) # Name of the GWAS 50kb windowed-averaged fil
 figure_path <- as.character(args[3]) # Path to the figure folder
 pc <- as.character(args[4]) # Name of the multivariate GWAS
 chrom <- as.character(args[5]) # Name of the considered chromosome
-# data_path <- "/Volumes/FLO/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
+# data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # data_file <- "PC1_10.mvplink.50k.5k.txt.gz"
-# figure_path <- "/Volumes/FLO/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
+# figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_10/"
 # pc <- "PC1_10"
-# threshold <- 1.7
+# chrom <- "LG04"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
 plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, heatmap, ...) {
   
   # Create zoom plots into GWAS peak regions for one particular LG, with all necessary 
-  # print(outlier_id, outlier_nr, lg, start, end)
+
   print(heatmap)
 
   # Annotation pannel
@@ -290,7 +290,6 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   p_snp <- plot_panel_gxp_snp(lg = lg, start = start, end = end, trait = pcs)
   
   #Pannel for heatmap
-  print(heatmap)
   img <- readPNG(heatmap)
   g <- rasterGrob(img, interpolate=TRUE)
 
@@ -300,10 +299,11 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
                                     rel_heights = c(1, rep(0.8, 7)))
   }
   else {
-    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g + no_title(),
+    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g,
                                     ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)))
   }
   
+  print(p_curtain)
   p_curtain
 
 }
