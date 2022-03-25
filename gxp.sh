@@ -503,7 +503,7 @@ ml FriBidi
 ml HarfBuzz
 
 # Input the multivariate analysis of choice
-AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_10.mvplink.50k.5k.txt.gz
+AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
 
 # Extract name of the multivariate analysis, color space and mask names
 B=\$(basename "\${AVG}")
@@ -568,7 +568,7 @@ ml FriBidi
 ml HarfBuzz
 
 # Input the multivariate analysis of choice
-AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_10.mvplink.50k.5k.txt.gz
+AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
 
 # Extract name of the multivariate analysis, color space and mask names
 B=\$(basename "\${AVG}")
