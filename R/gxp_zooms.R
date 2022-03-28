@@ -184,19 +184,19 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
   
   # Create plot of region annotation
   p <- custom_annoplot_flo(searchLG = lg,
-                           xrange = c(start-window_buffer*1.25,end+window_buffer*1.25),
+                           xrange = c(start + 1500,start + 1500),
                            genes_of_interest = genes,
                            anno_rown = 6, start = start, end = end) +
     # layout x ayis
     ggplot2::scale_x_continuous(name = ttle,
                                 position = 'top',
                                 expand = c(0,0),
-                                limits = c(start-window_buffer*1.25, end+window_buffer*1.25),
+                                limits = c(start + 1500, start + 1500),
                                 labels = ax_scl) +
     # layout y ayis
     ggplot2::scale_y_continuous(name = expression(bolditalic(Genes)), expand = c(0,.4)) +
     # use same boundaries for all panels
-    ggplot2::coord_cartesian(xlim = c(start-window_buffer, end+window_buffer)) +
+    ggplot2::coord_cartesian(xlim = c(start + 1500, start + 1500)) +
     # special panel layout for annotation panel
     hypogen::theme_hypo() +
     ggplot2::theme(text = ggplot2::element_text(size = plot_text_size),
@@ -303,6 +303,13 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
                                     ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)))
   }
   
+
+  hypo_save(filename = paste0(figure_path, pc, "_", outlier_id, ".png"),
+            plot = p_curtain,
+            width = 12,
+            height = 8,
+            type="cairo")
+
   print(p_curtain)
   p_curtain
 
