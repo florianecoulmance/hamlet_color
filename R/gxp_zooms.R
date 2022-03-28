@@ -164,7 +164,7 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
                           lwd = 0.2, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
                           color = clr_genes) +
-    # add gene extent if direction is unknown
+    # add gene extent if direction is unknowns
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(!strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
                           lwd = 0.2, color = clr_genes) +
@@ -184,19 +184,19 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
   
   # Create plot of region annotation
   p <- custom_annoplot_flo(searchLG = lg,
-                           xrange = c(start + 1500,start + 1500),
+                           xrange = c(start-window_buffer*1.25,end+window_buffer*1.25),
                            genes_of_interest = genes,
                            anno_rown = 6, start = start, end = end) +
     # layout x ayis
     ggplot2::scale_x_continuous(name = ttle,
                                 position = 'top',
                                 expand = c(0,0),
-                                limits = c(start + 1500, start + 1500),
+                                limits = c(start-window_buffer*1.25, end+window_buffer*1.25),
                                 labels = ax_scl) +
     # layout y ayis
     ggplot2::scale_y_continuous(name = expression(bolditalic(Genes)), expand = c(0,.4)) +
     # use same boundaries for all panels
-    ggplot2::coord_cartesian(xlim = c(start + 1500, start + 1500)) +
+    ggplot2::coord_cartesian(xlim = c(start-window_buffer, end+window_buffer)) +
     # special panel layout for annotation panel
     hypogen::theme_hypo() +
     ggplot2::theme(text = ggplot2::element_text(size = plot_text_size),
@@ -371,9 +371,9 @@ gxp_snp <- prep_file(data_snp,data_path)
 
 # Change threshold for LG08 (because messy chromosome)
 if (chrom == "LG08") {
-  threshold <- 2.2
+  threshold <- 2
 } else {
-  threshold <- 1.7
+  threshold <- 1.5
 }
 # print(threshold)
 
