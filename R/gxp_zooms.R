@@ -364,9 +364,9 @@ gxp_snp <- prep_file(data_snp,data_path)
 
 # Change threshold for LG08 (because messy chromosome)
 if (chrom == "LG08") {
-  threshold <- 1.9
+  threshold <- 2.2
 } else {
-  threshold <- 1
+  threshold <- 1.7
 }
 # print(threshold)
 
