@@ -53,10 +53,10 @@ figure_path <- as.character(args[3]) # Path to the figure folder
 pc <- as.character(args[4]) # Name of the multivariate GWAS
 chrom <- as.character(args[5]) # Name of the considered chromosome
 # data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
-# data_file <- "PC1_10.mvplink.50k.5k.txt.gz"
-# figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_10/"
-# pc <- "PC1_10"
-# chrom <- "LG04"
+# data_file <- "PC1_5.mvplink.50k.5k.txt.gz"
+# figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/"
+# pc <- "PC1_5"
+# chrom <- "LG12"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -164,7 +164,7 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
                           lwd = 0.2, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
                           color = clr_genes) +
-    # add gene extent if direction is unknown
+    # add gene extent if direction is unknowns
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(!strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
                           lwd = 0.2, color = clr_genes) +
@@ -180,7 +180,7 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
   # Plot an annotation for outlier region of interest
   
   # Create plot title
-  ttle <- stringr::str_sub(outlier_id,1,4) %>% stringr::str_c(.,' (',project_inv_case(label),')')
+  ttle <- stringr::str_sub(outlier_id,1,4) #%>% stringr::str_c(.,' (',project_inv_case(label),')')
   
   # Create plot of region annotation
   p <- custom_annoplot_flo(searchLG = lg,
@@ -296,13 +296,20 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   # Assemble all panels
   if (text) {
     p_curtain <- cowplot::plot_grid(p_g, p_gxp, p_snp, g, ncol = 1, align = "v",
-                                    rel_heights = c(1, rep(0.8, 7)))
+                                    rel_heights = c(1, rep(0.8, 7)), axis="tblr")
   }
   else {
     p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g,
-                                    ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)))
+                                    ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)), axis="tblr")
   }
   
+
+  hypo_save(filename = paste0(figure_path, pc, "_", outlier_id, ".png"),
+            plot = p_curtain,
+            width = 12,
+            height = 8,
+            type="cairo")
+
   print(p_curtain)
   p_curtain
 
@@ -364,9 +371,9 @@ gxp_snp <- prep_file(data_snp,data_path)
 
 # Change threshold for LG08 (because messy chromosome)
 if (chrom == "LG08") {
-  threshold <- 2.2
+  threshold <- 1.9
 } else {
-  threshold <- 1.7
+  threshold <- 1.5
 }
 # print(threshold)
 
