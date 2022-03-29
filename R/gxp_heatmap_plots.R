@@ -53,12 +53,11 @@ metadata <- as.character(args[4])
 print(metadata)
 im_path <- as.character(args[5])
 print(im_path)
-pc_first <- args[6]
+pc_first <- cat(args[6])
 print(pc_first)
-pc_second <- args[7]
+pc_second <- cat(args[7])
 print(pc_second)
-cat(pc_first)
-cat(pc_second)
+
 # data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # dataset <- "LAB_fullm_PC1-2"
@@ -294,13 +293,8 @@ im["im"] <- gsub('.{4}$', '', im$image)
 # Combine PCs info with image info and calculate centroids for each species group 
 meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
 print(meta_table)
-x <- "pc_first"
-y <- "pc_second"
-cat(x)
-cat(y)
-
-centroids <- aggregate(cbind(cat(pc_first),cat(pc_second))~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
-print(centroids)
+centroids <- aggregate(cbind(pca_pheno[[pc_firs]],pca_pheno[[pc_second]])~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+centroids %>% rename(V1 = pc_first, V2 = pc_second)
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 print(meta_table_centroid)
 centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
