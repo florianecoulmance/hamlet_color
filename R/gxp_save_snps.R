@@ -187,7 +187,7 @@ for (i in 1:length(chr[[1]])) {
   # Change threshold for LG08 (because messy chromosome)
   if (chrom == "LG08") {
     threshold <- 1.9
-  } else {
+ } else {
     threshold <- 1.5
   }
   
