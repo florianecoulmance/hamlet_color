@@ -53,9 +53,9 @@ metadata <- as.character(args[4])
 print(metadata)
 im_path <- as.character(args[5])
 print(im_path)
-pc_first <- cat(args[6])
+pc_first <- as.character(args[6])
 print(pc_first)
-pc_second <- cat(args[7])
+pc_second <- as.character(args[7])
 print(pc_second)
 
 # data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
