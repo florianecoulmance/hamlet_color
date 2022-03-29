@@ -295,7 +295,7 @@ meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA
 print(meta_table)
 centroids <- aggregate(cbind(pca_pheno[[pc_first]],pca_pheno[[pc_second]])~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
 print(centroids)
-centroids %>% rename(V1 = pc_first, V2 = pc_second)
+centroids %>% dplyr::rename(V1 = pc_first, V2 = pc_second)
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 print(meta_table_centroid)
 centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
