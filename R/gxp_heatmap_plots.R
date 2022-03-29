@@ -292,12 +292,12 @@ im["im"] <- gsub('.{4}$', '', im$image)
 # Combine PCs info with image info and calculate centroids for each species group 
 meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
 print(meta_table)
-centroids <- aggregate(cbind(PC1,PC2)~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+centroids <- aggregate(cbind(pc_first,pc_second)~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
 print(centroids)
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 print(meta_table_centroid)
-centroids["PC1.x")] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
-centroids["PC2.x")] <- centroids["PC2"]
+centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
+centroids["PC2.x"] <- centroids["PC2"]
 print(centroids)
 
 # Get the PC1 GWAS plot for the univariate GWAS done with MVPLINK
