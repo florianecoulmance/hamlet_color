@@ -269,12 +269,12 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
 # -------------------------------------------------------------------------------------------------------------------
 
 
-# # Determine the list of traits to analyse
-# traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
-# print(traits)
+# Determine the list of traits to analyse
+traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+print(traits)
 
-# # Analyses of 10 univariate PCs and their heatmaps
-# univariate_plots(data_path, traits, figure_path, dataset)
+# Analyses of 10 univariate PCs and their heatmaps
+univariate_plots(data_path, traits, figure_path, dataset)
 
 
 # Analyses of image PCA and gwas of PC1 and PC2
@@ -291,22 +291,25 @@ im["im"] <- gsub('.{4}$', '', im$image)
 
 # Combine PCs info with image info and calculate centroids for each species group 
 meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
-centroids <- aggregate(cbind(pca_pheno[[pc_first]],pca_pheno[[pc_second]])~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+print(meta_table)
+centroids <- aggregate(cbind(PC1,PC2)~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
 print(centroids)
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 print(meta_table_centroid)
-centroids[paste0(pc_first,".x")] <- centroids[as.character(pc_first)] # Create matching columns to meta_table_centroid in centroids table to be used in plots
-centroids[paste0(pc_second,".x")] <- centroids[as.character(pc_second)]
+centroids["PC1.x")] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
+centroids["PC2.x")] <- centroids["PC2"]
 print(centroids)
 
 # Get the PC1 GWAS plot for the univariate GWAS done with MVPLINK
 PC1 <- list(paste0(pc_first,".mvplink.50k.5k.txt.gz"))
+print(PC1)
 f1 <- read.table(paste0(data_path,PC1), header=TRUE)
 f1 <- f1 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 f1$range <- do.call(paste, c(f1[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
 # Get the PC2 GWAS plot for the univariate GWAS done with MVPLINK
 PC2 <- list(paste0(pc_second,".mvplink.50k.5k.txt.gz"))
+print(PC2)
 f2 <- read.table(paste0(data_path,PC2), header=TRUE)
 f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
