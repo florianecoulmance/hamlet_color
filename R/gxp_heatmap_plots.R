@@ -57,6 +57,8 @@ pc_first <- args[6]
 print(pc_first)
 pc_second <- args[7]
 print(pc_second)
+cat(pc_first)
+cat(pc_second)
 # data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # dataset <- "LAB_fullm_PC1-2"
@@ -294,10 +296,10 @@ meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA
 print(meta_table)
 x <- "pc_first"
 y <- "pc_second"
-get(x)
-get(y)
+cat(x)
+cat(y)
 
-centroids <- aggregate(cbind(get(x),get(y))~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+centroids <- aggregate(cbind(cat(pc_first),cat(pc_second))~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
 print(centroids)
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 print(meta_table_centroid)
