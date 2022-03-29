@@ -217,7 +217,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
     geom_segment(aes(x=paste0(pc_first,".y"), y=paste0(pc_second,".y"), xend=paste0(pc_first,".x"), yend=paste0(pc_second,".x"), colour=spec), size = 0.1) +
-    theme(legend.position="bottom",legend.title=element_blank(),
+    theme(legend.position="left",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 15),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=20), legend.key=element_blank(),
@@ -250,14 +250,14 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
           plot.margin = unit(c(0,0.5,0,0.1), "cm")) +
-    rotate()
+    rotate() + scale_y_reverse()
   
   
   # Arranging the plot
   ggarrange(pc1, NULL, p, pc2, 
             ncol = 2, nrow = 2,  align = "hv",
             widths = c(3, 1), heights = c(1, 3),
-            common.legend = TRUE, legend = "bottom")
+            common.legend = TRUE, legend = "left")
   
 }
 
