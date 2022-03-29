@@ -291,7 +291,7 @@ im["im"] <- gsub('.{4}$', '', im$image)
 
 # Combine PCs info with image info and calculate centroids for each species group 
 meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
-centroids <- aggregate(cbind(get(pc_first),get(pc_second))~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+centroids <- aggregate(cbind(pca_pheno[[pc_first]],pca_pheno[[pc_second]])~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 centroids[paste0(pc_first,".x")] <- centroids[pc_first] # Create matching columns to meta_table_centroid in centroids table to be used in plots
 centroids[paste0(pc_second,".x")] <- centroids[pc_second]
