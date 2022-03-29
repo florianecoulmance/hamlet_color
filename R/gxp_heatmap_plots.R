@@ -269,12 +269,12 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
 # -------------------------------------------------------------------------------------------------------------------
 
 
-# Determine the list of traits to analyse
-traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
-print(traits)
+# # Determine the list of traits to analyse
+# traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+# print(traits)
 
-# Analyses of 10 univariate PCs and their heatmaps
-univariate_plots(data_path, traits, figure_path, dataset)
+# # Analyses of 10 univariate PCs and their heatmaps
+# univariate_plots(data_path, traits, figure_path, dataset)
 
 
 # Analyses of image PCA and gwas of PC1 and PC2
