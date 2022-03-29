@@ -1,13 +1,15 @@
 #!/usr/bin/env Rscript
 # by: Floriane Coulmance: 01/03/2022
 # usage:
-# Rscript gxp_heatmap_plots.R <data_path> <figure_path> <dataset> <metadata> <im_path>
+# Rscript gxp_heatmap_plots.R <data_path> <figure_path> <dataset> <metadata> <im_path> <1stPC> <2ndPC>
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # figure_path in : $BASE_DIR/figures/7_gxp/figures/$TYPE/$COLOR_SPACE/$DATASET
 # dataset in : LAB_fullm_54off_59on
 # metadata in : $BASE_DIR/metadata/
 # im_path in : $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
+# 1stPC : in 5 possible PC
+# 2ndPC : in 5 possible PC
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +40,7 @@ library(ggpubr)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6:10]
+args = args[6:12]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
@@ -51,6 +53,10 @@ metadata <- as.character(args[4])
 print(metadata)
 im_path <- as.character(args[5])
 print(im_path)
+pc_first <- as.character(args[6])
+print(pc_first)
+pc_second <- as.character(args[7])
+print(pc_second)
 # data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # dataset <- "LAB_fullm_PC1-2"
@@ -187,7 +193,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   
   # Function to plot PCA from dataframe and centroids of groups 
   
-  p <- ggplot(data,aes(x=PC1.x,y=PC2.x,color=spec)) +
+  p <- ggplot(data,aes(x=paste0(pc_first,".x"),y=paste0(pc_second,".x"),color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
@@ -210,15 +216,15 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
-    geom_segment(aes(x=PC1.y, y=PC2.y, xend=PC1.x, yend=PC2.x, colour=spec), size = 0.1) +
+    geom_segment(aes(x=paste0(pc_first,".y"), y=paste0(pc_second,".y"), xend=paste0(pc_first,".x"), yend=paste0(pc_second,".x"), colour=spec), size = 0.1) +
     theme(legend.position="bottom",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 15),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=20), legend.key=element_blank(),
           legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
     guides(color = guide_legend(nrow = 2)) +
-    labs(x = paste0("PC1, var =  ", format(round(variance$X0[1] * 100, 1), nsmall = 1), " %") ,
-         y = paste0("PC2, var = ", format(round(variance$X0[2] * 100, 1), nsmall = 1), " %")) #+
+    labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(substr(pc_first, -1, -1))] * 100, 1), nsmall = 1), " %") ,
+         y = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(substr(pc_second, -1, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   
@@ -285,19 +291,19 @@ im["im"] <- gsub('.{4}$', '', im$image)
 
 # Combine PCs info with image info and calculate centroids for each species group 
 meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
-centroids <- aggregate(cbind(PC1,PC2)~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
+centroids <- aggregate(cbind(pc_first,pc_second)~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
-centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
-centroids["PC2.x"] <- centroids["PC2"]
+centroids[paste0(pc_first,".x")] <- centroids[pc_first] # Create matching columns to meta_table_centroid in centroids table to be used in plots
+centroids[paste0(pc_second,".x")] <- centroids[pc_second]
 
 # Get the PC1 GWAS plot for the univariate GWAS done with MVPLINK
-PC1 <- list("PC1.mvplink.50k.5k.txt.gz")
+PC1 <- list(paste0(pc_first,".mvplink.50k.5k.txt.gz"))
 f1 <- read.table(paste0(data_path,PC1), header=TRUE)
 f1 <- f1 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 f1$range <- do.call(paste, c(f1[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
 # Get the PC2 GWAS plot for the univariate GWAS done with MVPLINK
-PC2 <- list("PC2.mvplink.50k.5k.txt.gz")
+PC2 <- list(paste0(pc_second,".mvplink.50k.5k.txt.gz"))
 f2 <- read.table(paste0(data_path,PC2), header=TRUE)
 f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
@@ -306,7 +312,7 @@ f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, figure_path, dataset)
 
 # Save the plot
-hypo_save(filename = paste0(figure_path,"PC1_PC2_univariate_gwas.pdf"),
+hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.pdf"),
           plot = p,
           width = 12.5,
           height = 12.5)
