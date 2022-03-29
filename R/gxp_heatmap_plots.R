@@ -299,8 +299,9 @@ centroids <- centroids %>% setNames(., nm = c("spec", pc_first, pc_second))
 print(centroids)
 meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroid table with the image and PCA data table
 print(meta_table_centroid)
-centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
-centroids["PC2.x"] <- centroids["PC2"]
+# centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
+# centroids["PC2.x"] <- centroids["PC2"]
+centroids <- centroids %>% mutate(x = pc_first, y = pc_second) %>% setNames(., nm = c("spec", pc_first, pc_second, paste0(pc_first,".x"), paste0(pc_second,".x"))
 print(centroids)
 
 # Get the PC1 GWAS plot for the univariate GWAS done with MVPLINK
