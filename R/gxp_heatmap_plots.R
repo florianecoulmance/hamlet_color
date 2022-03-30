@@ -257,7 +257,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
           plot.margin = unit(c(0,0.5,0,0.1), "cm")) +
-    rotate() + 
+    rotate()
 
   
   
