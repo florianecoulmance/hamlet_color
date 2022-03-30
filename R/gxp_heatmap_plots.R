@@ -223,7 +223,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=20), legend.key=element_blank(),
           legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
-    guides(color = guide_legend(nrow = 2)) +
+    guides(color = guide_legend(nrow = 7)) +
     labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(substr(pc_first, -1, -1))] * 100, 1), nsmall = 1), " %") ,
          y = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(substr(pc_second, -1, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
