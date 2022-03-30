@@ -245,14 +245,16 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   pc2 <- ggplot() + geom_hypo_LG() +
     geom_point(data = file_pc2, aes(x = GPOS, y = AVG_P), size = .1) +
     scale_fill_hypo_LG_bg() +
-    scale_x_hypo_LG(name = "Linkage Groups") +
+    # scale_x_hypo_LG(name = "Linkage Groups") +
     scale_y_continuous(name = expression(italic('-log(p-Wald)')), position = "top") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
           plot.margin = unit(c(0,0.5,0,0.1), "cm")) +
-    rotate()
+    rotate() + 
+    scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
+                    labels = 1:24, position = "top")
   
   
   # Arranging the plot
