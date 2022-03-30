@@ -194,7 +194,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   
   # Function to plot PCA from dataframe and centroids of groups 
   
-  p <- ggplot(data,aes(x=.[[3]],y=.[[4]],color=spec)) +
+  p <- ggplot(data,aes(x=.data[[3]],y=.data[[4]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
@@ -217,7 +217,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
-    geom_segment(aes(x=.[[paste0(pc_first,".y")]], y=.[[paste0(pc_second,".y")]], xend=.[[paste0(pc_first,".x")]], yend=.[[paste0(pc_second,".x")]], colour=spec), size = 0.1) +
+    geom_segment(aes(x=.data[[paste0(pc_first,".y")]], y=.data[[paste0(pc_second,".y")]], xend=.data[[paste0(pc_first,".x")]], yend=.data[[paste0(pc_second,".x")]], colour=spec), size = 0.1) +
     theme(legend.position="left",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 15),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
