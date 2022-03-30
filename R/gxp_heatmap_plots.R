@@ -194,7 +194,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   
   # Function to plot PCA from dataframe and centroids of groups 
   
-  p <- ggplot(data,aes(x=.data[[3]],y=.data[[4]],color=spec)) +
+  p <- ggplot(data,aes(x=.data[[paste0(pc_first,".x")]],y=.data[[paste0(pc_second,".x")]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
