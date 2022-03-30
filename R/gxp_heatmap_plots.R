@@ -331,5 +331,5 @@ p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, figure_path, dataset)
 # Save the plot
 hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.pdf"),
           plot = p,
-          width = 30,
-          height = 20)
+          width = 15,
+          height = 12.5)
