@@ -194,7 +194,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   
   # Function to plot PCA from dataframe and centroids of groups 
   
-  p <- ggplot(data,aes(x=paste0(pc_first,".x"),y=paste0(pc_second,".x"),color=spec)) +
+  p <- ggplot(data,aes(x=data[[3]],y=data[[4]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
@@ -217,7 +217,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
-    geom_segment(aes(x=paste0(pc_first,".y"), y=paste0(pc_second,".y"), xend=paste0(pc_first,".x"), yend=paste0(pc_second,".x"), colour=spec), size = 0.1) +
+    geom_segment(aes(x=data[[-2]], y=data[[-1]], xend=data[[3]], yend=data[[4]], colour=spec), size = 0.1) +
     theme(legend.position="left",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 15),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
@@ -302,7 +302,7 @@ meta_table_centroid <- merge(meta_table, centroids, by = 'spec') # Merge centroi
 print(meta_table_centroid)
 # centroids["PC1.x"] <- centroids["PC1"] # Create matching columns to meta_table_centroid in centroids table to be used in plots
 # centroids["PC2.x"] <- centroids["PC2"]
-centroids <- centroids %>% mutate(x = pc_first, y = pc_second) %>% setNames(., nm = c("spec", pc_first, pc_second, paste0(pc_first,".x"), paste0(pc_second,".x")))
+centroids <- centroids %>% mutate(x = centroids[[pc_first]], y = centroids[[pc_second]]) %>% setNames(., nm = c("spec", pc_first, pc_second, paste0(pc_first,".x"), paste0(pc_second,".x")))
 print(centroids)
 
 # Get the PC1 GWAS plot for the univariate GWAS done with MVPLINK
