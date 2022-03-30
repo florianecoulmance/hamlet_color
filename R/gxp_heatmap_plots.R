@@ -27,6 +27,7 @@ library(hypoimg)
 library(dplyr)
 library(plyr)
 library(stringr)
+library(stringi)
 library(png)
 library(ggpubr)
 
@@ -225,8 +226,8 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top") +
-    labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[substr(pc_first, -1)] * 100, 1), nsmall = 1), " %") ,
-         y = paste0(pc_second,", var = ", format(round(variance$X0[substr(pc_second, -1)] * 100, 1), nsmall = 1), " %")) #+
+    labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[stri_sub(pc_first, -1)] * 100, 1), nsmall = 1), " %") ,
+         y = paste0(pc_second,", var = ", format(round(variance$X0[stri_sub(pc_second, -1)] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   
