@@ -194,8 +194,8 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
 plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path, dat) {
   
   # Function to plot PCA from dataframe and centroids of groups 
-  print(stri_sub(pc_first, -1))
-  print(typeof(stri_sub(pc_first, -1)))
+  print(as.numeric(stri_sub(pc_first, -1)))
+  print(typeof(as.numeric(stri_sub(pc_first, -1))))
 
   p <- ggplot(data,aes(x=.data[[paste0(pc_first,".x")]],y=.data[[paste0(pc_second,".x")]],color=spec)) +
     geom_point(size = 3) +
@@ -228,8 +228,8 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top") +
-    labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[stri_sub(pc_first, -1)] * 100, 1), nsmall = 1), " %") ,
-         y = paste0(pc_second,", var = ", format(round(variance$X0[stri_sub(pc_second, -1)] * 100, 1), nsmall = 1), " %")) #+
+    labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pc_first, -1))] * 100, 1), nsmall = 1), " %") ,
+         y = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(stri_sub(pc_second, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   
