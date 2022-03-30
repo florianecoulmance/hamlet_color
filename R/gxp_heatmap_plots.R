@@ -252,11 +252,11 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
           plot.margin = unit(c(0,0.5,0,0.1), "cm")) +
-    rotate() + scale_x_reverse()
+    rotate()
   
   
   # Arranging the plot
-  ggarrange(p, pc1, pc2, NULL, 
+  ggarrange(p, pc2, pc1, NULL, 
             ncol = 2, nrow = 2,  align = "hv",
             widths = c(3, 1), heights = c(1, 3),
             common.legend = TRUE, legend = "left")
