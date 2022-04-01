@@ -26,7 +26,7 @@ library(tidyverse)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[7:9]
+args = args[6:8]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
