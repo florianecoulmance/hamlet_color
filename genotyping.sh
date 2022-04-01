@@ -441,7 +441,7 @@ do
   echo "\$sample \$cov" >> $BASE_DIR/outputs/coverage/coverage_table                    # store sample name and corresponding coverage to a table text file
 done
 
-Rscript --vanilla $BASE_DIR/R/coverage_hist.R $BASE_DIR/outputs/coverage/coverage_table $BASE_DIR/figures/ $BASE_DIR/outputs/lof/ #run Rscript for histogram
+Rscript $BASE_DIR/R/coverage_hist.R $BASE_DIR/outputs/coverage/coverage_table $BASE_DIR/figures/ $BASE_DIR/outputs/lof/ #run Rscript for histogram
 
 while read line                                                                         # read the file output by the Rscript that stores the name of files/samples that have a too low coverage
 do                                                                                      # print the files to remove to a file
