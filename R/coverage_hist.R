@@ -54,7 +54,7 @@ p <- ggplot(coverage, aes(x=V2, y=reorder(V1, V2))) + geom_bar(stat = "identity"
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"), 
         axis.ticks.y = element_blank(), axis.title.y = element_blank(),
-        axis.line.y = element_blank(), axis.text=element_text(size=1)) + 
+        axis.line.y = element_blank(), axis.text=element_text(size=2)) + 
   scale_x_continuous(expand = c(0,0)) +
   geom_vline(xintercept= mean(coverage$V2), size=0.3, label=mean) +
   geom_vline(xintercept=15, linetype="dashed", color = "red", size=0.3) +
