@@ -58,8 +58,8 @@ p <- ggplot(coverage, aes(x=V2, y=reorder(V1, V2))) + geom_bar(stat = "identity"
   scale_x_continuous(expand = c(0,0)) +
   geom_vline(xintercept= mean(coverage$V2), size=0.3, label=mean) +
   geom_vline(xintercept=15, linetype="dashed", color = "red", size=0.3) +
-  geom_text(aes(x=mean(coverage$V2), label=lab, y=20), size=3, hjust=-0, vjust=28) + 
-  geom_text(aes(x=15, label="15x", y=20), color = "red", size=3, hjust=-0.3, vjust=28) +
+  geom_text(aes(x=mean(coverage$V2), label=lab, y=20), size=1.5, hjust=-0, vjust=28) + 
+  geom_text(aes(x=15, label="15x", y=20), color = "red", size=1.5, hjust=-0.3, vjust=28) +
   labs(x = "mean coverage per bases")
 
 pdf(paste0(figure_path,"coverage_histogram.pdf"))

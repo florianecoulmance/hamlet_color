@@ -197,7 +197,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   print(as.numeric(stri_sub(pc_first, -1)))
   print(typeof(as.numeric(stri_sub(pc_first, -1))))
 
-  p <- ggplot(data,aes(x=.data[[paste0(pc_first,".x")]],y=.data[[paste0(pc_second,".x")]],color=spec)) +
+  p <- ggplot(data,aes(y=.data[[paste0(pc_first,".x")]],x=.data[[paste0(pc_second,".x")]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
@@ -220,7 +220,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
-    geom_segment(aes(x=.data[[paste0(pc_first,".y")]], y=.data[[paste0(pc_second,".y")]], xend=.data[[paste0(pc_first,".x")]], yend=.data[[paste0(pc_second,".x")]], colour=spec), size = 0.1) +
+    geom_segment(aes(y=.data[[paste0(pc_first,".y")]], x=.data[[paste0(pc_second,".y")]], yend=.data[[paste0(pc_first,".x")]], xend=.data[[paste0(pc_second,".x")]], colour=spec), size = 0.1) +
     theme(legend.position="left",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 15),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
@@ -228,8 +228,8 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top") +
-    labs(x = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pc_first, -1))] * 100, 1), nsmall = 1), " %") ,
-         y = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(stri_sub(pc_second, -1))] * 100, 1), nsmall = 1), " %")) #+
+    labs(y = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pc_first, -1))] * 100, 1), nsmall = 1), " %") ,
+         x = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(stri_sub(pc_second, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   
@@ -237,34 +237,37 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   pc1 <- ggplot() + geom_hypo_LG() +
     geom_point(data = file_pc1, aes(x = GPOS, y = AVG_P), size = .1) +
     scale_fill_hypo_LG_bg() +
-    scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
+                labels = 1:24, position = "top") +
+    # scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')),  position = "left") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
-          plot.margin = unit(c(0.5,0,0.5,0), "cm"))
+          plot.margin = unit(c(0.5,0,0.5,0), "cm")) +
+    rotate()
   
   pc2 <- ggplot() + geom_hypo_LG() +
     geom_point(data = file_pc2, aes(x = GPOS, y = AVG_P), size = .1) +
     scale_fill_hypo_LG_bg() +
-    scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
-                    labels = 1:24, position = "top") +
-    # scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-Wald)'))) +
+    # scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
+    #                 labels = 1:24, position = "top") +
+    scale_x_hypo_LG(name = "Linkage Groups") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')), position = "left") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
-          plot.margin = unit(c(0,0.5,0,0.1), "cm")) +
-    rotate()
+          plot.margin = unit(c(0,0.5,0,0.1), "cm")) #+
+    # rotate()
 
   
   
   # Arranging the plot
-  ggarrange(p, pc2, pc1, NULL, 
+  ggarrange(p, pc1, pc2, NULL, 
             ncol = 2, nrow = 2,  align = "hv",
-            widths = c(3, 0.01, 1), heights = c(3, 0.01, 1),
+            widths = c(2, 0.01, 0.7), heights = c(2, 0.01, 0.7),
             common.legend = TRUE, legend = "left")
   
 }
