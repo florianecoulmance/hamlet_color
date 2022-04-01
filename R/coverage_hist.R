@@ -30,10 +30,13 @@ args = args[7:9]
 print(args)
 
 data_path <- as.character(args[1]) # Path to mean coverage data table
+print(data_path)
 # data_path <- "/Users/fco/Desktop/BREMEN_OP/ibd/coverage_table"
 figure_path <- as.character(args[2]) # Path to the figure folder
+print(figure_path)
 # figure_path <- "/Users/fco/Desktop/BREMEN_OP/ibd/figures/"
 list_path <- as.character(args[3]) # Path to the folder that will contain the list of genetic files to remove
+print(list_path)
 # list_path <- "/Users/fco/Desktop/BREMEN_OP/ibd/"
 
 
@@ -44,7 +47,7 @@ list_path <- as.character(args[3]) # Path to the folder that will contain the li
 # -------------------------------------------------------------------------------------------------------------------
 
 
-coverage <- read.table(data_path,sep = "")
+coverage <- read.table(data_path,sep = " ")
 print(coverage)
 mean <- mean(coverage$V2)
 print(mean)
