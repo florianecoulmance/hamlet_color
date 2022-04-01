@@ -57,15 +57,15 @@ lab <- paste0("mean coverage : ",lab,"x")
 print(lab)
 
 
-p <- ggplot(coverage, aes(x=.data[[2]], y=reorder(.data[[1]], .data[[2]]))) + geom_bar(stat = "identity", fill = "#DDB9F5") + 
+p <- ggplot(coverage, aes(x=V2, y=reorder(V1, V2))) + geom_bar(stat = "identity", fill = "#DDB9F5") + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"), 
         axis.ticks.y = element_blank(), axis.title.y = element_blank(),
         axis.line.y = element_blank()) + 
   scale_x_continuous(expand = c(0,0)) +
-  geom_vline(xintercept= mean(.data[[2]]), size=0.3, label=mean) +
+  geom_vline(xintercept= mean(coverage$V2), size=0.3, label=mean) +
   geom_vline(xintercept=15, linetype="dashed", color = "red", size=0.3) +
-  geom_text(aes(x=mean(.data[[2]]), label=lab, y=20), size=3, hjust=-0, vjust=28) + 
+  geom_text(aes(x=mean(coverage$V2), label=lab, y=20), size=3, hjust=-0, vjust=28) + 
   geom_text(aes(x=15, label="15x", y=20), color = "red", size=3, hjust=-0.3, vjust=28) +
   labs(x = "mean coverage per bases")
 
@@ -74,7 +74,7 @@ print(p)
 dev.off()
 
 to_remove_table <- coverage %>%
-  filter(coverage[[2]] < 15.00)
+  filter(V2 < 15.00)
 
 print(to_remove_table)
 
