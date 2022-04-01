@@ -267,7 +267,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   # Arranging the plot
   ggarrange(p, pc1, pc2, NULL, 
             ncol = 2, nrow = 2,  align = "hv",
-            widths = c(2, 0.01, 0.7), heights = c(2, 0.01, 0.7),
+            widths = c(0.5, 0.01, 0.5), heights = c(0.5, 0.01, 0.5),
             common.legend = TRUE, legend = "left")
   
 }
@@ -334,5 +334,5 @@ p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, figure_path, dataset)
 # Save the plot
 hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.pdf"),
           plot = p,
-          width = 15,
-          height = 12.5)
+          width = 100,
+          height = 100)
