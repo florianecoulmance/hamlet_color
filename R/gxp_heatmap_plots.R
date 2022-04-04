@@ -225,7 +225,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
           legend.box = "vertical", legend.text =  element_markdown(size = 15),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=20), legend.key=element_blank(),
-          legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0.5,0.1), "cm")) +
+          legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0,0), "cm")) +
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top") +
     labs(y = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pc_first, -1))] * 100, 1), nsmall = 1), " %") ,
@@ -245,7 +245,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
     theme(legend.position = 'none',
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
-          plot.margin = unit(c(0.5,0,0.5,0), "cm")) +
+          plot.margin = unit(c(0,0,0,0), "cm")) +
     rotate()
   
   pc2 <- ggplot() + geom_hypo_LG() +
@@ -259,7 +259,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
     theme(legend.position = 'none',
           axis.title.x = element_text(),
           axis.text.x.top= element_text(colour = 'darkgray'),
-          plot.margin = unit(c(0,0.5,0,0.1), "cm")) #+
+          plot.margin = unit(c(0,0,0,0), "cm")) #+
     # rotate()
 
   
@@ -267,8 +267,8 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   # Arranging the plot
   ggarrange(p, pc1, pc2, NULL, 
             ncol = 2, nrow = 2,  align = "hv",
-            widths = c(5, 1), heights = c(5, 1),
-            common.legend = TRUE, legend = "left") + theme(plot.margin = margin(0.1,0.1,0.1,0.1, "cm")) 
+            widths = c(5, -0.1, 1), heights = c(5, 1),
+            common.legend = TRUE, legend = "left") + theme(plot.margin = margin(0,0,0,0, "cm")) 
 
   
 }
