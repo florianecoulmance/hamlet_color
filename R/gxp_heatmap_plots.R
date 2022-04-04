@@ -267,7 +267,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   # Arranging the plot
   ggarrange(p, pc1, pc2, NULL, 
             ncol = 2, nrow = 2,  align = "hv",
-            widths = c(5, -0.1, 1), heights = c(5, -0.1, 1),
+            widths = c(5, 1), heights = c(5, 1),
             common.legend = TRUE, legend = "left")
   
 }
@@ -332,7 +332,8 @@ f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, figure_path, dataset)
 
 # Save the plot
-hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.pdf"),
+hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.png"),
+          type = "cairo",
           plot = p,
           width = 15,
           height = 12,
