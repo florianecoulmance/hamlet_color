@@ -30,6 +30,8 @@ library(stringr)
 library(stringi)
 library(png)
 library(ggpubr)
+library(scales)
+
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -61,10 +63,11 @@ print(pc_second)
 
 # data_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
 # figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
-# dataset <- "LAB_fullm_PC1-2"
+# dataset <- "LAB_fullm_left_54off_59on"
 # metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/"
 # im_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/images/continuous/LAB/LAB_fullm_left_54off_59on/"
-
+# pc_first <- "PC1"
+# pc_second <- "PC2"
 
 # -------------------------------------------------------------------------------------------------------------------
 # FUNCTIONS
@@ -191,7 +194,7 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
 }
 
 
-plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path, dat) {
+plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2, fig_path, dat) {
   
   # Function to plot PCA from dataframe and centroids of groups 
   print(as.numeric(stri_sub(pc_first, -1)))
@@ -203,31 +206,31 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
                                 "ind" = '#66CCFF', "pue" = '#FFCC00', "flo" = '#33FFCC', "tan" = '#333333',
                                 "uni" = '#66CC00'),
-                       labels = c("nig" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_nigricans.l.cairo.png' width='70' /><br>*H. nigricans*",
-                                  "chl" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_chlorurus.l.cairo.png' width='70' /><br>*H. chlorurus*",
-                                  "abe" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_aberrans.l.cairo.png' width='70' /><br>*H. aberrans*",
-                                  "gut" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_guttavarius.l.cairo.png' width='70' /><br>*H. guttavarius*",
-                                  "gum" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gumigutta.l.cairo.png' width='70' /><br>*H. gummigutta*",
-                                  "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='70' /><br>*H. randallorum*",
-                                  "gem" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gemma.l.cairo.png' width='70' /><br>*H. gemma*",
-                                  "may" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_maya.l.cairo.png' width='70' /><br>*H. maya*",
-                                  "ind" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_indigo.l.cairo.png' width='70' /><br>*H. indigo*",
-                                  "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='70' /><br>*H. puella*",
-                                  "flo" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_floridae.l.cairo.png' width='70' /><br>*H. floridae*",
-                                  "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_tan.l.cairo.png' width='70' /><br>*Tan hamlet*",
-                                  "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='70' /><br>*H. unicolor*"),
+                       labels = c("nig" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_nigricans.l.cairo.png' width='60' /><br>*H. nigricans*",
+                                  "chl" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_chlorurus.l.cairo.png' width='60' /><br>*H. chlorurus*",
+                                  "abe" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_aberrans.l.cairo.png' width='60' /><br>*H. aberrans*",
+                                  "gut" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_guttavarius.l.cairo.png' width='60' /><br>*H. guttavarius*",
+                                  "gum" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gumigutta.l.cairo.png' width='60' /><br>*H. gummigutta*",
+                                  "ran" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png' width='60' /><br>*H. randallorum*",
+                                  "gem" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gemma.l.cairo.png' width='60' /><br>*H. gemma*",
+                                  "may" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_maya.l.cairo.png' width='60' /><br>*H. maya*",
+                                  "ind" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_indigo.l.cairo.png' width='60' /><br>*H. indigo*",
+                                  "pue" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png' width='60' /><br>*H. puella*",
+                                  "flo" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_floridae.l.cairo.png' width='60' /><br>*H. floridae*",
+                                  "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_tan.l.cairo.png' width='60' /><br>*Tan hamlet*",
+                                  "uni" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png' width='60' /><br>*H. unicolor*"),
                        breaks = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue",
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
     geom_segment(aes(y=.data[[paste0(pc_first,".y")]], x=.data[[paste0(pc_second,".y")]], yend=.data[[paste0(pc_first,".x")]], xend=.data[[paste0(pc_second,".x")]], colour=spec), size = 0.1) +
     theme(legend.position="left",legend.title=element_blank(),
-          legend.box = "vertical", legend.text =  element_markdown(size = 15),
+          legend.box = "vertical", legend.text =  element_markdown(size = 10),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
-          text = element_text(size=20), legend.key=element_blank(),
-          legend.key.size = unit(0.7, 'cm'), plot.margin = unit(c(0,0,0,0), "cm")) +
+          text = element_text(size=10), legend.key=element_blank(), axis.text.x = element_text(size = 7), axis.text.y = element_text(size = 7)) +
     guides(color = guide_legend(nrow = 13)) +
-    scale_x_continuous(position = "top") +
+    scale_x_continuous(position = "top",labels = unit_format(unit = "K", scale = 1e-3)) +
+    scale_y_continuous(labels = unit_format(unit = "K", scale = 1e-3)) +
     labs(y = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pc_first, -1))] * 100, 1), nsmall = 1), " %") ,
          x = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(stri_sub(pc_second, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
@@ -240,12 +243,11 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
     scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
                 labels = 1:24, position = "top") +
     # scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-value)')),  position = "left") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')),position="right") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'),
-          plot.margin = unit(c(0,0,0,0), "cm")) +
+          axis.text.x.top= element_text(colour = 'darkgray')) +
     rotate()
   
   pc2 <- ggplot() + geom_hypo_LG() +
@@ -258,17 +260,17 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'),
-          plot.margin = unit(c(0,0,0,0), "cm")) #+
+          axis.text.x.top= element_text(colour = 'darkgray')) #+
     # rotate()
 
-  
+  # Make the images heatmaps as plots
+  g1 <- rasterGrob(im1, interpolate=TRUE)
+  g2 <- rasterGrob(im2, interpolate=TRUE)
   
   # Arranging the plot
-  ggarrange(p, pc1, pc2, 
-            ncol = 2, nrow = 2,  align = "hv",
-            widths = c(7, -0.1, 2), heights = c(7, -0.1, 2),
-            common.legend = TRUE, legend = "left") + theme(plot.margin = margin(0,0,0,0, "cm")) 
+  ggarrange(p, g1, pc1, g2, pc2, ncol = 3, nrow = 2, align = "h",
+            widths = c(2,1), heights = c(2,1),
+            common.legend = TRUE, legend = "left")
 
   
 }
@@ -329,13 +331,16 @@ f2 <- read.table(paste0(data_path,PC2), header=TRUE)
 f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
+# Get the heatmap corresponding to 1st needed PC and 2nd needed PC
+img1 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_left_54off_59on/",dataset,"_",pc_first,".png"))
+img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_left_54off_59on/",dataset,"_",pc_second,".png"))
+
 # Plot the phenotype PCA and save it as figure
-p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, figure_path, dataset)
+p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
 
 # Save the plot
 hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.png"),
           type = "cairo",
           plot = p,
-          width = 15,
-          height = 13,
-          limitsize = FALSE)
+          width = 10,
+          height = 8.5)
