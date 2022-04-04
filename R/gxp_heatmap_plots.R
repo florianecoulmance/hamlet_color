@@ -212,7 +212,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
                                   "gut" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_guttavarius.l.cairo.png' width='60' /><br>*H. guttavarius*",
                                   "gum" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gumigutta.l.cairo.png' width='60' /><br>*H. gummigutta*",
                                   "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='60' /><br>*H. randallorum*",
-                                  "gem" = "<img src='/user/doau0129/work/chapter1/ressourceslogos/H_gemma.l.cairo.png' width='60' /><br>*H. gemma*",
+                                  "gem" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gemma.l.cairo.png' width='60' /><br>*H. gemma*",
                                   "may" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_maya.l.cairo.png' width='60' /><br>*H. maya*",
                                   "ind" = "<img src='//user/doau0129/work/chapter1/ressources/logos/H_indigo.l.cairo.png' width='60' /><br>*H. indigo*",
                                   "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='60' /><br>*H. puella*",
