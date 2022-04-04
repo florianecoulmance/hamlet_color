@@ -332,8 +332,8 @@ f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
 f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 
 # Get the heatmap corresponding to 1st needed PC and 2nd needed PC
-img1 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_left_54off_59on/",dataset,"_",pc_first,".png"))
-img2 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_left_54off_59on/",dataset,"_",pc_second,".png"))
+img1 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/",dataset,"_",pc_first,".png"))
+img2 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/",dataset,"_",pc_second,".png"))
 
 # Plot the phenotype PCA and save it as figure
 p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
