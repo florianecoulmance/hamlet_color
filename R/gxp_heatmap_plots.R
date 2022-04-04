@@ -267,7 +267,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, fig_path
   # Arranging the plot
   ggarrange(p, pc1, pc2, 
             ncol = 2, nrow = 2,  align = "hv",
-            widths = c(3, -0.1, 1), heights = c(3, -0.1, 1),
+            widths = c(7, -0.1, 2), heights = c(7, -0.1, 2),
             common.legend = TRUE, legend = "left") + theme(plot.margin = margin(0,0,0,0, "cm")) 
 
   
