@@ -259,7 +259,7 @@ p8 <- p8$plot
 p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
 p9 <- p9$plot
 p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
-pten <- pc10$plot
+pten <- p10$plot
 l <- p10$legd
 
 # p5_legend <- get_legend(p5)
