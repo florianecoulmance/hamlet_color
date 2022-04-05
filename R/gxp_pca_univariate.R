@@ -249,9 +249,9 @@ p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
 
 p5_legend <- get_legend(p5)
 
-plot <- ((p1 | p2 | p3) / (p5 | p6 | p7) / (p8 | p9 | p10)) | p5_legend + 
-        plot_layout(guides = 'collect') + 
-        plot_annotation(tag_levels = 'A')
+plot <- ((p1 | p2 | p3) / (p5 | p6 | p7) / (p8 | p9 | p10)) | p5_legend 
+
+
 # plot <- ggarrange(p1, p2, p3, p5, p6, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = T, legend = "left", align = "hv")
 
 hypo_save(filename = paste0(figure_path,"pca_univariate_gwas.png"),
