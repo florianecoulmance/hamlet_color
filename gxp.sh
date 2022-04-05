@@ -460,7 +460,7 @@ ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.assoc.50k.5k.txt.gz > $BASE_DIR/outputs
 
 rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.tmp
 
-Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
+# Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
 Rscript $BASE_DIR/R/gxp_pca_univariate.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
