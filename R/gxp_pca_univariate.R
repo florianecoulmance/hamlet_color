@@ -247,7 +247,7 @@ p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
 p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
 p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
 
-plot <- (p1 | p2 | p3 / p5 | p6 | p7 / p8 / p9 | p10) + plot_layout(guides = 'collect')
+plot <- (p1 | p2 | p3) / (p5 | p6 | p7) / (p8 / p9 | p10) + plot_layout(guides = 'collect')
 # plot <- ggarrange(p1, p2, p3, p5, p6, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = T, legend = "left", align = "hv")
 
 hypo_save(filename = paste0(figure_path,"pca_univariate_gwas.png"),
