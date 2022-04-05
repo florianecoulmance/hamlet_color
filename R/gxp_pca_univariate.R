@@ -144,7 +144,7 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   g2 <- rasterGrob(im2[1:558,,], interpolate = T)
   g3 <- rasterGrob(im1[560:658,,], interpolate = T)
   
-  if ((pcf=="PC1")&(pcs=="PC5")) {
+  if ((pcf=="PC1")&(pcs=="PC5") || (pcf=="PC1")&(pcs=="PC2")) {
     
     # Arranging the plot
     g <- ggarrange(p, pc1, pc2, ggarrange(g1, g2, g3, nrow = 3, widths = c(4,4,1), heights = c(2,2,1)), ncol = 2, nrow = 2, align = "h",
@@ -247,7 +247,7 @@ p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
 p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
 p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
 
-plot <- ggarrange(p1, p2, p3, p5, p6, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = T, legend = "bottom", align = "hv")
+plot <- ggarrange(p1, p2, p3, p5, p6, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = T, legend = "left", align = "hv")
 
 hypo_save(filename = paste0(figure_path,"pca_univariate_gwas.png"),
           type = "cairo",
