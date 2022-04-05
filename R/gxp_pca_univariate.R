@@ -158,7 +158,8 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     
   }
  
-  return(g)
+  leg <- get_legend(g)
+  return(list(plot = g, legd = leg))
   
 }
 
@@ -203,7 +204,10 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   # img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_PC2.png"))
   
   # Plot the phenotype PCA and save it as figure
-  p <- plot_pca(pc_first, pc_second, meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
+  pl <- plot_pca(pc_first, pc_second, meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
+  
+  p <- pl$plot
+  lgd <- pl$legd
   
   # Save the plot
   hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.png"),
@@ -212,7 +216,7 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
             width = 12,
             height = 8.5)
   
-  return(p)
+  return(pl)
   
 }
 
@@ -237,19 +241,30 @@ immeta <- read.table(file = paste0(metadata, "image_metadata.tsv"), sep = '\t', 
 immeta["im"] <- gsub('.{4}$', '', immeta$image)
 
 p1 <- pca_analysis("PC1", "PC2", pheno_PC, pheno_var, immeta)
+p1 <- p1$plot
 p2 <- pca_analysis("PC1", "PC3", pheno_PC, pheno_var, immeta)
+p2 <- p2$plot
 p3 <- pca_analysis("PC1", "PC4", pheno_PC, pheno_var, immeta)
+p3 <- p3$plot
 p4 <- pca_analysis("PC1", "PC5", pheno_PC, pheno_var, immeta)
+p4 <- p4$plot
 p5 <- pca_analysis("PC2", "PC3", pheno_PC, pheno_var, immeta)
+p5 <- p5$plot
 p6 <- pca_analysis("PC2", "PC4", pheno_PC, pheno_var, immeta)
+p6 <- p6$plot
 p7 <- pca_analysis("PC2", "PC5", pheno_PC, pheno_var, immeta)
+p7 <- p7$plot
 p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
+p8 <- p8$plot
 p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
+p9 <- p9$plot
 p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
+pten <- pc10$plot
+l <- p10$legd
 
-p5_legend <- get_legend(p5)
+# p5_legend <- get_legend(p5)
 
-plot <- ((p1 | p2 | p3) / (p5 | p6 | p7) / (p8 | p9 | p10)) | p5_legend 
+plot <- ((p1 | p2 | p3) / (p5 | p6 | p7) / (p8 | p9 | p10)) | l 
 
 
 # plot <- ggarrange(p1, p2, p3, p5, p6, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = T, legend = "left", align = "hv")
