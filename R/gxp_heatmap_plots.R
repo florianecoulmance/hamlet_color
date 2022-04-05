@@ -200,8 +200,8 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
   print(as.numeric(stri_sub(pc_first, -1)))
   print(typeof(as.numeric(stri_sub(pc_first, -1))))
 
-  print(im1)
-  print(im2)
+  # print(im1)
+  # print(im2)
 
   p <- ggplot(data,aes(y=.data[[paste0(pc_first,".x")]],x=.data[[paste0(pc_second,".x")]],color=spec)) +
     geom_point(size = 3) +
@@ -271,10 +271,10 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
   g2 <- rasterGrob(im2, interpolate=TRUE)
   
   # Arranging the plot
-  ggarrange(p, g1, g2, ncol = 3, nrow = 2, align = "h",
-            widths = c(2,1), heights = c(2,1),
+  g <- ggarrange(p, g1, g2, ncol = 3, nrow = 2, align = "h",
             common.legend = TRUE, legend = "left")
 
+  return(g)
   
 }
 
@@ -286,12 +286,12 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
 # -------------------------------------------------------------------------------------------------------------------
 
 
-# Determine the list of traits to analyse
-traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
-print(traits)
+# # Determine the list of traits to analyse
+# traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+# print(traits)
 
-# Analyses of 10 univariate PCs and their heatmaps
-univariate_plots(data_path, traits, figure_path, dataset)
+# # Analyses of 10 univariate PCs and their heatmaps
+# univariate_plots(data_path, traits, figure_path, dataset)
 
 
 # Analyses of image PCA and gwas of PC1 and PC2
