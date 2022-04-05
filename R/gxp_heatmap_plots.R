@@ -268,7 +268,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
   g2 <- rasterGrob(im2, interpolate=TRUE)
   
   # Arranging the plot
-  ggarrange(p, g1, pc1, g2, pc2, ncol = 3, nrow = 2, align = "h",
+  ggarrange(p, g1, g2, ncol = 3, nrow = 2, align = "h",
             widths = c(2,1), heights = c(2,1),
             common.legend = TRUE, legend = "left")
 
