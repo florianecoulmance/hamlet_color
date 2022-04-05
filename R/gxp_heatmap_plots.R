@@ -200,6 +200,9 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
   print(as.numeric(stri_sub(pc_first, -1)))
   print(typeof(as.numeric(stri_sub(pc_first, -1))))
 
+  print(im1)
+  print(im2)
+
   p <- ggplot(data,aes(y=.data[[paste0(pc_first,".x")]],x=.data[[paste0(pc_second,".x")]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
@@ -283,12 +286,12 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
 # -------------------------------------------------------------------------------------------------------------------
 
 
-# # Determine the list of traits to analyse
-# traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
-# print(traits)
+# Determine the list of traits to analyse
+traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+print(traits)
 
-# # Analyses of 10 univariate PCs and their heatmaps
-# univariate_plots(data_path, traits, figure_path, dataset)
+# Analyses of 10 univariate PCs and their heatmaps
+univariate_plots(data_path, traits, figure_path, dataset)
 
 
 # Analyses of image PCA and gwas of PC1 and PC2
@@ -334,6 +337,8 @@ f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
 # Get the heatmap corresponding to 1st needed PC and 2nd needed PC
 img1 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/",dataset,"_",pc_first,".png"))
 img2 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/",dataset,"_",pc_second,".png"))
+print(img1)
+print(img2)
 
 # Plot the phenotype PCA and save it as figure
 p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
