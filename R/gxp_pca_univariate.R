@@ -68,16 +68,16 @@ print(im_path)
 # -------------------------------------------------------------------------------------------------------------------
 
 
-plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2, fig_path, dat) {
+plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2, im1, im2, fig_path, dat) {
   
   # Function to plot PCA from dataframe and centroids of groups 
-  print(as.numeric(stri_sub(pc_first, -1)))
-  print(typeof(as.numeric(stri_sub(pc_first, -1))))
+  print(as.numeric(stri_sub(pcf, -1)))
+  print(typeof(as.numeric(stri_sub(pcf, -1))))
   
   # print(im1)
   # print(im2)
   
-  p <- ggplot(data,aes(y=.data[[paste0(pc_first,".x")]],x=.data[[paste0(pc_second,".x")]],color=spec)) +
+  p <- ggplot(data,aes(y=.data[[paste0(pcf,".x")]],x=.data[[paste0(pcs,".x")]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
@@ -100,7 +100,7 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
-    geom_segment(aes(y=.data[[paste0(pc_first,".y")]], x=.data[[paste0(pc_second,".y")]], yend=.data[[paste0(pc_first,".x")]], xend=.data[[paste0(pc_second,".x")]], colour=spec), size = 0.1) +
+    geom_segment(aes(y=.data[[paste0(pcf,".y")]], x=.data[[paste0(pcs,".y")]], yend=.data[[paste0(pcf,".x")]], xend=.data[[paste0(pcs,".x")]], colour=spec), size = 0.1) +
     theme(legend.position="none",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 10),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
@@ -108,8 +108,8 @@ plot_pca <- function(data, center_points, variance, file_pc1, file_pc2, im1, im2
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top",labels = unit_format(unit = "K", scale = 1e-3)) +
     scale_y_continuous(labels = unit_format(unit = "K", scale = 1e-3)) +
-    labs(y = paste0(pc_first,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pc_first, -1))] * 100, 1), nsmall = 1), " %") ,
-         x = paste0(pc_second,", var = ", format(round(variance$X0[as.numeric(stri_sub(pc_second, -1))] * 100, 1), nsmall = 1), " %")) #+
+    labs(y = paste0(pcf,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pcf, -1))] * 100, 1), nsmall = 1), " %") ,
+         x = paste0(pcs,", var = ", format(round(variance$X0[as.numeric(stri_sub(pcs, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   # Additional plots of GWAS corresponding to each PCA axis
@@ -158,6 +158,7 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   
   # Function that opens all necessary files and create PCA + univariate plots
   
+  
   # Combine PCs info with image info and calculate centroids for each species group 
   meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
   print(meta_table)
@@ -193,7 +194,7 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   # img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_PC2.png"))
   
   # Plot the phenotype PCA and save it as figure
-  p <- plot_pca(meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
+  p <- plot_pca(pc_first, pc_second, meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
   
   # Save the plot
   hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.png"),
