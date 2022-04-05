@@ -242,6 +242,6 @@ plot <- ggarrange(p1, p2, p3, p5, p6, p7, p8, p9, p10, ncol = 3, nrow = 3, commo
 
 hypo_save(filename = paste0(figure_path,"pca_univariate_gwas.png"),
           type = "cairo",
-          plot = p,
+          plot = plot,
           width = 17,
           height = 20)
