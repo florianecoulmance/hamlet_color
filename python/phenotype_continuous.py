@@ -289,7 +289,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     ax.set(xlabel=None) # <-- remove x label
     ax.set_xticklabels([]) # <-- remove x tick labels
     ax.set_yticklabels([]) # <-- remove y tick labels
-    ax.tick_params(labelsize=14) # <-- change 
+    cb.ax.tick_params(labelsize=30) # <-- change 
     ax.set(xticks=[]) # <-- remove x ticks
     ax.set(yticks=[]) # <-- remove y ticks 
     fig.subplots_adjust(hspace = 0.01, wspace = 0.01)  # <-- Add space so the colorbar doesn't overlap the plot
