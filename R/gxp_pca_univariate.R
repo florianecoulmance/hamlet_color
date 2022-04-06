@@ -107,7 +107,7 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
           text = element_text(size=10), legend.key=element_blank(), axis.text.x = element_text(size = 7), axis.text.y = element_text(size = 7)) +
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top",labels = unit_format(unit = "K", scale = 1e-3)) +
-    scale_y_continuous(labels = unit_format(unit = "K", scale = 1e-3)) +
+    scale_y_continuous(labels = unit_format(unit = "k", scale = 1e-3)) +
     labs(x = paste0(pcf,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pcf, -1))] * 100, 1), nsmall = 1), " %") ,
          y = paste0(pcs,", var = ", format(round(variance$X0[as.numeric(stri_sub(pcs, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
@@ -116,10 +116,10 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   pc1 <- ggplot() + geom_hypo_LG() +
     geom_point(data = file_pc1, aes(x = GPOS, y = AVG_P), size = .1) +
     scale_fill_hypo_LG_bg() +
-    scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
-                    labels = 1:24, position = "top") +
-    # scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-value)')),position="right") +
+    # scale_x_reverse(name = "Linkage Group", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
+    #                 labels = 1:24, position = "top") +
+    scale_x_hypo_LG(name = "Linkage Group") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')),position="left") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
@@ -129,15 +129,15 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   pc2 <- ggplot() + geom_hypo_LG() +
     geom_point(data = file_pc2, aes(x = GPOS, y = AVG_P), size = .1) +
     scale_fill_hypo_LG_bg() +
-    # scale_x_reverse(name = "Linkage Groups", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
-    #                 labels = 1:24, position = "top") +
-    scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(italic('-log(p-value)')), position = "left") +
+    scale_x_reverse(name = "Linkage Group", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
+                    labels = 1:24, position = "top") +
+    # scale_x_hypo_LG(name = "Linkage Group") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')), position = "right") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray')) #+
-  # rotate()
+          axis.text.x.top= element_text(colour = 'darkgray')) +
+    rotate()
   
   # Make the images heatmaps as plots
   g1 <- rasterGrob(im1[1:558,,], interpolate = T)
