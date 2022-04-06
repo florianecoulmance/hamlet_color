@@ -226,7 +226,7 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
 
 # Analyses of image PCA and gwas of PC1 and PC2
 # Open all needed files
-pheno_PC <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";") 
+pheno_PC <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";", header= TRUE) 
 print(pheno_PC)
 
 pheno_PC <- pheno_PC %>% 
