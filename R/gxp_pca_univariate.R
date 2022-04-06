@@ -106,7 +106,7 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=10), legend.key=element_blank(), axis.text.x = element_text(size = 7), axis.text.y = element_text(size = 7)) +
     guides(color = guide_legend(nrow = 13)) +
-    scale_x_continuous(position = "top",labels = unit_format(unit = "K", scale = 1e-3)) +
+    scale_x_continuous(position = "top",labels = unit_format(unit = "k", scale = 1e-3)) +
     scale_y_continuous(labels = unit_format(unit = "k", scale = 1e-3)) +
     labs(x = paste0(pcf,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pcf, -1))] * 100, 1), nsmall = 1), " %") ,
          y = paste0(pcs,", var = ", format(round(variance$X0[as.numeric(stri_sub(pcs, -1))] * 100, 1), nsmall = 1), " %")) #+
