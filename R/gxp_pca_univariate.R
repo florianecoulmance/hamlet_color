@@ -123,8 +123,8 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray')) +
-    rotate()
+          axis.text.x.top= element_text(colour = 'darkgray')) #+
+    # rotate()
   
   pc2 <- ggplot() + geom_hypo_LG() +
     geom_point(data = file_pc2, aes(x = GPOS, y = AVG_P), size = .1) +
