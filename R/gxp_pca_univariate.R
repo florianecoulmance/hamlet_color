@@ -77,7 +77,7 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   # print(im1)
   # print(im2)
   
-  p <- ggplot(data,aes(y=.data[[paste0(pcf,".x")]],x=.data[[paste0(pcs,".x")]],color=spec)) +
+  p <- ggplot(data,aes(x=.data[[paste0(pcf,".x")]],y=.data[[paste0(pcs,".x")]],color=spec)) +
     geom_point(size = 3) +
     scale_color_manual(values=c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
@@ -100,7 +100,7 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_point(data=center_points,size=7) +
-    geom_segment(aes(y=.data[[paste0(pcf,".y")]], x=.data[[paste0(pcs,".y")]], yend=.data[[paste0(pcf,".x")]], xend=.data[[paste0(pcs,".x")]], colour=spec), size = 0.1) +
+    geom_segment(aes(x=.data[[paste0(pcf,".y")]], y=.data[[paste0(pcs,".y")]], xend=.data[[paste0(pcf,".x")]], yend=.data[[paste0(pcs,".x")]], colour=spec), size = 0.1) +
     theme(legend.position="none",legend.title=element_blank(),
           legend.box = "vertical", legend.text =  element_markdown(size = 10),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
@@ -108,8 +108,8 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top",labels = unit_format(unit = "K", scale = 1e-3)) +
     scale_y_continuous(labels = unit_format(unit = "K", scale = 1e-3)) +
-    labs(y = paste0(pcf,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pcf, -1))] * 100, 1), nsmall = 1), " %") ,
-         x = paste0(pcs,", var = ", format(round(variance$X0[as.numeric(stri_sub(pcs, -1))] * 100, 1), nsmall = 1), " %")) #+
+    labs(x = paste0(pcf,", var =  ", format(round(variance$X0[as.numeric(stri_sub(pcf, -1))] * 100, 1), nsmall = 1), " %") ,
+         y = paste0(pcs,", var = ", format(round(variance$X0[as.numeric(stri_sub(pcs, -1))] * 100, 1), nsmall = 1), " %")) #+
   #ggtitle(paste0("PCA ", dat))
   
   # Additional plots of GWAS corresponding to each PCA axis
@@ -144,16 +144,16 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   g2 <- rasterGrob(im2[1:558,,], interpolate = T)
   g3 <- rasterGrob(im1[560:658,,], interpolate = T)
   
-  if ((pcf=="PC1")&(pcs=="PC5") || (pcf=="PC1")&(pcs=="PC2")) {
+  if ((pcf=="PC1")&(pcs=="PC5")) {
     
     # Arranging the plot
-    g <- ggarrange(p, pc1, pc2, ggarrange(g1, g2, g3, nrow = 3, widths = c(4,4,1), heights = c(2,2,1)), ncol = 2, nrow = 2, align = "h",
+    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
                    widths = c(2, 1), heights = c(2, 1),
                    common.legend = T, legend = "left")
   } else {
     
     # Arranging the plot
-    g <- ggarrange(p, pc1, pc2, ggarrange(g1, g2, g3, nrow = 3, widths = c(4,4,1), heights = c(2,2,1)), ncol = 2, nrow = 2, align = "h",
+    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
                    widths = c(2, 1), heights = c(2, 1))
     
   }
@@ -226,7 +226,10 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
 
 # Analyses of image PCA and gwas of PC1 and PC2
 # Open all needed files
-pheno_PC <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";")
+pheno_PC <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";") %>% 
+            mutate(sample = gsub("PL17_23nigpue", "PL17_23tanpue", sample)) %>%
+            mutate(spec = ifelse(sample = "PL17_23tanpue", "tan", spec))
+print(pheno_PC)
 # pca_pheno <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/LAB_fullm_left_54off_59on_PCs.csv", sep = ";")
 pheno_var <- read.csv(paste0(im_path, dataset, "_var.csv"), sep = ",")
 # var <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/images/continuous/LAB/LAB_fullm_left_54off_59on/LAB_fullm_left_54off_59on_var.csv", sep = ",")

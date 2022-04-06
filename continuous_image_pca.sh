@@ -1,7 +1,7 @@
 #!/bin/bash
 # by: Floriane Coulmance: 11/05/2021
 # usage:
-# sbatch continuous_image_pca.sh -i PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j AB -k fullm -l 54off_59on -m all -n left
+# sbatch continuous_image_pca.sh -i PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j AB -k fullm -l 54off_59on -m all 
 # sbatch continuous_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <MASK> -l <DATA> -m <SUB_DATA> -n <SIDE>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
@@ -10,7 +10,6 @@
 # MASK : bodym (for mask without fins), fullm (for mask including all fins)
 # DATA : 54off_59on, 54off, 59on, 38barred, 75unbarred
 # SUB_DATA : all, on, off, barred, unbarred
-# SIDE : left
 # ------------------------------------------------------------------------------
 
 
@@ -40,7 +39,6 @@ j) COLOR_SPACE=${OPTARG};; # get the color space type
 k) MASK=${OPTARG};; # get the mask type
 l) DATA=${OPTARG};; # get the dataset type
 m) SUB_DATA=${OPTARG};; # get the dataset type
-n) SIDE=${OPTARG};; # get the dataset type
 esac
 done
 
@@ -48,10 +46,6 @@ done
 
 # ********* Create necessary variables *********
 # -------------------------------------------------
-
-# To get the right label for output file
-OVERALL_DAT="${SIDE}_${DATA}"
-echo $OVERALL_DAT
 
 # To get the right dataset in the software output folder where all combinations of dataset are found
 ALIGN_FOLDER="left_54off_59on"
@@ -117,13 +111,13 @@ ml FriBidi
 ml HarfBuzz
 
 # Create the image metadata table to use in further GWAS, plot the PCA
-Rscript R/phenotype_continuous_pca.R \
-         $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
-         $COLOR_SPACE \
-         $BASE_DIR/metadata/ \
-         ${DATASET}_PCs.csv \
-         ${DATASET}_var.csv \
-         $BASE_DIR/metadata/image_metadata.tsv \
-         $MASK \
-         $DATASET \
-         $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
+# Rscript R/phenotype_continuous_pca.R \
+#          $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
+#          $COLOR_SPACE \
+#          $BASE_DIR/metadata/ \
+#          ${DATASET}_PCs.csv \
+#          ${DATASET}_var.csv \
+#          $BASE_DIR/metadata/image_metadata.tsv \
+#          $MASK \
+#          $DATASET \
+#          $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
