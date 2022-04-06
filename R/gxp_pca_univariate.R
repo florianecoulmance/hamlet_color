@@ -142,18 +142,18 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   # Make the images heatmaps as plots
   g1 <- rasterGrob(im1[1:558,,], interpolate = T)
   g2 <- rasterGrob(im2[1:558,,], interpolate = T)
-  g3 <- rasterGrob(im1[560:658,,], interpolate = T)
+  g3 <- rasterGrob(im1[560:684,,], interpolate = T)
   
   if ((pcf=="PC1")&(pcs=="PC5")) {
     
     # Arranging the plot
-    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
+    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(5,5,1)), ncol = 2, nrow = 2, align = "h",
                    widths = c(2, 1), heights = c(2, 1),
                    common.legend = T, legend = "left")
   } else {
     
     # Arranging the plot
-    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
+    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(5,5,1)), ncol = 2, nrow = 2, align = "h",
                    widths = c(2, 1), heights = c(2, 1))
     
   }
