@@ -221,12 +221,12 @@ sed '1d' > \${BASE_NAME}_\${TRAITS}.fam
 # Create list of samples to keep 
 awk '{print \$1}' \${BASE_NAME}_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.txt
 
+# Create appropriated .bed file with only needed samples 
+plink --bed \${BASE_NAME}.bed --bim \${BASE_NAME}.bim --fam \${BASE_NAME}.fam --keep-fam \${BASE_NAME}_\${TRAITS}.txt --make-bed --out \${BASE_NAME}_\${TRAITS}
+
 # Create the specific trait .fam file by subsetting the phenotype + genotype file
 awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam | \
 sed '1d' > \${BASE_NAME}_\${TRAITS}.fam
-
-# Create appropriated .bed file with only needed samples 
-plink --bed \${BASE_NAME}.bed --bim \${BASE_NAME}.bim --fam \${BASE_NAME}.fam --keep-fam \${BASE_NAME}_\${TRAITS}.txt --make-bed --out \${BASE_NAME}_\${TRAITS}
 
 # cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed                                     # Copy binary files to new renamed files (necessary for GEMMA)
 # cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
