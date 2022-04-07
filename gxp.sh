@@ -225,9 +225,9 @@ awk '{print \$1}' \${BASE_NAME}_\${TRAITS}.fam > \${BASE_NAME}_\${TRAITS}.txt
 plink --bed \${BASE_NAME}.bed --bim \${BASE_NAME}.bim --fam \${BASE_NAME}.fam --keep-fam \${BASE_NAME}_\${TRAITS}.txt --make-bed --out \${BASE_NAME}_\${TRAITS}
 
 # cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed                                     # Copy binary files to new renamed files (necessary for GEMMA)
-cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
-cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
-cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
+# cp \${BASE_NAME}.bim \${BASE_NAME}_\${TRAITS}.bim
+# cp \${BASE_NAME}.log \${BASE_NAME}_\${TRAITS}.log
+# cp \${BASE_NAME}.nosex \${BASE_NAME}_\${TRAITS}.nosex
 
 mkdir $BASE_DIR/output                                                                # Create GEMMA output directory (output/ is created by GEMMA automatically)
 mkdir $BASE_DIR/output/$DATASET/
