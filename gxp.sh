@@ -286,9 +286,10 @@ echo \${TRAITS}
 
 rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.bed                                                       # Remove the previously duplicated files
 rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.bim
-rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.log
+rm $BASE_DIR/outputs/7_cdgxp/$DATASET/GxP_plink_binary_\${TRAITS}.log
 rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.nosex
 rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.fam
+rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.txt
 
 lm=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz                          # Path to GEMMA lm output file
 echo \${lm}
@@ -316,14 +317,14 @@ step1=1000
 echo \${win1}
 echo \${step1}
 
-# $BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}                                  # Run the average over genome window for both lm and lmm GEMMA results and each set of parameters
-# $BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
-# $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
-# $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
+$BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}                                  # Run the average over genome window for both lm and lmm GEMMA results and each set of parameters
+$BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
+$BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
+$BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
 
 # Run the average over genome window for univariate PLINK results and each set of parameters
-$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win5} \${step5}
-$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win1} \${step1}
+# $BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win5} \${step5}
+# $BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win1} \${step1}
 
 
 EOA
@@ -465,21 +466,21 @@ rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.tmp
 
 Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
-Rscript $BASE_DIR/R/gxp_pca_univariate.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
+# Rscript $BASE_DIR/R/gxp_pca_univariate.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_gemma
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC2
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC3
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC4
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC5
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC6
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC7
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC8
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC9
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_byPCs
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC2
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC3
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC4
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC5
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC6
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC7
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC8
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC9
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_byPCs
 
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_plink
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_plink
 
 EOA
 
