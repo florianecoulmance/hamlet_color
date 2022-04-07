@@ -214,10 +214,6 @@ echo \${BASE_NAME}
 
 echo \${BASE_NAME}_\${TRAITS}
 
-# Create the specific trait .fam file by subsetting the phenotype + genotype file
-# awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam | \
-# sed '1d' > \${BASE_NAME}_\${TRAITS}.fam
-
 # Create list of samples to keep 
 awk '{print \$1}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam | tail -n +2 > \${BASE_NAME}_\${TRAITS}.txt
 
@@ -236,20 +232,20 @@ sed '1d' > \${BASE_NAME}_\${TRAITS}.fam
 mkdir $BASE_DIR/output                                                                # Create GEMMA output directory (output/ is created by GEMMA automatically)
 mkdir $BASE_DIR/output/$DATASET/
 
-#   # 1) create relatedness matrix of samples using gemma
-# gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /$DATASET/\${TRAITS}
+  # 1) create relatedness matrix of samples using gemma
+gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /$DATASET/\${TRAITS}
 
-#   # 2) fit linear model using gemma (-lm)
-# gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /$DATASET/\${TRAITS}.lm
+  # 2) fit linear model using gemma (-lm)
+gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /$DATASET/\${TRAITS}.lm
 
-#   # 3) fit linear mixed model using gemma (-lmm)
-# gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/$DATASET/\${TRAITS}.cXX.txt -lmm 4 -o /$DATASET/\${TRAITS}.lmm
+  # 3) fit linear mixed model using gemma (-lmm)
+gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/$DATASET/\${TRAITS}.cXX.txt -lmm 4 -o /$DATASET/\${TRAITS}.lmm
 
-#   # 4) reformat output
-# sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lm.assoc.txt | \
-#       cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz
-# sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lmm.assoc.txt | \
-#       cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lmm.GxP.txt.gz
+  # 4) reformat output
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lm.assoc.txt | \
+      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz
+sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lmm.assoc.txt | \
+      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lmm.GxP.txt.gz
 
   # 5) run univariate plink
 plink --bfile \${BASE_NAME}_\${TRAITS} --assoc --allow-no-sex --out $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}
