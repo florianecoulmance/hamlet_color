@@ -111,13 +111,13 @@ ml FriBidi
 ml HarfBuzz
 
 # Create the image metadata table to use in further GWAS, plot the PCA
-Rscript R/phenotype_continuous_pca.R \
-         $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
-         $COLOR_SPACE \
-         $BASE_DIR/metadata/ \
-         ${DATASET}_PCs.csv \
-         ${DATASET}_var.csv \
-         $BASE_DIR/metadata/image_metadata.tsv \
-         $MASK \
-         $DATASET \
-         $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
+# Rscript R/phenotype_continuous_pca.R \
+#          $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
+#          $COLOR_SPACE \
+#          $BASE_DIR/metadata/ \
+#          ${DATASET}_PCs.csv \
+#          ${DATASET}_var.csv \
+#          $BASE_DIR/metadata/image_metadata.tsv \
+#          $MASK \
+#          $DATASET \
+#          $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \

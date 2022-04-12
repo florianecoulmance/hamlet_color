@@ -63,7 +63,7 @@ def blur_mask(m):
 
 # ----------------------------------------------------------------------------------------------
 
-def modify_image(im_path, bo_mask, bl_mask, effect):
+def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
     '''
     Perform blur and color space modification on aligned images
     Creates a flatten modified images and store it into a vector
@@ -102,6 +102,10 @@ def modify_image(im_path, bo_mask, bl_mask, effect):
 
         image_blurred[bo_mask == 0] = image_blurred[bo_mask == 0] / bl_mask[bo_mask == 0]
         # print(image_blurred.shape)
+
+        if (f == "PL17_094puebel-r1-s4-f4-c2-d1.png"):
+            cv2.imwrite(path_fig+'filename.png', image_blurred)
+             
 
         if (effect == "LAB") or (effect == "AB") or (effect == "L") or (effect == "A") or (effect == "B"):
             im = cv2.cvtColor(image_blurred, cv2.COLOR_BGR2LAB)
@@ -325,29 +329,29 @@ def main():
 
     bool_mask, rgb_mask, mask_blur = blur_mask(mask)
 
-    arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, color_space)
-    save_modifiedImage(arr_modified, bool_mask, list_f, color_space, path_results, dataset)
+    arr_modified, list_f = modify_image(path_images, bool_mask, mask_blur, color_space, path_figures)
+    # save_modifiedImage(arr_modified, bool_mask, list_f, color_space, path_results, dataset)
 
-    pca_im, new_arr = Pca(arr_modified)
-    save_pcpict(new_arr, list_f, path_results, dataset)
+    # pca_im, new_arr = Pca(arr_modified)
+    # save_pcpict(new_arr, list_f, path_results, dataset)
 
-    variances(pca_im, path_results, dataset)
+    # variances(pca_im, path_results, dataset)
     
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 2, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 3, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 4, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 5, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 6, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 7, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 8, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 9, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 10, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 11, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 12, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 13, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 14, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 15, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 1, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 2, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 3, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 4, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 5, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 6, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 7, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 8, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 9, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 10, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 11, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 12, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 13, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 14, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 15, color_space, path_figures, dataset)
 
 
 
