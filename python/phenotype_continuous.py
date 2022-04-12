@@ -105,9 +105,9 @@ def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
         # print(image_blurred.shape)
 
         if (f == "PL17_109puebel-l2-s4-f4-c2-d1.png"):
-            im2 = Image.fromarray(image_blurred)
-            im2.save(path_fig+f, format="png")
-            # cv2.imwrite(path_fig+f, image_blurred)
+            # im2 = Image.fromarray(image_blurred)
+            # im2.save(path_fig+f, format="png")
+            cv2.imwrite(path_fig+f, image_blurred)
              
 
         if (effect == "LAB") or (effect == "AB") or (effect == "L") or (effect == "A") or (effect == "B"):
