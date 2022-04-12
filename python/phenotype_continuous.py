@@ -86,7 +86,7 @@ def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
     # print(pixel_array.shape)
 
     for i, f in enumerate(file_list):
-        # print(i, f)
+        print(i, f)
         # print(path_images+f)
         image = cv2.imread(im_path+f)
         # print(image.shape)
@@ -104,7 +104,7 @@ def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
         # print(image_blurred.shape)
 
         if (f == "PL17_094puebel-r1-s4-f4-c2-d1.png"):
-            cv2.imwrite(path_fig+'filename.png', image_blurred)
+            cv2.imwrite(path_fig+f, image_blurred)
              
 
         if (effect == "LAB") or (effect == "AB") or (effect == "L") or (effect == "A") or (effect == "B"):
