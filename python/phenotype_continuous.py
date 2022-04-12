@@ -103,7 +103,7 @@ def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
         image_blurred[bo_mask == 0] = image_blurred[bo_mask == 0] / bl_mask[bo_mask == 0]
         # print(image_blurred.shape)
 
-        if (f == "PL17_094puebel-r1-s4-f4-c2-d1.png"):
+        if (f == "PL17_109puebel-l2-s4-f4-c2-d1.png"):
             cv2.imwrite(path_fig+f, image_blurred)
              
 
