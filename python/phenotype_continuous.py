@@ -94,9 +94,10 @@ def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
         image_blurred = image.copy()
         # print(image_blurred.shape)
 
-        image_blurred[bo_mask == 0] = (35, 102, 11)
+        image_blurred[bo_mask == 0] = 0
         # print(image_blurred.shape)
-
+        image_blurred[bo_mask == 1] = (11, 102, 35)
+        
         image_blurred = cv2.GaussianBlur(image_blurred,(5,5),cv2.BORDER_DEFAULT)
         # print(image_blurred.shape)
 
