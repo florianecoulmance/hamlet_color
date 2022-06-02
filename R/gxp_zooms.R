@@ -310,7 +310,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   #Pannel for heatmap
   img <- readPNG(heatmap)
   g <- rasterGrob(img[1:540,,], interpolate=TRUE, width = 1)
-  g2 <- rasterGrob(img[660:794,,], interpolate=TRUE)
+  g2 <- rasterGrob(img[665:820,,], interpolate=TRUE)
   g_plot <- ggplot() + annotation_custom(g) + theme(plot.background = element_blank(), 
                                                     panel.background = element_blank(),
                                                     panel.grid = element_blank(), 
