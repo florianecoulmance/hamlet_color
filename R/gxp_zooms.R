@@ -152,7 +152,7 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
     ggplot2::geom_rect(data = df_list[[2]],
                        aes(xmin = ps, xmax = pe, ymin = yl - (width/2),
                            ymax = yl + (width/2), group = Parent),
-                       fill = alpha(gene_color,.6), col = gene_color, lwd = 0.1) +
+                       fill = alpha(gene_color,.6), col = gene_color, lwd = 0.9) +
     # add outlier area
     ggplot2::geom_rect(inherit.aes = FALSE,
                        data = tibble::tibble(start = start, end = end),
@@ -162,15 +162,15 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
     # add gene direction if known
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
-                          lwd = 0.2, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
+                          lwd = 0.9, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
                           color = clr_genes) +
     # add gene extent if direction is unknowns
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(!strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
-                          lwd = 0.2, color = clr_genes) +
+                          lwd = 0.9, color = clr_genes) +
     # add gene label
-    ggplot2::geom_text(data = df_list[[1]], size = GenomicOriginsScripts::plot_text_size_small / ggplot2::.pt,
-                       aes(x = labelx, label = gsub("hpv1g000000", ".", label), y = yl - 0.5))
+    ggplot2::geom_text(data = df_list[[1]],
+                       aes(x = labelx, label = gsub("hpv1g000000", ".", label), y = yl - 0.5), size = 7)
   
 }
 
@@ -199,14 +199,15 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
     ggplot2::coord_cartesian(xlim = c(start-window_buffer, end+window_buffer)) +
     # special panel layout for annotation panel
     hypogen::theme_hypo() +
-    ggplot2::theme(text = ggplot2::element_text(size = plot_text_size),
-                   panel.background = ggplot2::element_rect(fill = rgb(.9,.9,.9),
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill = rgb(.9,.9,.9),
                                                             color = rgb(1,1,1,0)),
                    legend.position = 'none',
-                   axis.title.x = ggplot2::element_text(),
+                   axis.title.y = ggplot2::element_text(size = 20),
+                   axis.title.x = ggplot2::element_text(size = 24),
                    axis.line = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_blank(),
-                   axis.ticks.y = ggplot2::element_blank())
+                   axis.ticks.y = ggplot2::element_blank(),
+                   axis.text.x = element_text(size = 16))
   
   # Use correct greek symbols in labels if needed
   if(outlier_id == 'LG17_1') {
@@ -231,14 +232,22 @@ plot_panel_gxp <- function (lg, start, end, trait, ...) {
             color = rgb(0.9, 0.9, 0.9, 0.9)) + 
   geom_line(data = gxp_data %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
             aes(x = MID_POS, y = LOG_P, color = RUN),
-            size = 0.2) +
+            size = 0.7) +
   scale_color_manual(name = "GxP Trait", values = gxp_clr) +
   scale_x_continuous(name = lg, expand = c(0, 0), position = "top") +
   scale_y_continuous(name = expression(bolditalic(-log[10](p))), expand = c(0, 0)) +
   guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"),
                               override.aes = list(size = 2))) +
-  theme_panels()
-  
+    theme_hypo() + hypogen::theme_hypo_anno_extra() + 
+    ggplot2::theme(legend.position = "none",
+                   axis.title.y = ggplot2::element_text(angle = 90, size = 20), 
+                   axis.line.y = ggplot2::element_line(size = plot_lwd), 
+                   axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
+                   axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
+                   axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_text(size = 16),
+                   plot.margin = ggplot2::margin(t = 1, r = 1, b = 3, 
+                                                 l = 1), ...)
 }
 
 
@@ -253,22 +262,31 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
             color = rgb(0.9, 0.9, 0.9, 0.9)) + 
   geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
              aes(x = MID_POS, y = LOG_P, color = gxp_clr),
-             size = 0.1, stroke = 0.2) +
+             size = 0.5, stroke = 0.2) +
   geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
                             %>% filter(row_number(desc(LOG_P)) <= 1),
              color ="red",
-             aes(x=MID_POS, y=LOG_P, label = RANGE)) +
+             aes(x=MID_POS, y=LOG_P, label = RANGE), size = 2) +
   geom_text_repel(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
                                  %>% filter(row_number(desc(LOG_P)) <= 1),
                   aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE),
-                  segment.color = 'red', min.segment.length = 0.5, segment.size = 0.05,
-                  color = "Red", size=1.7, hjust = -1, nudge_x = -1.5) +
+                  segment.color = 'red', min.segment.length = 0.1, segment.size = 0.05,
+                  color = "Red", size=10, hjust = -1, nudge_x = -1.5) +
   scale_color_manual(name = "GxP Trait", values = c(gxp_clr, "red")) +
   scale_x_continuous(name = lg, expand = c(0, 0), position = "bottom") +
   scale_y_continuous(name = expression(bolditalic(-log[10](p))),expand = c(0, 0)) +
   guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"),
                               override.aes = list(size = 2))) +
-  theme_panels()
+  theme_hypo() + hypogen::theme_hypo_anno_extra() + 
+  ggplot2::theme(legend.position = "none",
+                 axis.title.y = ggplot2::element_text(angle = 90, size = 20), 
+                 axis.line.y = ggplot2::element_line(size = plot_lwd), 
+                 axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
+                 axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
+                 axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
+                 axis.text.y = ggplot2::element_text(size = 16),
+                 plot.margin = ggplot2::margin(t = 1, r = 1, b = 3, 
+                                                 l = 1), ...)
   
 }
 
@@ -291,27 +309,38 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   
   #Pannel for heatmap
   img <- readPNG(heatmap)
-  g <- rasterGrob(img, interpolate=TRUE)
-
+  g <- rasterGrob(img[1:540,,], interpolate=TRUE, width = 1)
+  g2 <- rasterGrob(img[660:794,,], interpolate=TRUE)
+  g_plot <- ggplot() + annotation_custom(g) + theme(plot.background = element_blank(), 
+                                                    panel.background = element_blank(),
+                                                    panel.grid = element_blank(), 
+                                                    panel.border = element_blank(),
+                                                    plot.margin = unit(c(0, 0, 0, 0), "cm"))
+  g2_plot <- ggplot() + annotation_custom(g2) + theme(plot.background = element_blank(), 
+                                                      panel.background = element_blank(),
+                                                      panel.grid = element_blank(), 
+                                                      panel.border = element_blank(),
+                                                      plot.margin = unit(c(0, 0, 0, 0), "cm"))
+  
   # Assemble all panels
   if (text) {
-    p_curtain <- cowplot::plot_grid(p_g, p_gxp, p_snp, g, ncol = 1, align = "v",
-                                    rel_heights = c(1, rep(0.8, 7)), axis="tblr")
+    p_curtain <- cowplot::plot_grid(p_g, p_gxp, p_snp, g_plot, g2_plot, ncol = 1, align = "v",
+                                    rel_heights = c(1, rep(0.8,3), 0.3), axis="tblr")
   }
   else {
-    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g,
+    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g, g2,
                                     ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)), axis="tblr")
   }
   
 
   hypo_save(filename = paste0(figure_path, pc, "_", outlier_id, ".png"),
             plot = p_curtain,
-            width = 12,
-            height = 8,
-            type="cairo")
+            width = 11.2,
+            height = 22,
+            type = 'cairo')
 
   print(p_curtain)
-  p_curtain
+  # p_curtain
 
 }
 
@@ -323,8 +352,8 @@ plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
   # Create the plot
   p_single <- region %>% filter(outlier_id %in% outlier_list) %>%
                          left_join(label) %>%
-                         dplyr::mutate(outlier_nr = row_number(), 
-                                       text = ifelse(outlier_nr == 1,TRUE,FALSE)) %>%
+                         dplyr::mutate(outlier_nr = row_number()) %>% #, 
+                                       #text = ifelse(outlier_nr == 1,TRUE,FALSE)) %>%
                          pmap(plot_curt, cool_genes = cool_genes) %>%
                          cowplot::plot_grid(plotlist = ., nrow = row, rel_heights = heights,
                                             labels = letters[1:length(outlier_list)] %>%
@@ -333,9 +362,11 @@ plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
   # Save the file in .png file
   hypo_save(filename = paste0(path, name, "_", chromosome, ".png"),
             plot = p_single,
-            width = 12,
-            height = 8,
-            type="cairo")
+            width = 22,
+            height = 18,
+            type = 'cairo')
+  
+  p_single
   
 }
 
