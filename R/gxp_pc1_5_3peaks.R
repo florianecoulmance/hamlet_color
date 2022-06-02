@@ -64,28 +64,64 @@ zoom1 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG04_2.png"))
 zoom2 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG12_2.png"))
 zoom3 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG12_3.png"))
 
-plotgwas_mvp <- function(dataset,path,analysis) {
-  p <- ggplot() +
-    geom_hypo_LG() +
-    geom_point(data = file_gwas, aes(x = GPOS, y = AVG_P), size = .1) +
-    scale_fill_hypo_LG_bg() +
-    scale_x_hypo_LG(name = "Linkage Groups") +
-    scale_y_continuous(name = expression(bolditalic(-log[10](p)))) +
-    theme_hypo() +
-    theme(legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray'))
+p <- ggplot() +
+     geom_hypo_LG() +
+     geom_point(data = file_gwas, aes(x = GPOS, y = AVG_P), size = .1) +
+     scale_fill_hypo_LG_bg() +
+     scale_x_hypo_LG(name = "Linkage Groups") +
+     scale_y_continuous(name = expression(bolditalic(-log[10](p)))) +
+     theme_hypo() +
+     ggtitle("a") +
+     theme(plot.title = element_text(hjust = 0, vjust = -4, size = 13, face = "bold"),
+           legend.position = 'none',
+           axis.title.x = element_text(),
+           axis.text.x.top= element_text(colour = 'darkgray'),
+           axis.title.y = ggplot2::element_text(angle = 90, size = 6))
   
-  g1 <- rasterGrob(zoom1, interpolate = T)
-  g2 <- rasterGrob(zoom2, interpolate = T)
-  g3 <- rasterGrob(zoom3, interpolate = T)
+g1 <- rasterGrob(zoom1, interpolate = T)
+g2 <- rasterGrob(zoom2, interpolate = T)
+g3 <- rasterGrob(zoom3, interpolate = T)
+
+g_plot1 <- ggplot() +
+           annotation_custom(g1) +
+           ggtitle("b") +
+           theme(plot.title = element_text(hjust = 0.15, vjust = -2, size = 13, face = "bold"),
+                 plot.background = element_blank(),
+                 panel.background = element_blank(),
+                 panel.grid = element_blank(),
+                 panel.border = element_blank(),
+                 plot.margin = unit(c(-2, 0, 0, -0.65), "cm"))
+
+
+g_plot2 <- ggplot() +
+          annotation_custom(g2) +
+          ggtitle("c") +
+          theme(plot.title = element_text(hjust = 0.15, vjust = -2, size = 13, face = "bold"),
+                plot.background = element_blank(),
+                panel.background = element_blank(),
+                panel.grid = element_blank(),
+                panel.border = element_blank(),
+                plot.margin = unit(c(-2, 0, 0, -0.3), "cm"))
+
+g_plot3 <- ggplot() +
+           annotation_custom(g3) +
+           ggtitle("d") +
+           theme(plot.title = element_text(hjust = 0.15, vjust = -2, size = 13, face = "bold"),
+                 plot.background = element_blank(),
+                 panel.background = element_blank(),
+                 panel.grid = element_blank(),
+                 panel.border = element_blank(),
+                 plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g <- ggarrange(p, ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,1)), ncol = 1, nrow = 2, align = "hv",
+                 widths = c(2, 2), heights = c(1, 3)) 
   
-  g <- ggarrange(p, ggarrange(g1, g2, g3, ncol = 3, widths = c(1,1,1), heights = c(7,7,7)), ncol = 1, nrow = 2, align = "v",
-                 widths = c(2, 2), heights = c(1, 7)) 
-  
-  
-  hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom.pdf"),
+
+try <- ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3)
+
+
+hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom.pdf"),
             plot = g,
-            width = 8,
+            width = 6,
             height = 5)
-}
+

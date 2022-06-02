@@ -262,11 +262,11 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
             color = rgb(0.9, 0.9, 0.9, 0.9)) + 
   geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
              aes(x = MID_POS, y = LOG_P, color = gxp_clr),
-             size = 0.5, stroke = 0.2) +
+             size = 1, stroke = 0.2) +
   geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
                             %>% filter(row_number(desc(LOG_P)) <= 1),
              color ="red",
-             aes(x=MID_POS, y=LOG_P, label = RANGE), size = 2) +
+             aes(x=MID_POS, y=LOG_P, label = RANGE), size = 4) +
   geom_text_repel(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
                                  %>% filter(row_number(desc(LOG_P)) <= 1),
                   aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE),
