@@ -64,8 +64,13 @@ zoom1 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG04_2.png"))
 zoom2 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG12_2.png"))
 zoom3 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG12_3.png"))
 
+threshold <- 2.5
+thresh <- file_gwas[file_gwas[, "AVG_P"] >= threshold,]
+print(thresh)
+
 p <- ggplot() +
      geom_hypo_LG() +
+     geom_vline(data = thresh, aes(xintercept = GPOS), color = "red", size = 0.3) +
      geom_point(data = file_gwas, aes(x = GPOS, y = AVG_P), size = .1) +
      scale_fill_hypo_LG_bg() +
      scale_x_hypo_LG(name = "Linkage Groups") +
@@ -117,7 +122,7 @@ g <- ggarrange(p, ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,
                  widths = c(2, 2), heights = c(1, 3)) 
   
 
-try <- ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3)
+# try <- ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3)
 
 
 hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom.pdf"),

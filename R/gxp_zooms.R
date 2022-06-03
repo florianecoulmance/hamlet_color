@@ -202,12 +202,12 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
     ggplot2::theme(panel.background = ggplot2::element_rect(fill = rgb(.9,.9,.9),
                                                             color = rgb(1,1,1,0)),
                    legend.position = 'none',
-                   axis.title.y = ggplot2::element_text(size = 20),
-                   axis.title.x = ggplot2::element_text(size = 24),
+                   axis.title.y = ggplot2::element_text(size = 24,vjust = 6),
+                   axis.title.x = ggplot2::element_text(size = 28),
                    axis.line = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_blank(),
                    axis.ticks.y = ggplot2::element_blank(),
-                   axis.text.x = element_text(size = 16))
+                   axis.text.x = element_text(size = 24))
   
   # Use correct greek symbols in labels if needed
   if(outlier_id == 'LG17_1') {
@@ -221,33 +221,83 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
 }
 
 
+# plot_panel_gxp <- function (lg, start, end, trait, ...) {
+#   
+#   # Create gxp plot for 50k windowed GWAS results
+#   
+#   ggplot2::ggplot() +
+#   geom_rect(inherit.aes = FALSE, data = tibble(start = start,end = end),
+#             aes(xmin = start, xmax = end),
+#             ymin = -Inf, ymax = Inf, fill = rgb(0.9, 0.9, 0.9, 0.3),
+#             color = rgb(0.9, 0.9, 0.9, 0.9)) + 
+#   geom_line(data = gxp_data %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
+#             aes(x = MID_POS, y = LOG_P, color = RUN),
+#             size = 0.7) +
+#   scale_color_manual(name = "GxP Trait", values = gxp_clr) +
+#   scale_x_continuous(name = lg, expand = c(0, 0), position = "top") +
+#   scale_y_continuous(name = expression(bolditalic(-log[10](p))), expand = c(0, 0)) +
+#   guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"),
+#                               override.aes = list(size = 2))) +
+#     theme_hypo() + hypogen::theme_hypo_anno_extra() + 
+#     ggplot2::theme(legend.position = "none",
+#                    axis.title.y = ggplot2::element_text(angle = 90, size = 26), 
+#                    axis.line.y = ggplot2::element_line(size = plot_lwd), 
+#                    axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
+#                    axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
+#                    axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
+#                    axis.text.y = ggplot2::element_text(size = 24),
+#                    plot.margin = ggplot2::margin(t = 1, r = 1, b = 3, 
+#                                                  l = 1), ...)
+# }
+
+
 plot_panel_gxp <- function (lg, start, end, trait, ...) {
   
   # Create gxp plot for 50k windowed GWAS results
   
   ggplot2::ggplot() +
-  geom_rect(inherit.aes = FALSE, data = tibble(start = start,end = end),
-            aes(xmin = start, xmax = end),
-            ymin = -Inf, ymax = Inf, fill = rgb(0.9, 0.9, 0.9, 0.3),
-            color = rgb(0.9, 0.9, 0.9, 0.9)) + 
-  geom_line(data = gxp_data %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
-            aes(x = MID_POS, y = LOG_P, color = RUN),
-            size = 0.7) +
-  scale_color_manual(name = "GxP Trait", values = gxp_clr) +
-  scale_x_continuous(name = lg, expand = c(0, 0), position = "top") +
-  scale_y_continuous(name = expression(bolditalic(-log[10](p))), expand = c(0, 0)) +
-  guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"),
-                              override.aes = list(size = 2))) +
+    geom_rect(inherit.aes = FALSE, data = tibble(start = start,end = end),
+              aes(xmin = start, xmax = end),
+              ymin = -Inf, ymax = Inf, fill = rgb(0.9, 0.9, 0.9, 0.3),
+              color = rgb(0.9, 0.9, 0.9, 0.9)) + 
+    geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
+               aes(x = MID_POS, y = LOG_P, color = "black"),
+               size = 1, stroke = 0.2) +
+    geom_point(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
+               %>% filter(row_number(desc(LOG_P)) <= 1),
+               color ="red",
+               aes(x=MID_POS, y=LOG_P, label = RANGE), size = 4) +
+    geom_text_repel(data = gxp_snp %>% filter(CHROM == lg, MID_POS > start + 1500 & MID_POS < end - 1500)
+                    %>% filter(row_number(desc(LOG_P)) <= 1),
+                    aes(x = MID_POS, y = LOG_P, color = RUN, label = RANGE),
+                    segment.color = 'red', min.segment.length = 0.1, segment.size = 0.05,
+                    color = "Red", size=10, hjust = -1, nudge_x = -1.5) +
+    geom_line(data = gxp_data %>% filter(CHROM == lg, MID_POS > start - window_buffer * 1.25, MID_POS < end + window_buffer * 1.25),
+              aes(x = MID_POS, y = LOG_P/0.20, color = RUN),
+              size = 0.7, color = gxp_clr) +
+    # scale_color_manual(name = "GxP Trait", values = gxp_clr) +
+    scale_x_continuous(name = lg, expand = c(0, 0), position = "top") +
+    scale_y_continuous(name = expression(bolditalic(-log[10](p))), expand = c(0, 0), limits = c(0, 25), sec.axis = sec_axis(~ . * 0.20)) +
+    guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"),
+                                override.aes = list(size = 2))) +
+    scale_color_manual(name = "GxP Trait", values = c("black", "red", gxp_clr)) +
+    # scale_x_continuous(name = lg, expand = c(0, 0), position = "bottom") +
+    # scale_y_continuous(name = expression(bolditalic(-log[10](p))),expand = c(0, 0)) +
+    # guides(color = guide_legend(keyheight = unit(3,"pt"), keywidth = unit(20, "pt"),
+    #                             override.aes = list(size = 2))) +
     theme_hypo() + hypogen::theme_hypo_anno_extra() + 
     ggplot2::theme(legend.position = "none",
-                   axis.title.y = ggplot2::element_text(angle = 90, size = 20), 
+                   axis.title.y = ggplot2::element_text(angle = 90, size = 26), 
                    axis.line.y = ggplot2::element_line(size = plot_lwd), 
                    axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
                    axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
                    axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
-                   axis.text.y = ggplot2::element_text(size = 16),
+                   axis.text.y = ggplot2::element_text(size = 24),
+                   axis.line.y.right = element_line(color = gxp_clr),
+                   axis.text.y.right = element_text(color = gxp_clr),
                    plot.margin = ggplot2::margin(t = 1, r = 1, b = 3, 
                                                  l = 1), ...)
+  
 }
 
 
@@ -279,12 +329,12 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
                               override.aes = list(size = 2))) +
   theme_hypo() + hypogen::theme_hypo_anno_extra() + 
   ggplot2::theme(legend.position = "none",
-                 axis.title.y = ggplot2::element_text(angle = 90, size = 20), 
+                 axis.title.y = ggplot2::element_text(angle = 90, size = 26), 
                  axis.line.y = ggplot2::element_line(size = plot_lwd), 
                  axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
                  axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
                  axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
-                 axis.text.y = ggplot2::element_text(size = 16),
+                 axis.text.y = ggplot2::element_text(size = 24),
                  plot.margin = ggplot2::margin(t = 1, r = 1, b = 3, 
                                                  l = 1), ...)
   
@@ -305,7 +355,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   p_gxp <- plot_panel_gxp(lg = lg, start = start, end = end, trait = pcs)
   
   # Pannel for GWAS SNPs zoomed
-  p_snp <- plot_panel_gxp_snp(lg = lg, start = start, end = end, trait = pcs)
+  #p_snp <- plot_panel_gxp_snp(lg = lg, start = start, end = end, trait = pcs)
   
   #Pannel for heatmap
   img <- readPNG(heatmap)
@@ -324,11 +374,11 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   
   # Assemble all panels
   if (text) {
-    p_curtain <- cowplot::plot_grid(p_g, p_gxp, p_snp, g_plot, g2_plot, ncol = 1, align = "v",
-                                    rel_heights = c(1, rep(0.8,3), 0.3), axis="tblr")
+    p_curtain <- cowplot::plot_grid(p_g, p_gxp, g_plot, g2_plot, ncol = 1, align = "v",
+                                    rel_heights = c(1, rep(0.8,2), 0.3), axis="tblr")
   }
   else {
-    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), p_snp + no_title(), g, g2,
+    p_curtain <- cowplot::plot_grid(p_g + no_title(), p_gxp + no_title(), g, g2,
                                     ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)), axis="tblr")
   }
   
@@ -336,7 +386,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
   hypo_save(filename = paste0(figure_path, pc, "_", outlier_id, ".png"),
             plot = p_curtain,
             width = 11.2,
-            height = 22,
+            height = 16,
             type = 'cairo')
 
   print(p_curtain)
@@ -362,8 +412,9 @@ plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
   # Save the file in .png file
   hypo_save(filename = paste0(path, name, "_", chromosome, ".png"),
             plot = p_single,
-            width = 22,
-            height = 18,
+            width = 32,
+            # height = 18,
+            height = 14.5,
             type = 'cairo')
   
   p_single
@@ -462,4 +513,6 @@ if (nb != 0) {
 } else {
   print("this chromosome does not have peaks")
 }
+
+
 
