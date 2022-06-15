@@ -530,6 +530,13 @@ else
 fi
 
 
+if [ "$JID_RES" = "jid7" ];
+then
+  jid7=$(sbatch ${jobfile7})
+else
+  jid7=$(sbatch --dependency=afterok:${jid6##* } ${jobfile7})
+fi
+
 
 # ******** Remove useless files and folders *******
 # -------------------------------------------------
