@@ -447,7 +447,7 @@ for k in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
 for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
-echo $i $j >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
+echo \$k \$j >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
 done;
 done
 
