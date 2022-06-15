@@ -100,12 +100,21 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
                                   "flo", "tan", "uni")) +
     # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
     geom_segment(aes(x=.data[[paste0(pcf,".y")]], y=.data[[paste0(pcs,".y")]], xend=.data[[paste0(pcf,".x")]], yend=.data[[paste0(pcs,".x")]], colour=spec), size = 0.1) +
-    geom_image(data=center_points, aes(image = link), size = 0.03, asp = 1.5) +
-    # geom_point(data=center_points,aes(colour = spec), size=7, alpha = 0.1) +
-    theme(legend.position="none",legend.title=element_blank(),
-          legend.box = "vertical", legend.text =  element_markdown(size = 10),
-          panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
-          text = element_text(size=10), legend.key=element_blank(), axis.text.x = element_text(size = 7), axis.text.y = element_text(size = 7)) +
+    geom_image(data=center_points, aes(image = link), size = 0.07, asp = 1) +
+    geom_point(data=center_points,aes(colour = spec), size=20, alpha = 0.1) +
+    theme(legend.position="none",
+          legend.title=element_blank(),
+          legend.box = "vertical",
+          legend.text =  element_markdown(size = 10),
+          panel.background = element_blank(),
+          panel.border = element_rect(colour = "black", fill=NA, size=1),
+          text = element_text(size=10),
+          legend.key=element_blank(),
+          axis.title.x = element_text(size = 20),
+          axis.title.y = element_text(size = 20),
+          axis.text.x = element_text(size = 12),
+          axis.text.y = element_text(size = 12),
+          plot.margin = unit(c(0, 0, 0, 0.1), "cm")) +
     # guides(color = guide_legend(nrow = 13)) +
     scale_x_continuous(position = "top",labels = unit_format(unit = "k", scale = 1e-3)) +
     scale_y_continuous(labels = unit_format(unit = "k", scale = 1e-3)) +
@@ -123,8 +132,11 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     scale_y_continuous(name = expression(italic('-log(p-value)')),position="left") +
     theme_hypo() +
     theme(legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray')) #+
+          axis.title.x = element_text(size = 20),
+          axis.title.y = element_text(size = 20),
+          axis.text.y = element_text(size = 12),
+          axis.text.x= element_text(size = 12, colour = 'darkgray'),
+          plot.margin = unit(c(0.1, 0, 0.1, 0.4), "cm")) #+
     # rotate()
   
   pc2 <- ggplot() + geom_hypo_LG() +
@@ -136,8 +148,11 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     scale_y_continuous(name = expression(italic('-log(p-value)')), position = "right") +
     theme_hypo() +
     theme(legend.position = 'none',
-          axis.title.x = element_text(),
-          axis.text.x.top= element_text(colour = 'darkgray')) +
+          axis.title.x = element_text(size = 20),
+          axis.title.y = element_text(size = 20),
+          axis.text.x = element_text(size = 12),
+          axis.text.y = element_text(size = 12, colour = 'darkgray'),
+          plot.margin = unit(c(0, 0.1, 0, 0.1), "cm")) +
     # rotate()
     coord_flip()
   
@@ -146,18 +161,18 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
   g2 <- rasterGrob(im2[1:558,,], interpolate = T)
   g3 <- rasterGrob(im1[560:684,,], interpolate = T)
   
-  if ((pcf=="PC1")&(pcs=="PC5")) {
+  # if ((pcf=="PC1")&(pcs=="PC5")) {
     
     # Arranging the plot
-    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
-                   widths = c(2, 2), heights = c(2, 2))
-  } else {
-    
-    # Arranging the plot
-    g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
-                   widths = c(2, 1), heights = c(2, 1))
-    
-  }
+    g <- ggarrange(p, pc2, pc1, ggarrange(g1, g2, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
+                   widths = c(3, 1), heights = c(3, 1), labels = c("a", "b", "c", "d"), font.label = list(size = 30))
+  # } else {
+  #   
+  #   # Arranging the plot
+  #   g <- ggarrange(p, pc2, pc1, ggarrange(g2, g1, g3, nrow = 3, widths = c(4,4,1), heights = c(4,4,1)), ncol = 2, nrow = 2, align = "h",
+  #                  widths = c(2, 1), heights = c(2, 1))
+  #   
+  # }
  
   return(g)
   
@@ -220,8 +235,8 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   
   # img1 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_first,".png"))
   # img2 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_second,".png"))
-  img1 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_PC1.png"))
-  img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_PC5.png"))
+  img1 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_first,".png"))
+  img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_second,".png"))
   
   # Plot the phenotype PCA and save it as figure
   p <- plot_pca(pc_first, pc_second, meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
@@ -230,8 +245,8 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   hypo_save(filename = paste0(figure_path,pc_first,"_",pc_second,"_univariate_gwas.pdf"),
             # type = "cairo",
             plot = p,
-            width = 12,
-            height = 8.5)
+            width = 14,
+            height = 14)
   
   return(p)
   
@@ -264,11 +279,11 @@ immeta["im"] <- gsub('.{4}$', '', immeta$image)
 p1 <- pca_analysis("PC1", "PC2", pheno_PC, pheno_var, immeta)
 p2 <- pca_analysis("PC1", "PC3", pheno_PC, pheno_var, immeta)
 p3 <- pca_analysis("PC1", "PC4", pheno_PC, pheno_var, immeta)
-p4 <- pca_analysis("PC5", "PC1", pheno_PC, pheno_var, immeta)
+p4 <- pca_analysis("PC1", "PC5", pheno_PC, pheno_var, immeta)
 p5 <- pca_analysis("PC2", "PC3", pheno_PC, pheno_var, immeta)
 p6 <- pca_analysis("PC2", "PC4", pheno_PC, pheno_var, immeta)
 p7 <- pca_analysis("PC2", "PC5", pheno_PC, pheno_var, immeta)
-p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
+p8 <- pca_analysis("PC4", "PC3", pheno_PC, pheno_var, immeta)
 p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
 p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
 

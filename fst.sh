@@ -426,6 +426,37 @@ EOA
 
 
 
+# ------------------------------------------------------------------------------
+# Job 7 test
+
+jobfile7=7_test.tmp # temp file
+cat > $jobfile7 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=7_test
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/7_test_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/7_test_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+
+for k in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
+do
+for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
+do
+echo $i $j >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
+done;
+done
+
+
+
+EOA
+
+
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 

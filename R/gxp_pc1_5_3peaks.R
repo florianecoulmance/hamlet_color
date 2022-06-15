@@ -70,7 +70,7 @@ print(thresh)
 
 p <- ggplot() +
      geom_hypo_LG() +
-     geom_vline(data = thresh, aes(xintercept = GPOS), color = "red", size = 0.3) +
+     geom_vline(data = thresh, aes(xintercept = GPOS), color = "red", alpha = 0.5, size = 0.4) +
      geom_point(data = file_gwas, aes(x = GPOS, y = AVG_P), size = .1) +
      scale_fill_hypo_LG_bg() +
      scale_x_hypo_LG(name = "Linkage Groups") +
@@ -95,23 +95,23 @@ g_plot1 <- ggplot() +
                  panel.background = element_blank(),
                  panel.grid = element_blank(),
                  panel.border = element_blank(),
-                 plot.margin = unit(c(-2, 0, 0, -0.65), "cm"))
+                 plot.margin = unit(c(-2, 0, 0, -0.95), "cm"))
 
 
 g_plot2 <- ggplot() +
           annotation_custom(g2) +
           ggtitle("c") +
-          theme(plot.title = element_text(hjust = 0.15, vjust = -2, size = 13, face = "bold"),
+          theme(plot.title = element_text(hjust = 0.12, vjust = -2, size = 13, face = "bold"),
                 plot.background = element_blank(),
                 panel.background = element_blank(),
                 panel.grid = element_blank(),
                 panel.border = element_blank(),
-                plot.margin = unit(c(-2, 0, 0, -0.3), "cm"))
+                plot.margin = unit(c(-2, 0, 0, -0.4), "cm"))
 
 g_plot3 <- ggplot() +
            annotation_custom(g3) +
            ggtitle("d") +
-           theme(plot.title = element_text(hjust = 0.15, vjust = -2, size = 13, face = "bold"),
+           theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
                  plot.background = element_blank(),
                  panel.background = element_blank(),
                  panel.grid = element_blank(),
@@ -127,6 +127,9 @@ g <- ggarrange(p, ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,
 
 hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom.pdf"),
             plot = g,
-            width = 6,
+            width = 8.3,
             height = 5)
+          
+            # width = 6,
+            # height = 5)
 
