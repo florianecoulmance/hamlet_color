@@ -451,6 +451,28 @@ echo \$k \$j >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
 done;
 done
 
+PAIR=$BASE_DIR/outputs/8_fst/pairwise_comparisons.txt
+
+for i in \$(cat \${PAIR});
+do
+  echo "\$i"
+  a="\${i:0:6}"
+  b="\${i:7:12}"
+
+  for m in \$(cat \${PAIR});
+  do
+    echo "\$m"
+    c="\${m:0:6}
+    d="\${m:7:12}
+
+    if [ \$a = \$d ] && [ \$b = \$c ];
+    then
+      :
+    else
+      echo "\$a \$b" >> pairwise_comparison1.txt
+    fi
+  done
+done
 
 
 EOA
