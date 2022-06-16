@@ -458,15 +458,19 @@ for i in \$(cat \${PAIR});
 do
   echo "\$i"
   a="\${i:0:6}"
+  echo "\$a
   b="\${i:7:12}"
+  echo "\$b
 
   for m in \$(cat \${PAIR});
   do
     echo "\$m"
     c="\${m:0:6}
+    echo "\$c
     d="\${m:7:12}
+    echo "\$d
 
-    if [ \$a = \$d ] && [ \$b = \$c ];
+    if [ "\$a" = "\$d" ] && [ "\$b" = "\$c" ];
     then
       echo "same pair"
       :
