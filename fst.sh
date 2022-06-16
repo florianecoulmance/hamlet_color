@@ -447,17 +447,8 @@ for k in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
 for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
-echo \$k \$j >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
+echo \$k \$j \$(tr ' ' '\n' <<<"\$i" | sort | tr -d '\n') >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
 done;
-done
-
-PAIR=$BASE_DIR/outputs/8_fst/pairwise_comparisons.txt
-
-IFS=$'\n'
-for i in \$(cat \${PAIR});
-do
-  echo "\$i"
-  echo "\$(tr ' ' '\n' <<<"\$i" | sort | tr -d '\n')"
 done
 
 
