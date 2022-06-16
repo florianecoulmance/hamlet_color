@@ -457,26 +457,7 @@ IFS=$'\n'
 for i in \$(cat \${PAIR});
 do
   echo "\$i"
-  #a="\${i:0:6}"
-  #echo "\$a"
-  #b="\${i:7:12}"
-  #echo "\$b"
-
-  for m in \$(cat \${PAIR});
-  do
-    echo "\$m"
-    #c="\${m:0:6}"
-    #echo "\$c"
-    #d="\${m:7:12}"
-    #echo "\$d"
-
-    if [[ \$(tr ' ' '\n' <<<"\$i" | sort) = \$(tr ' ' '\n' <<<"\$m" | sort) ]];
-    then
-      echo "same"
-    else
-      echo "\$m" >> pairwise_comparison1.txt
-    fi
-  done
+  echo "\$(tr ' ' '\n' <<<"\$i" | sort"
 done
 
 
