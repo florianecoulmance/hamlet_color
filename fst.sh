@@ -456,23 +456,23 @@ PAIR=$BASE_DIR/outputs/8_fst/pairwise_comparisons.txt
 IFS=$'\n'
 for i in \$(cat \${PAIR});
 do
-  echo "\$i"
+  #echo "\$i"
   a="\${i:0:6}"
-  echo "\$a"
+  #echo "\$a"
   b="\${i:7:12}"
-  echo "\$b"
+  #echo "\$b"
 
   for m in \$(cat \${PAIR});
   do
-    echo "\$m"
+    #echo "\$m"
     c="\${m:0:6}"
-    echo "\$c"
+    #echo "\$c"
     d="\${m:7:12}"
-    echo "\$d"
+    #echo "\$d"
 
     if [ "\$a" = "\$d" ] && [ "\$b" = "\$c" ];
     then
-      echo "same pair"
+      #echo "same pair"
     else
       echo "\$c \$d" >> pairwise_comparison1.txt
     fi
