@@ -474,6 +474,10 @@ do
     then
       l="same pair"
       #echo "\$l"
+    elif [ "\$c" = "\$d" ]
+    then
+      p="same pair"
+      #echo "\$p"
     else
       echo "\$c \$d" >> pairwise_comparison1.txt
     fi
