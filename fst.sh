@@ -457,7 +457,7 @@ IFS=$'\n'
 for i in \$(cat \${PAIR});
 do
   echo "\$i"
-  echo "\$(tr -d " " <<<"\$i" | sort)"
+  echo "\$(sort "\$i" | tr -d " ")"
 done
 
 
