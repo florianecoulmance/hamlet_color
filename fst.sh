@@ -453,6 +453,7 @@ done
 
 PAIR=$BASE_DIR/outputs/8_fst/pairwise_comparisons.txt
 
+IFS=$'\n'
 for i in \$(cat \${PAIR});
 do
   echo "\$i"
@@ -467,6 +468,7 @@ do
 
     if [ \$a = \$d ] && [ \$b = \$c ];
     then
+      echo "same pair"
       :
     else
       echo "\$a \$b" >> pairwise_comparison1.txt
