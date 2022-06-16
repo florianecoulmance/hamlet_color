@@ -473,9 +473,8 @@ do
     if [ "\$a" = "\$d" ] && [ "\$b" = "\$c" ];
     then
       echo "same pair"
-      :
     else
-      echo "\$a \$b" >> pairwise_comparison1.txt
+      echo "\$c \$d" >> pairwise_comparison1.txt
     fi
   done
 done
