@@ -443,13 +443,98 @@ cat > $jobfile7 <<EOA # generate the job file
 #SBATCH --time=04:30:00
 
 
+INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
+
 for k in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
-for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
-do
-echo \$k \$j \$(tr ' ' '\n' <<<"\$k \$j" | sort | tr -d '\n') >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
-done;
+  echo \$k 
+  vcfsamplenames \${INPUT} | grep pue | $BASE_DIR/outputs/8_fst/\$k.pop.txt
+
+  for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
+  do
+    echo \$k \$j \$(tr ' ' '\n' <<<"\$k \$j" | sort | tr -d '\n') >> $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt;
+  done;
 done
+
+awk '!seen[\$3]++' $BASE_DIR/outputs/8_fst/pairwise_comparisons.txt | awk '{print \$1, \$2}' > $BASE_DIR/outputs/8_fst/pairwise_comparison1.txt
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 8 test2
+
+jobfile8=8_test2.tmp # temp file
+cat > $jobfile8 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=8_test2
+#SBATCH --partition=carl.p
+#SBATCH --array=1-55
+#SBATCH --output=$BASE_DIR/logs/8_test2_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/8_test2_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+
+INPUT=$BASE_DIR/outputs/8_fst/pairwise_comparison1.txt
+PAIR=\$(cat \${INPUT} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)                               # create 1 job per combination (job array)
+echo \${PAIR}                                                                                      # print the combination of this job
+
+POP1=\$(cut -d' ' -f1 <<< \$PAIR)                                                                  # find the first population
+POP2=\$(cut -d' ' -f2 <<< \$PAIR)                                                                  # find the 2nd population
+echo \${POP1}
+echo \${POP2}
+
+VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                                        # input the SNP genotyping file
+echo \${VCF}
+
+FILE1=$BASE_DIR/outputs/8_fst/\${POP1}.pop.txt                                                     # input the 2 corresponding population files
+FILE2=$BASE_DIR/outputs/8_fst/\${POP2}.pop.txt                                                     # this will be used as an input for FST calculations
+
+
+vcftools --gzvcf \${VCF} \                                                                         # use VCFTOOLS to calculate pairwise FST
+      --weir-fst-pop \${FILE1} \
+      --weir-fst-pop \${FILE2} \
+      --fst-window-step 5000 \                                                                     # use SNP windows of 50kb
+      --fst-window-size 50000 \
+      --out $BASE_DIR/outputs/8_fst/\${POP1}_\${POP2}.50k 2> $BASE_DIR/outputs/8_fst/\${POP1}_\${POP2}_50k.log
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 9 test3
+
+jobfile9=9_test3.tmp # temp file
+cat > $jobfile9 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=9_test3
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/9_test3_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/9_test3_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+
+cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
+
+cat $BASE_DIR/outputs/8_fst/\*_50k.log | \                                            # find lines where mean and weighted FST estimates are reported
+    grep -E 'Weir and Cockerham|--out' | \
+    grep -A 3 50k | \
+    sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
+    paste - - - | \
+    cut -f 1,3,5 | \
+    sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/8_fst/fst_globals_pop.txt            # create global FST file as a table with entry for each pairwise comparison (24 rows in total) and columns for name of the comparison, mean FST, weighted FST (3 columns) 
 
 
 EOA
@@ -459,7 +544,7 @@ EOA
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   0_keep_species  : DONE         **"
 else
@@ -467,7 +552,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   1_all_hamlets   : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -478,7 +563,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   2_multi         : DONE         **"
 elif [ "$JID_RES" = jid2 ]
@@ -489,7 +574,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ]  || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ]  || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   3_prep_pairwise : DONE         **"
 elif [ "$JID_RES" = jid3 ]
@@ -500,7 +585,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   4_pairwise_fst  : DONE         **"
 elif [ "$JID_RES" = jid4 ]
@@ -510,7 +595,7 @@ else
   jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
 fi
 
-if [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   5_global        : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -521,7 +606,10 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+then
+  echo "*****   6_plots        : DONE         **"
+elif [ "$JID_RES" = "jid6" ]
 then
   jid6=$(sbatch ${jobfile6})
 else
@@ -529,11 +617,33 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid7" ];
+if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+then
+  echo "*****   7_test1        : DONE         **"
+elif [ "$JID_RES" = "jid7" ]
 then
   jid7=$(sbatch ${jobfile7})
 else
   jid7=$(sbatch --dependency=afterok:${jid6##* } ${jobfile7})
+fi
+
+
+if [ "$JID_RES" = "jid9" ];
+then
+  echo "*****   8_test2        : DONE         **"
+elif [ "$JID_RES" = "jid8" ]
+then
+  jid8=$(sbatch ${jobfile8})
+else
+  jid8=$(sbatch --dependency=afterok:${jid7##* } ${jobfile8})
+fi
+
+
+if [ "$JID_RES" = "jid9" ];
+then
+  jid9=$(sbatch ${jobfile9})
+else
+  jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
 fi
 
 
