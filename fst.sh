@@ -496,13 +496,8 @@ echo \${VCF}
 FILE1=$BASE_DIR/outputs/8_fst/\${POP1}.pop                                                     # input the 2 corresponding population files
 FILE2=$BASE_DIR/outputs/8_fst/\${POP2}.pop                                                     # this will be used as an input for FST calculations
 
-
-vcftools --gzvcf \${VCF} \                                                                         # use VCFTOOLS to calculate pairwise FST
-      --weir-fst-pop \${FILE1} \
-      --weir-fst-pop \${FILE2} \
-      --fst-window-step 5000 \                                                                     # use SNP windows of 50kb
-      --fst-window-size 50000 \
-      --out $BASE_DIR/outputs/8_fst/\${POP1}_\${POP2}.50k 2> $BASE_DIR/outputs/8_fst/\${POP1}_\${POP2}_50k.log
+# use VCFTOOLS to calculate pairwise FST
+vcftools --gzvcf \${VCF} --weir-fst-pop \${FILE1} --weir-fst-pop \${FILE2} --fst-window-step 5000 --fst-window-size 50000 --out $BASE_DIR/outputs/8_fst/\${POP1}_\${POP2}.50k 2> $BASE_DIR/outputs/8_fst/\${POP1}_\${POP2}_50k.log
 
 
 EOA
