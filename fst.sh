@@ -448,7 +448,7 @@ INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
 for k in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
   echo \$k 
-  vcfsamplenames \${INPUT} | grep \${k} | $BASE_DIR/outputs/8_fst/\$k.pop
+  vcfsamplenames \${INPUT} | grep \${k} > $BASE_DIR/outputs/8_fst/\$k.pop
 
   for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
   do
