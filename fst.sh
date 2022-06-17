@@ -448,7 +448,7 @@ INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
 for k in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
 do
   echo \$k 
-  vcfsamplenames \${INPUT} | grep pue | $BASE_DIR/outputs/8_fst/\$k.pop.txt
+  vcfsamplenames \${INPUT} | grep \${k} | $BASE_DIR/outputs/8_fst/\$k.pop
 
   for j in puebel nigbel maybel indbel pueboc nigboc uniflo unipue puepue chlpue;
   do
@@ -493,8 +493,8 @@ echo \${POP2}
 VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                                        # input the SNP genotyping file
 echo \${VCF}
 
-FILE1=$BASE_DIR/outputs/8_fst/\${POP1}.pop.txt                                                     # input the 2 corresponding population files
-FILE2=$BASE_DIR/outputs/8_fst/\${POP2}.pop.txt                                                     # this will be used as an input for FST calculations
+FILE1=$BASE_DIR/outputs/8_fst/\${POP1}.pop                                                     # input the 2 corresponding population files
+FILE2=$BASE_DIR/outputs/8_fst/\${POP2}.pop                                                     # this will be used as an input for FST calculations
 
 
 vcftools --gzvcf \${VCF} \                                                                         # use VCFTOOLS to calculate pairwise FST
