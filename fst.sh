@@ -521,12 +521,12 @@ cat > $jobfile9 <<EOA # generate the job file
 #SBATCH --time=04:30:00
 
 
-cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
+#cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
 
 cat $BASE_DIR/outputs/8_fst/\*_50k.log | \                                            # find lines where mean and weighted FST estimates are reported
     grep -E 'Weir and Cockerham|--out' | \
     grep -A 3 50k | \
-    sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
+    sed '/^--/d; s/^.*--out //g; s/_50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
     paste - - - | \
     cut -f 1,3,5 | \
     sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/8_fst/fst_globals_pop.txt            # create global FST file as a table with entry for each pairwise comparison (24 rows in total) and columns for name of the comparison, mean FST, weighted FST (3 columns) 
