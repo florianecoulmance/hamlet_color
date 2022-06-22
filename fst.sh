@@ -589,8 +589,11 @@ POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/abebel.pop                          
 # use VCFTOOLS to calculate pairwise FST
 vcftools --gzvcf \${INPUT} \${POP} --out $BASE_DIR/outputs/8_fst/all_pop 2> $BASE_DIR/outputs/8_fst/all_pop.log
 
+
+FILE=$BASE_DIR/outputs/8_fst/all_individuals.pop
+
 # use VCFTOOLS to calculate pairwise FST
-vcftools --gzvcf \${VCF} --weir-fst-pop $BASE_DIR/outputs/8_fst/all_individuals.pop --out $BASE_DIR/outputs/8_fst/all_individuals 2> $BASE_DIR/outputs/8_fst/all_individuals.log
+vcftools --gzvcf \${VCF} --weir-fst-pop \${FILE} --out $BASE_DIR/outputs/8_fst/all_individuals 2> $BASE_DIR/outputs/8_fst/all_individuals.log
 
 
 EOA
