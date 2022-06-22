@@ -163,7 +163,7 @@ echo \${INPUT_POP}
 
 awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/8_fst/pop.txt           # from samples file modify and create an intermediate file with hamlet population names
 
-for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo nigpue puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
+for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
   grep \$k pop.txt | cut -f 1 > $BASE_DIR/outputs/fst/pop.\$k.txt
   done                                                                                          # separate the different populations into different files
 
@@ -171,7 +171,7 @@ for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue m
 POP="--weir-fst-pop $BASE_DIR/outputs/fst/pop.abebel.txt \                                      # create string for vcftools arguments including all the population files
    --weir-fst-pop $BASE_DIR/outputs/fst/pop.abeboc.txt \
    --weir-fst-pop $BASE_DIR/outputs/fst/pop.abepue.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.chlpue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/fst/pop.chlp ue.txt \
    --weir-fst-pop $BASE_DIR/outputs/fst/pop.floflo.txt \
    --weir-fst-pop $BASE_DIR/outputs/fst/pop.gemflo.txt \
    --weir-fst-pop $BASE_DIR/outputs/fst/pop.gumboc.txt \
@@ -525,8 +525,8 @@ cat > $jobfile9 <<EOA # generate the job file
 
 zless $BASE_DIR/outputs/8_fst/\*_nowindow.log | \                                            # find lines where mean and weighted FST estimates are reported
     grep -E 'Weir and Cockerham|--out' | \
-    grep -A 3 50k | \
-    sed '/^--/d; s/^.*--out //g; s/_nowindow//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
+    grep -A 8 nowindow | \
+    sed '/^--/d; s/^.*--out //g; s/.nowindow//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
     paste - - - | \
     cut -f 1,3,5 | \
     sed 's/^\\(...\\)-/\\1\\t/g' > $BASE_DIR/outputs/8_fst/fst_globals_pop_nowindow.txt            # create global FST file as a table with entry for each pairwise comparison (24 rows in total) and columns for name of the comparison, mean FST, weighted FST (3 columns) 
@@ -536,10 +536,71 @@ EOA
 
 
 
+# ------------------------------------------------------------------------------
+# Job 10 test4
+
+jobfile10=10_test4.tmp # temp file
+cat > $jobfile10 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=10_test4
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/10_test4_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/10_test4_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+
+INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
+
+for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue;
+do
+  vcfsamplenames \${INPUT} | grep \${k} > $BASE_DIR/outputs/8_fst/\$k.pop
+  vcfsamplenames \${INPUT} | grep \${k} >> $BASE_DIR/outputs/8_fst/all_individuals.pop
+done 
+
+
+POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/abebel.pop \                                      # create string for vcftools arguments including all the population files
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/abeboc.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/abepue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/chlp ue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/floflo.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/gemflo.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/gumboc.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/gutpue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/indbel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/indpue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/maybel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigbel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigboc.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigflo.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/puebel.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pueboc.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pueflo.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/puepue.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/ranbel.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/tanpue.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/uniboc.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/uniflo.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/unipue.pop"
+
+# use VCFTOOLS to calculate pairwise FST
+vcftools --gzvcf \${INPUT} \${POP} --out $BASE_DIR/outputs/8_fst/all_pop 2> $BASE_DIR/outputs/8_fst/all_pop.log
+
+# use VCFTOOLS to calculate pairwise FST
+vcftools --gzvcf \${VCF} --weir-fst-pop $BASE_DIR/outputs/8_fst/all_individuals.pop --out $BASE_DIR/outputs/8_fst/all_individuals 2> $BASE_DIR/outputs/8_fst/all_individuals.log
+
+
+EOA
+
+
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   0_keep_species  : DONE         **"
 else
@@ -547,7 +608,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   1_all_hamlets   : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -558,7 +619,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   2_multi         : DONE         **"
 elif [ "$JID_RES" = jid2 ]
@@ -569,7 +630,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ]  || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ]  || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   3_prep_pairwise : DONE         **"
 elif [ "$JID_RES" = jid3 ]
@@ -580,7 +641,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   4_pairwise_fst  : DONE         **"
 elif [ "$JID_RES" = jid4 ]
@@ -590,7 +651,7 @@ else
   jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
 fi
 
-if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   5_global        : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -601,7 +662,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   6_plots        : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
@@ -612,7 +673,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   7_test1        : DONE         **"
 elif [ "$JID_RES" = "jid7" ]
@@ -623,7 +684,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid9" ] || [ "$JID_RES" = "jid10" ];
 then
   echo "*****   8_test2        : DONE         **"
 elif [ "$JID_RES" = "jid8" ]
@@ -634,11 +695,22 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid9" ];
+if [ "$JID_RES" = "jid10" ];
+then
+  echo "*****   9_test3        : DONE         **"
+elif [ "$JID_RES" = "jid9" ]
 then
   jid9=$(sbatch ${jobfile9})
 else
   jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
+fi
+
+
+if [ "$JID_RES" = "jid10" ];
+then
+  jid10=$(sbatch ${jobfile10})
+else
+  jid10=$(sbatch --dependency=afterok:${jid9##* } ${jobfile10})
 fi
 
 
