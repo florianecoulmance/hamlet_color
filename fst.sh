@@ -565,7 +565,7 @@ INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
 POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/abebel.pop \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/abeboc.pop \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/abepue.pop \
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/chlp ue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/chlpue.pop \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/floflo.pop \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/gemflo.pop \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/gumboc.pop \
