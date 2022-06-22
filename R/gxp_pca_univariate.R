@@ -129,7 +129,9 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     # scale_x_reverse(name = "Linkage Group", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
     #                 labels = 1:24, position = "top") +
     scale_x_hypo_LG(name = "Linkage Group") +
-    scale_y_continuous(name = expression(italic('-log(p-value)')),position="left") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')),
+                       limits = c(0,3),
+                       position="left") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(size = 20),
@@ -145,7 +147,9 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
     scale_x_reverse(name = "Linkage Group", expand = c(0, 0), breaks = (hypo_karyotype$GSTART + hypo_karyotype$GEND)/2,
                     labels = 1:24, position = "top") +
     # scale_x_hypo_LG(name = "Linkage Group") +
-    scale_y_continuous(name = expression(italic('-log(p-value)')), position = "right") +
+    scale_y_continuous(name = expression(italic('-log(p-value)')),
+                       limits = c(0,3),
+                       position = "right") +
     theme_hypo() +
     theme(legend.position = 'none',
           axis.title.x = element_text(size = 20),
