@@ -562,29 +562,31 @@ INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
 # done 
 
 
-POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/abebel.pop                                      # create string for vcftools arguments including all the population files
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/abeboc.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/abepue.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/chlp ue.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/floflo.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/gemflo.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/gumboc.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/gutpue.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/indbel.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/indpue.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/maybel.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigbel.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigboc.pop
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigflo.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/puebel.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/pueboc.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/pueflo.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/puepue.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/ranbel.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/tanpue.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/uniboc.pop
-  --weir-fst-pop $BASE_DIR/outputs/8_fst/uniflo.pop
+POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/abebel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/abeboc.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/abepue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/chlp ue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/floflo.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/gemflo.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/gumboc.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/gutpue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/indbel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/indpue.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/maybel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigbel.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigboc.pop \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/nigflo.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/puebel.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pueboc.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pueflo.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/puepue.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/ranbel.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/tanpue.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/uniboc.pop \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/uniflo.pop \
   --weir-fst-pop $BASE_DIR/outputs/8_fst/unipue.pop"
+
+echo "\${POP}"
 
 # use VCFTOOLS to calculate pairwise FST
 vcftools --gzvcf \${INPUT} \${POP} --out $BASE_DIR/outputs/8_fst/all_pop 2> $BASE_DIR/outputs/8_fst/all_pop.log
@@ -593,7 +595,7 @@ vcftools --gzvcf \${INPUT} \${POP} --out $BASE_DIR/outputs/8_fst/all_pop 2> $BAS
 FILE=$BASE_DIR/outputs/8_fst/all_individuals.pop
 
 # use VCFTOOLS to calculate pairwise FST
-vcftools --gzvcf \${VCF} --weir-fst-pop \${FILE} --out $BASE_DIR/outputs/8_fst/all_individuals 2> $BASE_DIR/outputs/8_fst/all_individuals.log
+vcftools --gzvcf \${VCF} --weir-fst-pop \${FILE} --weir-fst-pop \${FILE} --out $BASE_DIR/outputs/8_fst/all_individuals 2> $BASE_DIR/outputs/8_fst/all_individuals.log
 
 
 EOA
