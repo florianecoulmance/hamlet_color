@@ -863,11 +863,11 @@ fi
 
 echo \${PREFIX}                                                                       # print prefix to job output file
 
-echo "PL17_35puepue PL17_35indpue\nPL17_23nigpue PL17_23tanpue" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
+echo "PL17_35puepue PL17_35indpue\n\nPL17_23nigpue PL17_23tanpue" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
 
 
-# bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
-# tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
+bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
+tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
 
 # LG=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$1}') # get LG (chromosomes) corresponding to region of interest to filter from annotation file
 # START=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$4}') # get the start position
