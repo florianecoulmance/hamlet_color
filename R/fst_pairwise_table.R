@@ -35,7 +35,7 @@ args = args[6]
 print(args)
 
 fst_glob <- as.character(args[1]) # Path to the global fst file
-# fst_glob <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/fst_globals_pop.txt"
+# fst_glob <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/fst_globals_pop_nowindow.txt"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -55,8 +55,8 @@ fst_glob <- as.character(args[1]) # Path to the global fst file
 # Open global Fst
 globals <- vroom(fst_glob, delim = '\t',
                  col_names = c('path','mean','weighted')) %>%
-           mutate(pop1 = str_sub(path,-10,-5),
-                  pop2 = str_sub(path,-17,-12),
+           mutate(pop1 = str_sub(path,-6,-1),
+                  pop2 = str_sub(path,-13,-8),
                   weighted = round(weighted,3)) %>%
            select(pop1, pop2, weighted)
 
@@ -85,7 +85,7 @@ cmp_glob[is.na(cmp_glob)] <- " "
 colnames(cmp_glob)[1] <- "POPULATIONS"
 
 
-pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/fst/fst_pairwise_table.pdf", height = 3.2, width = 8.5)
+pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/fst/fst_pairwise_table_nowindow.pdf", height = 3.2, width = 8.5)
 # p<-tableGrob(cmp_glob)
 grid.table(cmp_glob)
 dev.off()
