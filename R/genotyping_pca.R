@@ -150,6 +150,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
         labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC2, var = ", format(round(variance$variation[2], 1), nsmall = 1), " %"))
   p1 <- p1 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
@@ -160,6 +161,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
         labs(x = paste0("PC1, var =  ", format(round(variance$variation[1], 1), nsmall = 1), " %") , y = paste0("PC3, var = ", format(round(variance$variation[3], 1), nsmall = 1), " %"))
   p2 <- p2 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=30), legend.key=element_blank()) +
@@ -170,6 +172,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
         labs(x = paste0("PC2, var =  ", format(round(variance$variation[2], 1), nsmall = 1), " %") , y = paste0("PC3, var = ", format(round(variance$variation[3], 1), nsmall = 1), " %"))
   p3 <- p3 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
           panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=1),
           text = element_text(size=30), legend.key=element_blank()) +
@@ -181,6 +184,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   p4 <- p4 + xlim(0, 0.22) + ylim(-0.03,-0.01) 
   p4 <- p4 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
@@ -192,6 +196,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   p5 <- p5 + xlim(-0.08, -0.03) + ylim(-0.01,0.015) 
   p5 <- p5 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
@@ -203,6 +208,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   p6 <- p6 + xlim(0.0, 0.03) + ylim(0.1,0.55) 
   p6 <- p6 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
@@ -214,6 +220,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   p7 <- p7 + xlim(-0.015, 0.005) + ylim(-0.05,0.05) 
   p7 <- p7 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
@@ -225,6 +232,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   p8 <- p8 + xlim(-0.015, -0.01460) + ylim(-0.125,-0.10) 
   p8 <- p8 + scale_color_manual(values=spec_colors, labels = logos_spec) +
         scale_shape_manual(values=c(16,17,15,3), labels = logos_loc) +
+        scale_x_continuous(position = "top") +
         theme(legend.position="bottom",legend.title=element_blank(),legend.box = "vertical",legend.text =  element_markdown(size = 30),
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
