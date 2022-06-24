@@ -555,11 +555,11 @@ cat > $jobfile10 <<EOA # generate the job file
 
 INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
 
-# for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue;
-# do
-#   vcfsamplenames \${INPUT} | grep \${k} > $BASE_DIR/outputs/8_fst/\$k.pop
-#   vcfsamplenames \${INPUT} | grep \${k} >> $BASE_DIR/outputs/8_fst/all_individuals.pop
-# done 
+for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue;
+do
+  vcfsamplenames \${INPUT} | grep \${k} > $BASE_DIR/outputs/8_fst/\$k.pop
+  vcfsamplenames \${INPUT} | grep \${k} >> $BASE_DIR/outputs/8_fst/all_individuals.pop
+done 
 
 POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/chlpue.pop \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/indbel.pop \

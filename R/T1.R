@@ -19,7 +19,10 @@ library(hypoimg)
 meta <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/metadata_gxp_ben_floridae_complete", sep = ";")
 
 meta <- meta %>% mutate(spec = ifelse(label == "PL17_23nigpue", "tan", spec), 
-                        label = gsub("PL17_23nigpue", "PL17_23tanpue", label)) %>%
+                        label = gsub("PL17_23nigpue", "PL17_23tanpue", label),
+                        spec = ifelse(label == "PL17_35puepue", "ind", spec),
+                        label = gsub("PL17_35puepue", "PL17_35indpue", label)) %>%
+                 filter(., !label %in% c("PL17_101maybel", "AG9RX_47pueboc", "PL17_98indbel", "PL17_79abepue")) %>%
                  summarise(spec, geo) %>%
                  group_by(geo, spec) %>%
                  summarize(count = n())
@@ -67,6 +70,11 @@ p
 
 hypo_save(filename = "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/T1.png",
           type = "cairo",
+          plot = p,
+          width = 5.4,
+          height = 6.5)
+
+hypo_save(filename = "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/T1.pdf",
           plot = p,
           width = 5.4,
           height = 6.5)

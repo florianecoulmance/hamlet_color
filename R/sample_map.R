@@ -103,7 +103,9 @@ custom_geom_scatterpie_legend <- function (radius, x, y, n = 5, labeller, textsi
 # Read metadata table for the GxP dataset
 sample_list <- read.csv(gxp_metadata, sep=";") %>%
                mutate(spec = ifelse(label == "PL17_23nigpue", "tan", spec),
-                      label = gsub("PL17_23nigpue", "PL17_23tanpue", label)) %>%
+                      label = gsub("PL17_23nigpue", "PL17_23tanpue", label),
+                      spec = ifelse(label == "PL17_35puepue", "ind", spec),
+                      label = gsub("PL17_35puepue", "PL17_35indpue", label)) %>%
                filter(., !label %in% c("PL17_101maybel", "AG9RX_47pueboc", "PL17_98indbel", "PL17_79abepue"))
 
 # Retrieve GPS coordinations and select columns in metadata
