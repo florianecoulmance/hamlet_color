@@ -895,7 +895,7 @@ cat > $jobfiled <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=d_pca
 #SBATCH --partition=carl.p
-#SBATCH --array=1-4
+#SBATCH --array=1-2
 #SBATCH --output=$BASE_DIR/logs/d_pca_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/d_pca_%A_%a.err
 #SBATCH --nodes=1

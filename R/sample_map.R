@@ -24,6 +24,7 @@ library(scatterpie)
 library(GenomicOriginsScripts)
 library(ggtext)
 library(hypoimg)
+library(gridExtra)
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -226,6 +227,7 @@ p <- ggplot(data = world, aes(long, lat)) +
      guides(fill = guide_legend(nrow = 7)) +
      theme(legend.title=element_blank(),
            panel.background = element_rect(fill = "lightblue2"),
+           rect = element_rect(fill = "transparent"),
            panel.grid.major = element_blank(),
            legend.text =  element_markdown(size = 10),
            legend.key=element_blank(),
@@ -234,7 +236,8 @@ p <- ggplot(data = world, aes(long, lat)) +
            axis.ticks = element_blank(),
            axis.text = element_blank(),
            panel.border = element_blank(),
-           text = element_text(size = 3))
+           text = element_text(size = 3),
+           plot.background=element_rect(fill="transparent", colour=NA))
 
 p
 
@@ -255,7 +258,32 @@ hypo_save(filename = "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figu
 
 
 
+sample_list2 <- sample_list %>%
+                mutate(ID = substr(SampleID, 1, nchar(SampleID)-6),
+                       Nr = seq.int(nrow(sample_list))) %>%
+                summarise(Nr, ID, spec, geo, coord_N.x, coord_W.x) %>%
+                setNames(., nm = c("Nr", "ID", "Species", "Location", "Latitude", "Longitude"))
 
+
+ben_ena <- data.frame("ID" = c("PL17_89", "PL17_95", "PL17_119", "PL17_120", "PL17_121",
+                               "PL17_122", "PL17_123", "PL17_124", "PL17_126", "PL17_142",
+                               "PL17_144", "PL17_145", "PL17_148", "PL17_153", "PL17_160"),
+                      "Accession Number" = c("ERS2899590", "ERS2899591", "ERS2899593",
+                                             "ERS2899594", "ERS2899595", "ERS2899596",
+                                             "ERS2899597", "ERS2899598", "ERS2899599",
+                                             "ERS2899137", "ERS2899138", "ERS2899139",
+                                             "ERS2899140", "ERS2899141", "ERS4141277"))
+
+tableS1 <- merge(sample_list2, ben_ena, all = TRUE) %>%
+           arrange(Nr) %>%
+           summarise(Nr, ID, Species, Location, Latitude, Longitude, Accession.Number)
+
+tableS1[is.na(tableS1)] <- "_"
+
+pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/TableS1.pdf", height = 32, width = 7)
+# p<-tableGrob(cmp_glob)
+grid.table(tableS1, rows = NULL)
+dev.off()
 
 
 
