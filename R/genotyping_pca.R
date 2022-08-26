@@ -56,7 +56,7 @@ genotyping_pca_files <- function(vcf,path,prefix) {
 
   # Takes a vcf file with genotype SNPs and create pca and associated files
 
-  ld_threshold <- 0.5 # set threshold of linkage desiquilibrium
+  ld_threshold <- 1.5 # set threshold of linkage desiquilibrium
   
   # Read the files and convert to pca format
   gds_file <- str_c(path,prefix,".gds")
@@ -243,12 +243,12 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2)
 
   # Save figures
-  hypo_save(filename = paste0(pathfigure,"ld0.5_nomaf_corr/",prefix,"_pca.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld1.5_nomaf_corr/",prefix,"_pca.pdf"),
           plot = f,
           width = 40,
           height = 18)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.5_nomaf_corr/",prefix,"_pca_zoom.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld1.5_nomaf_corr/",prefix,"_pca_zoom.pdf"),
             plot = g,
             width = 40,
             height = 18)
