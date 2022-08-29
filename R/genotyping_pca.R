@@ -57,12 +57,13 @@ genotyping_pca_files <- function(vcf,path,prefix) {
   # Takes a vcf file with genotype SNPs and create pca and associated files
 
   ld_threshold <- 0.2 # set threshold of linkage desiquilibrium
-  
+  maf_threshold <- 0.02
+
   # Read the files and convert to pca format
-  gds_file <- str_c(path,prefix,".gds")
+  gds_file <- str_c(path,prefix,ld_threshold,maf_threshold,".gds")
   snpgdsVCF2GDS(vcf.fn=vcf, out.fn=gds_file, method="biallelic.only")
   genofile <- snpgdsOpen(gds_file)
-  snpset <- snpgdsLDpruning(genofile, ld.threshold = ld_threshold, maf=0.02, method="corr", autosome.only = FALSE)
+  snpset <- snpgdsLDpruning(genofile, ld.threshold = ld_threshold, maf=maf_threshold, method="corr", autosome.only = FALSE)
   snpset.id <- unlist(snpset)
 
   # perform pca
