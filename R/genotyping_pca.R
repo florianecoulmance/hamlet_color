@@ -62,7 +62,7 @@ genotyping_pca_files <- function(vcf,path,prefix) {
   gds_file <- str_c(path,prefix,".gds")
   snpgdsVCF2GDS(vcf.fn=vcf, out.fn=gds_file, method="biallelic.only")
   genofile <- snpgdsOpen(gds_file)
-  snpset <- snpgdsLDpruning(genofile, ld.threshold = ld_threshold, method="corr", autosome.only = FALSE)
+  snpset <- snpgdsLDpruning(genofile, ld.threshold = ld_threshold, maf=0.02, method="corr", autosome.only = FALSE)
   snpset.id <- unlist(snpset)
 
   # perform pca
@@ -243,12 +243,12 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2)
 
   # Save figures
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_maf0.02_corr/",prefix,"_pca.pdf"),
           plot = f,
           width = 40,
           height = 18)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_zoom.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_maf0.02_corr/",prefix,"_pca_zoom.pdf"),
             plot = g,
             width = 40,
             height = 18)
