@@ -1,0 +1,84 @@
+/user/doau0129/work/chapter1//outputs/6_genotyping/6_2_all/all_filterd.vcf.gz
+all_filterd.vcf.gz
+all_filterd
+.Rprofile: Setting CRAN repositoryn to ftp.gwdg.de
+[1] "/user/doau0129/work/chapter1//outputs/6_genotyping/6_2_all/all_filterd.vcf.gz"
+[2] "/user/doau0129/work/chapter1//outputs/pca/"                                   
+[3] "all_filterd"                                                                  
+[4] "/user/doau0129/work/chapter1//figures/genotyping_pca/"                        
+[1] "/user/doau0129/work/chapter1//outputs/6_genotyping/6_2_all/all_filterd.vcf.gz"
+[1] "/user/doau0129/work/chapter1//outputs/pca/"
+[1] "all_filterd"
+[1] "/user/doau0129/work/chapter1//figures/genotyping_pca/"
+Start file conversion from VCF to SNP GDS ...
+Method: exacting biallelic SNPs
+Number of samples: 113
+Parsing "/user/doau0129/work/chapter1//outputs/6_genotyping/6_2_all/all_filterd.vcf.gz" ...
+	import 14873220 variants.
++ genotype   { Bit2 113x14873220, 400.7M } *
+Optimize the access efficiency ...
+Clean up the fragments of GDS file:
+    open the file '/user/doau0129/work/chapter1//outputs/pca/all_filterd.gds' (462.8M)
+    # of fragments: 1817
+    save to '/user/doau0129/work/chapter1//outputs/pca/all_filterd.gds.tmp'
+    rename '/user/doau0129/work/chapter1//outputs/pca/all_filterd.gds.tmp' (462.8M, reduced: 21.1K)
+    # of fragments: 20
+SNP pruning based on LD:
+Excluding 8,041,280 SNPs (monomorphic: TRUE, MAF: 0.02, missing rate: NaN)
+    # of samples: 113
+    # of SNPs: 6,831,940
+    using 1 thread
+    sliding window: 500,000 basepairs, Inf SNPs
+    |LD| threshold: 0.5
+    method: correlation
+Chromosome LG01: 15.79%, 102,370/648,310
+Chromosome LG02: 14.18%, 116,568/822,294
+Chromosome LG03: 15.10%, 92,352/611,651
+Chromosome LG04: 14.74%, 95,985/651,312
+Chromosome LG05: 17.00%, 98,841/581,483
+Chromosome LG06: 14.17%, 90,149/636,133
+Chromosome LG07: 15.47%, 99,623/644,170
+Chromosome LG08: 11.02%, 79,181/718,320
+Chromosome LG09: 13.95%, 97,032/695,336
+Chromosome LG10: 15.40%, 96,366/625,906
+Chromosome LG11: 15.97%, 92,234/577,722
+Chromosome LG12: 14.05%, 82,611/587,829
+Chromosome LG13: 15.16%, 105,342/694,715
+Chromosome LG14: 15.88%, 95,147/598,991
+Chromosome LG15: 15.67%, 87,331/557,292
+Chromosome LG16: 15.07%, 99,959/663,446
+Chromosome LG17: 14.26%, 105,683/741,329
+Chromosome LG18: 17.13%, 94,841/553,594
+Chromosome LG19: 15.31%, 108,880/711,035
+Chromosome LG20: 14.71%, 96,136/653,468
+Chromosome LG21: 16.16%, 87,112/539,215
+Chromosome LG22: 18.76%, 75,082/400,208
+Chromosome LG23: 16.58%, 86,346/520,713
+Chromosome LG24: 16.97%, 74,467/438,748
+2,259,638 markers are selected in total.
+Principal Component Analysis (PCA) on genotypes:
+Excluding 0 SNP (monomorphic: TRUE, MAF: NaN, missing rate: NaN)
+    # of samples: 113
+    # of SNPs: 2,259,638
+    using 2 threads
+    # of principal components: 32
+PCA:    the sum of all selected genotypes (0,1,2) = 387305062
+CPU capabilities: Double-Precision SSE2 AVX
+Sat Jun 25 00:49:30 2022    (internal increment: 34468)
+[..................................................]  0%, ETC: ---        [==================================================] 100%, completed, 10s
+Sat Jun 25 00:49:40 2022    Begin (eigenvalues and eigenvectors)
+Sat Jun 25 00:49:40 2022    Done.
+# A tibble: 32 x 2
+   index variation
+   <chr>     <dbl>
+ 1 PC01      2.17 
+ 2 PC02      1.59 
+ 3 PC03      1.41 
+ 4 PC04      1.27 
+ 5 PC05      1.11 
+ 6 PC06      1.09 
+ 7 PC07      1.08 
+ 8 PC08      1.05 
+ 9 PC09      0.984
+10 PC10      0.972
+# … with 22 more rows

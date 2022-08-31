@@ -1,0 +1,61 @@
+/user/doau0129/work/chapter1//outputs/6_genotyping/6_1_snp/snp_filterd_casz1.vcf.gz
+snp_filterd_casz1.vcf.gz
+snp_filterd_casz1
+.Rprofile: Setting CRAN repositoryn to ftp.gwdg.de
+[1] "/user/doau0129/work/chapter1//outputs/6_genotyping/6_1_snp/snp_filterd_casz1.vcf.gz"
+[2] "/user/doau0129/work/chapter1//outputs/pca/"                                         
+[3] "snp_filterd_casz1"                                                                  
+[4] "/user/doau0129/work/chapter1//figures/genotyping_pca/"                              
+[1] "/user/doau0129/work/chapter1//outputs/6_genotyping/6_1_snp/snp_filterd_casz1.vcf.gz"
+[1] "/user/doau0129/work/chapter1//outputs/pca/"
+[1] "snp_filterd_casz1"
+[1] "/user/doau0129/work/chapter1//figures/genotyping_pca/"
+Start file conversion from VCF to SNP GDS ...
+Method: exacting biallelic SNPs
+Number of samples: 113
+Parsing "/user/doau0129/work/chapter1//outputs/6_genotyping/6_1_snp/snp_filterd_casz1.vcf.gz" ...
+	import 2749 variants.
++ genotype   { Bit2 113x2749, 75.8K } *
+Optimize the access efficiency ...
+Clean up the fragments of GDS file:
+    open the file '/user/doau0129/work/chapter1//outputs/pca/snp_filterd_casz1.gds' (93.4K)
+    # of fragments: 46
+    save to '/user/doau0129/work/chapter1//outputs/pca/snp_filterd_casz1.gds.tmp'
+    rename '/user/doau0129/work/chapter1//outputs/pca/snp_filterd_casz1.gds.tmp' (93.1K, reduced: 312B)
+    # of fragments: 20
+SNP pruning based on LD:
+Excluding 1,785 SNPs (monomorphic: TRUE, MAF: 0.02, missing rate: NaN)
+    # of samples: 113
+    # of SNPs: 964
+    using 1 thread
+    sliding window: 500,000 basepairs, Inf SNPs
+    |LD| threshold: 1
+    method: correlation
+Chromosome LG12: 34.41%, 946/2,749
+946 markers are selected in total.
+Principal Component Analysis (PCA) on genotypes:
+Excluding 0 SNP (monomorphic: TRUE, MAF: NaN, missing rate: NaN)
+    # of samples: 113
+    # of SNPs: 946
+    using 2 threads
+    # of principal components: 32
+PCA:    the sum of all selected genotypes (0,1,2) = 157135
+CPU capabilities: Double-Precision SSE2 AVX
+Mon Jun 27 13:48:57 2022    (internal increment: 34468)
+[..................................................]  0%, ETC: ---        [==================================================] 100%, completed, 0s
+Mon Jun 27 13:48:57 2022    Begin (eigenvalues and eigenvectors)
+Mon Jun 27 13:48:57 2022    Done.
+# A tibble: 32 x 2
+   index variation
+   <chr>     <dbl>
+ 1 PC01      30.8 
+ 2 PC02       7.13
+ 3 PC03       4.07
+ 4 PC04       3.06
+ 5 PC05       2.63
+ 6 PC06       2.38
+ 7 PC07       2.06
+ 8 PC08       1.97
+ 9 PC09       1.88
+10 PC10       1.73
+# … with 22 more rows
