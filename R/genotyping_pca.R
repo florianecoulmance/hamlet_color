@@ -56,7 +56,7 @@ genotyping_pca_files <- function(vcf,path,prefix) {
 
   # Takes a vcf file with genotype SNPs and create pca and associated files
 
-  ld_threshold <- 0.1 # set threshold of linkage desiquilibrium
+  ld_threshold <- 0.2 # set threshold of linkage desiquilibrium
   maf_threshold <- NaN
 
   # Read the files and convert to pca format
@@ -135,10 +135,10 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
     "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='120' /><br>*H. unicolor*")
 
   # create a list of location logo to integrate to plots
-  logos_loc <- c(bel = "<img src='/user/doau0129/work/chapter1/ressources/logos/belize.png' width='100' /><br>*Belize*", 
-                boc = "<img src='/user/doau0129/work/chapter1/ressources/logos/pan.png' width='100' /><br>*Panama*",
-                flo = "<img src='/user/doau0129/work/chapter1/ressources/logos/us.png' width='100' /><br>*Florida*",
-                pue = "<img src='/user/doau0129/work/chapter1/ressources/logos/puer.png' width='100' /><br>*Puerto Rico*")
+  logos_loc <- c(bel = "*Belize*",  #<img src='/user/doau0129/work/chapter1/ressources/logos/belize.png' width='100' /><br>
+                boc = "*Panama*", #<img src='/user/doau0129/work/chapter1/ressources/logos/pan.png' width='100' /><br>
+                flo = "*Florida*", #<img src='/user/doau0129/work/chapter1/ressources/logos/us.png' width='100' /><br>
+                pue = "*Puerto Rico*") #<img src='/user/doau0129/work/chapter1/ressources/logos/puer.png' width='100' /><br>
 
   # create list of colors to use in plots 
   spec_colors <- c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
@@ -244,12 +244,12 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2)
 
   # Save figures
-  hypo_save(filename = paste0(pathfigure,"ld0.1_nomaf_corr/",prefix,"_pca.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca.pdf"),
           plot = f,
           width = 40,
           height = 18)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.1_nomaf_corr/",prefix,"_pca_zoom.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_zoom.pdf"),
             plot = g,
             width = 40,
             height = 18)

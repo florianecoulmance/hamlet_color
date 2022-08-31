@@ -574,7 +574,6 @@ POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/chlpue.pop \
 
 echo "\${POP}"
 
-# use VCFTOOLS to calculate pairwise FST
 vcftools --gzvcf \${INPUT} \${POP} --out $BASE_DIR/outputs/8_fst/all_pop 2> $BASE_DIR/outputs/8_fst/all_pop.log
 
 
