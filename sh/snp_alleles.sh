@@ -1,0 +1,134 @@
+#!/bin/bash
+# by: Floriane Coulmance: 17/10/2022
+# usage:
+# sbatch fst.sh -i <PATH> -j <JOB_ID>
+# ------------------------------------------------------------------------------
+# PATH corresponds to the path to the base directory, all outputs and necessary
+# folder will be created by the script
+# JOB_ID corresponds to ids of jobs from where you want the analysis to be ran
+# within the pipeline
+# ------------------------------------------------------------------------------
+
+
+
+# ********** Allow to enter bash options **********
+# -------------------------------------------------
+
+while getopts i:j:k: option
+do
+case "${option}"
+in
+i) BASE_DIR=${OPTARG};; # get the base directory path
+j) JID_RES=${OPTARG};; # get the jobid from which you want to resume
+esac
+done
+
+
+
+# ********* Create necessary repositories *********
+# -------------------------------------------------
+
+# Repo for gxp outputs
+# mkdir $BASE_DIR/outputs/8_fst/
+
+
+
+# ********* Jobs creation *************************
+# -------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# Job 0 prepare snp position table 
+
+jobfile0=0_table.tmp # generate a temp file that will be launched
+cat > $jobfile0 <<EOA # indicate that EOA is the end of the file
+#!/bin/bash
+#SBATCH --job-name=0_keep_species                                                               # set the jobname
+#SBATCH --partition=carl.p                                                                      # set the cluster partition to use
+#SBATCH --output=$BASE_DIR/logs/0_table_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/0_table_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+INPUT=$BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/*.txt                                # input the genotyping file with SNPs only created with the genotyping.sh pipeline
+echo \${INPUT}
+
+awk 'FNR==1 && NR!=1 { while (/^<header>/) getline; } 1 {print}' \${INPUT} > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt 
+
+awk '!seen[$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 1 prepare the snp file with allelle information
+
+jobfile1=1_allele.tmp # generate a temp file that will be launched
+cat > $jobfile1 <<EOA # indicate that EOA is the end of the file
+#!/bin/bash
+#SBATCH --job-name=1_allele                                                               # set the jobname
+#SBATCH --partition=carl.p                                                                      # set the cluster partition to use
+#SBATCH --output=$BASE_DIR/logs/1_allele_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/1_allele_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+INPUT=$BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
+
+sed 1d \${INPUT} | while read -r line;
+    do
+        echo \${line}
+        chrom=\$(echo \${line} | awk '{print \$1}')
+        echo \${chrom}
+        pos=\$(echo \${line} | awk '{print \$2}')
+        echo \${pos}
+        bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v "##" >> $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt
+done
+
+awk '!seen[$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
+
+
+EOA
+
+
+
+# ********** Schedule the job launching ***********
+# -------------------------------------------------
+
+if [ "$JID_RES" = "jid1" ];
+then
+  echo "*****   0_table    : DONE         **"
+else
+  jid0=$(sbatch ${jobfile0})
+fi
+
+
+if [ "$JID_RES" = "jid2" ];
+then
+  echo "*****   1_alleles  : DONE         **"
+elif [ "$JID_RES" = jid1 ]
+then
+  jid1=$(sbatch ${jobfile1})
+else
+  jid1=$(sbatch --dependency=afterok:${jid0##* } ${jobfile1})
+fi
+
+
+
+
+
+
+
+# ******** Remove useless files and folders *******
+# -------------------------------------------------
+
+rm *tmp
