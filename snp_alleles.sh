@@ -58,7 +58,7 @@ echo \${INPUT}
 
 awk 'FNR==1 && NR!=1 { while (/^<header>/) getline; } 1 {print}' \${INPUT} > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt 
 
-awk '!seen[$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
 
 
 EOA
@@ -91,10 +91,10 @@ sed 1d \${INPUT} | while read -r line;
         echo \${chrom}
         pos=\$(echo \${line} | awk '{print \$2}')
         echo \${pos}
-        bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v "##" >> $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt
+        bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v '##' >> $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt
 done
 
-awk '!seen[$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
 
 
 EOA
