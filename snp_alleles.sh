@@ -94,8 +94,38 @@ sed 1d \${INPUT} | while read -r line;
         bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v '##' >> $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt
 done
 
-awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt | sed 's|#||g' > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
 
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 2 plot pie chart for each SNP
+
+jobfile2=2_pie.tmp # generate a temp file that will be launched
+cat > $jobfile2 <<EOA # indicate that EOA is the end of the file
+#!/bin/bash
+#SBATCH --job-name=2_pie                                                               # set the jobname
+#SBATCH --partition=carl.p                                                                      # set the cluster partition to use
+#SBATCH --output=$BASE_DIR/logs/2_pie_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/2_pie_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+ml hpc-env/8.3
+ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
+ml FriBidi
+ml HarfBuzz
+
+INPUT=$BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
+
+Rscript $BASE_DIR/R/snp_alleles_plots.R \${INPUT} $BASE_DIR/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/
 
 EOA
 
@@ -104,7 +134,7 @@ EOA
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ];
 then
   echo "*****   0_table    : DONE         **"
 else
@@ -122,6 +152,12 @@ else
   jid1=$(sbatch --dependency=afterok:${jid0##* } ${jobfile1})
 fi
 
+if [ "$JID_RES" = "jid2" ];
+then
+  jid2=$(sbatch ${jobfile2})
+else
+  jid2=$(sbatch --dependency=afterok:${jid1##* } ${jobfile2})
+fi
 
 
 
