@@ -12,13 +12,16 @@
 rm(list = ls())
 
 # Load needed library
+library(broom, lib.loc=.libPaths()[-1])
+library(dbplyr, lib.loc=.libPaths()[-1])
 library(GenomicOriginsScripts)
 library(ggplot2)
 library(tidyverse)
 library(hypogen)
 library(hypoimg)
-
-
+library(reshape2)
+library(scatterpie)
+library(ggtext)
 
 # -------------------------------------------------------------------------------------------------------------------
 # ARGUMENTS
