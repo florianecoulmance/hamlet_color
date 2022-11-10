@@ -1,8 +1,9 @@
 # by: Floriane Coulmance: 20/06/2022
 # usage:
-# Rscript sample_map.R <gxp_metadata>
+# Rscript sample_map.R <gxp_metadata> <coverage_table>
 # -------------------------------------------------------------------------------------------------------------------
 # gxp_metadata in : "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/metadata_gxp_ben_floridae_complete"
+# coverage_table in : $BASE_DIR/outputs/coverage/coverage_table
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -12,8 +13,7 @@ rm(list = ls())
 
 # Load needed library
 library(ggspatial)
-library(ggplot2)
-theme_set(theme_bw())
+# theme_set(theme_bw())
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
@@ -22,9 +22,12 @@ library(tidyverse)
 library(reshape2)
 library(scatterpie)
 library(GenomicOriginsScripts)
+library(ggplot2)
 library(ggtext)
 library(hypoimg)
 library(gridExtra)
+library(dplyr)
+
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -36,12 +39,13 @@ library(gridExtra)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6]
+args = args[6:7]
 print(args)
 
 gxp_metadata <- as.character(args[1]) # Path to phenotype PCA files folder
-
 # gxp_metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/metadata_gxp_ben_floridae_complete"
+coverage_table <- as.character(args[2]) # Path to coverage table file
+# coverage_table <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/coverage_table"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -141,8 +145,16 @@ sample_list <- sample_list %>%
                                             endsWith(geo, "flo") ~ -80.76065,
                                             endsWith(geo, "bar") ~ -59.64506,
                                             endsWith(geo, "hai") ~ -71.843000)) %>%
-               summarise(label, spec, geo, coord_N.x, coord_W.x) %>%
-               setNames(., nm = c("SampleID", "spec", "geo", "coord_N.x", "coord_W.x"))
+               summarise(label, spec, geo, date, coord_N.x, coord_W.x) %>%
+               setNames(., nm = c("SampleID", "spec", "geo", "Date", "coord_N.x", "coord_W.x"))
+
+cov_list <- read.csv(coverage_table, sep=" ", header = FALSE, col.names = c("SampleID", "coverage")) %>%
+            mutate(SampleID = gsub("PL17_23nigpue", "PL17_23tanpue", SampleID),
+                   SampleID = gsub("PL17_35puepue", "PL17_35indpue", SampleID),
+                   coverage = round(coverage, digits = 1)) %>%
+            filter(., !SampleID %in% c("PL17_101maybel", "AG9RX_47pueboc", "PL17_98indbel", "PL17_79abepue"))
+
+cov_sample <- left_join(sample_list, cov_list, by = "SampleID")
 
 # Create a species count for each location and add a radius column for each location to use in the plot
 pie_dat <- dcast(sample_list,geo~spec, fill = 0, value.var="spec", fun.aggregate = length) %>%
@@ -182,10 +194,24 @@ pie_dat <- dcast(sample_list,geo~spec, fill = 0, value.var="spec", fun.aggregate
 # Create the world map data to use in plot
 world <- map_data('world')
 
+geo_label <- c("abe" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_aberrans.l.cairo.png' width='60' /><br> *H. aberrans*",
+               "chl" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_chlorurus.l.cairo.png' width='60' /><br>*H. chlorurus*",
+               "flo" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_floridae.l.cairo.png' width='60' /><br>*H. floridae*",
+               "gem" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gemma.l.cairo.png' width='60' /><br>*H. gemma*",
+               "gum" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gumigutta.l.cairo.png' width='60' /><br>*H. gummigutta*",
+               "gut" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_guttavarius.l.cairo.png' width='60' /><br>*H. guttavarius*",
+               "ind" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_indigo.l.cairo.png' width='60' /><br>*H. indigo*",
+               "may" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_maya.l.cairo.png' width='60' /><br>*H. maya*",
+               "nig" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_nigricans.l.cairo.png' width='60' /><br>*H. nigricans*",
+               "pue" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png' width='60' /><br>*H. puella*",
+               "ran" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png' width='60' /><br>*H. randallorum*",
+               "uni" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png' width='60' /><br>*H. unicolor*",
+               "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_tan.l.cairo.png' width='60' /><br>*H. affinis*")
+
+
 # Create the plot
-p <- ggplot(data = world, aes(long, lat)) +
+p <- ggplot(data = world, aes(x=long, y=lat)) +
      geom_map(map=world, aes(map_id=region), fill="peachpuff1", color = "antiquewhite") +
-     coord_quickmap() +
      geom_scatterpie(aes(x=coord_W.x, y=coord_N.x, group=geo, r=radius),
                      data=pie_dat, cols=colnames(pie_dat)[2:14], color=NA, alpha=.8) +
      custom_geom_scatterpie_legend(pie_dat$radius, x=-64, y=27, n = 4, labeller = function(x) round(x*15, digits = 0)) +
@@ -211,33 +237,21 @@ p <- ggplot(data = world, aes(long, lat)) +
                                 "ran" = '#666699',
                                 "uni" = '#66CC00',
                                 "tan" = '#333333'),
-                       labels = c("abe" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_aberrans.l.cairo.png' width='40' /><br>*H. aberrans*",
-                                  "chl" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_chlorurus.l.cairo.png' width='40' /><br>*H. chlorurus*",
-                                  "flo" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_floridae.l.cairo.png' width='40' /><br>*H. floridae*",
-                                  "gem" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gemma.l.cairo.png' width='40' /><br>*H. gemma*",
-                                  "gum" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gumigutta.l.cairo.png' width='40' /><br>*H. gummigutta*",
-                                  "gut" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_guttavarius.l.cairo.png' width='40' /><br>*H. guttavarius*",
-                                  "ind" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_indigo.l.cairo.png' width='40' /><br>*H. indigo*",
-                                  "may" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_maya.l.cairo.png' width='40' /><br>*H. maya*",
-                                  "nig" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_nigricans.l.cairo.png' width='40' /><br>*H. nigricans*",
-                                  "pue" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png' width='40' /><br>*H. puella*",
-                                  "ran" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png' width='40' /><br>*H. randallorum*",
-                                  "uni" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png' width='40' /><br>*H. unicolor*",
-                                  "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_tan.l.cairo.png' width='40' /><br>*Tan hamlet*")) +
-     guides(fill = guide_legend(nrow = 7)) +
+                       labels = geo_label) +
      theme(legend.title=element_blank(),
+           # text = element_text(size = 3),
            panel.background = element_rect(fill = "lightblue2"),
            rect = element_rect(fill = "transparent"),
            panel.grid.major = element_blank(),
-           legend.text =  element_markdown(size = 10),
+           legend.text = element_markdown(size = 10),
            legend.key=element_blank(),
            legend.box = "vertical",
            axis.title = element_blank(),
            axis.ticks = element_blank(),
            axis.text = element_blank(),
            panel.border = element_blank(),
-           text = element_text(size = 3),
-           plot.background=element_rect(fill="transparent", colour=NA))
+           plot.background=element_rect(fill="transparent", colour=NA)) +
+  guides(fill = guide_legend(nrow = 7))
 
 p
 
@@ -258,11 +272,11 @@ hypo_save(filename = "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figu
 
 
 
-sample_list2 <- sample_list %>%
+sample_list2 <- cov_sample %>%
                 mutate(ID = substr(SampleID, 1, nchar(SampleID)-6),
                        Nr = seq.int(nrow(sample_list))) %>%
-                summarise(Nr, ID, spec, geo, coord_N.x, coord_W.x) %>%
-                setNames(., nm = c("Nr", "ID", "Species", "Location", "Latitude", "Longitude"))
+                summarise(Nr, ID, spec, geo, Date, coord_N.x, coord_W.x, coverage) %>%
+                setNames(., nm = c("Nr", "ID", "Species", "Location", "Date", "Latitude", "Longitude", "Coverage"))
 
 
 ben_ena <- data.frame("ID" = c("PL17_89", "PL17_95", "PL17_119", "PL17_120", "PL17_121",
@@ -276,13 +290,44 @@ ben_ena <- data.frame("ID" = c("PL17_89", "PL17_95", "PL17_119", "PL17_120", "PL
 
 tableS1 <- merge(sample_list2, ben_ena, all = TRUE) %>%
            arrange(Nr) %>%
-           summarise(Nr, ID, Species, Location, Latitude, Longitude, Accession.Number)
+           summarise(Nr, ID, Species, Location, Date, Latitude, Longitude, Coverage, Accession.Number) %>%
+           setNames(., nm = c("Nr", "ID", "Species", "Location", "Date", "Latitude", "Longitude", "Coverage", "Accesion Number"))
 
 tableS1[is.na(tableS1)] <- "_"
+table_h1 <- tableS1[1:57,]
+table_h1
+table_h2 <- tableS1[58:113,]
+table_h2
 
-pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/TableS1.pdf", height = 32, width = 7)
+# pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/Tableh1.pdf", height = 17, width = 10)
+# # p<-tableGrob(cmp_glob)
+# grid.table(table_h1, rows = NULL)
+# # grid.table(table_h2, rows = NULL)
+# dev.off()
+
+# pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/Tableh2.pdf", height = 17, width = 10)
+# # p<-tableGrob(cmp_glob)
+# # grid.table(table_h1, rows = NULL)
+# grid.table(table_h2, rows = NULL)
+# dev.off()
+
+
+# h <- knitr::include_graphics(c("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/Tableh1.pdf", "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/Tableh2.pdf"))
+# h <- knitr::kable(list(table_h1, table_h2))
+mytheme <- gridExtra::ttheme_default(
+  core = list(fg_params=list(cex = 2.0)),
+  colhead = list(fg_params=list(cex = 2.0)),
+  rowhead = list(fg_params=list(cex = 2.0)))
+
+
+Table1 <- tableGrob(table_h1, rows = NULL, theme = mytheme)
+Table2 <- tableGrob(table_h2, rows = NULL, theme = mytheme)
+pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/TableS1.pdf", height = 24, width = 32)
 # p<-tableGrob(cmp_glob)
-grid.table(tableS1, rows = NULL)
+# grid.table(table_h1, rows = NULL)
+
+grid.arrange(Table1, Table2, ncol = 2)
+# grid.table(h, rows = NULL)
 dev.off()
 
 

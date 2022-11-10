@@ -131,7 +131,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
     "nig" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_nigricans.l.cairo.png' width='120' /><br>*H. nigricans*",
     "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='120' /><br>*H. puella*",
     "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='120' /><br>*H. randallorum*",
-    "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_tan.l.cairo.png' width='120' /><br>*H. affinis*",
+    "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_sp.l.cairo.png' width='120' /><br>*H. spp*",
     "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='120' /><br>*H. unicolor*")
 
   # create a list of location logo to integrate to plots
@@ -264,7 +264,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 # -------------------------------------------------------------------------------------------------------------------
 
 # Perform PCA
-genotyping_pca_files(vcf_file,output_path,out_prefix)
+# genotyping_pca_files(vcf_file,output_path,out_prefix)
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)

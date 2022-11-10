@@ -82,6 +82,7 @@ cmp_glob$uniflo[which(cmp_glob$pop1 == "chlpue")] <- NA
 
 cmp_glob <- sapply(cmp_glob, as.character)
 cmp_glob[is.na(cmp_glob)] <- " "
+cmp_glob[cmp_glob<0] <- " _ "
 colnames(cmp_glob)[1] <- "POPULATIONS"
 
 
