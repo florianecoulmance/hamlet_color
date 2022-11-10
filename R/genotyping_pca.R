@@ -120,25 +120,25 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   data["spec"] <- stri_sub(data$id,-6,-4)
 
   # create a list of species logo to integrate to plots
-  logos_spec <- c("abe" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_aberrans.l.cairo.png' width='120' /><br>*H. aberrans*",
-    "chl" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_chlorurus.l.cairo.png' width='120' /><br>*H. chlorurus*",
-    "flo" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_floridae.l.cairo.png' width='120' /><br>*H. floridae*",
-    "gem" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gemma.l.cairo.png' width='120' /><br>*H. gemma*",
-    "gum" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_gumigutta.l.cairo.png' width='120' /><br>*H. gummiguta*",
-    "gut" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_guttavarius.l.cairo.png' width='120' /><br>*H. guttavarius*",
-    "ind" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_indigo.l.cairo.png' width='120' /><br>*H. indigo*",
-    "may" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_maya.l.cairo.png' width='120' /><br>*H. maya*",
-    "nig" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_nigricans.l.cairo.png' width='120' /><br>*H. nigricans*",
-    "pue" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_puella.l.cairo.png' width='120' /><br>*H. puella*",
-    "ran" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_randallorum.l.cairo.png' width='120' /><br>*H. randallorum*",
-    "tan" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_sp.l.cairo.png' width='120' /><br>*H. spp*",
-    "uni" = "<img src='/user/doau0129/work/chapter1/ressources/logos/H_unicolor.l.cairo.png' width='120' /><br>*H. unicolor*")
+  logos_spec <- c("abe" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_aberrans.l.cairo.png' width='120' /><br>*H. aberrans*",
+    "chl" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_chlorurus.l.cairo.png' width='120' /><br>*H. chlorurus*",
+    "flo" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_floridae.l.cairo.png' width='120' /><br>*H. floridae*",
+    "gem" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_gemma.l.cairo.png' width='120' /><br>*H. gemma*",
+    "gum" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_gumigutta.l.cairo.png' width='120' /><br>*H. gummiguta*",
+    "gut" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_guttavarius.l.cairo.png' width='120' /><br>*H. guttavarius*",
+    "ind" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_indigo.l.cairo.png' width='120' /><br>*H. indigo*",
+    "may" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_maya.l.cairo.png' width='120' /><br>*H. maya*",
+    "nig" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_nigricans.l.cairo.png' width='120' /><br>*H. nigricans*",
+    "pue" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_puella.l.cairo.png' width='120' /><br>*H. puella*",
+    "ran" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_randallorum.l.cairo.png' width='120' /><br>*H. randallorum*",
+    "tan" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_sp.l.cairo.png' width='120' /><br>*H. spp*",
+    "uni" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_unicolor.l.cairo.png' width='120' /><br>*H. unicolor*")
 
   # create a list of location logo to integrate to plots
-  logos_loc <- c(bel = "*Belize*",  #<img src='/user/doau0129/work/chapter1/ressources/logos/belize.png' width='100' /><br>
-                boc = "*Panama*", #<img src='/user/doau0129/work/chapter1/ressources/logos/pan.png' width='100' /><br>
-                flo = "*Florida*", #<img src='/user/doau0129/work/chapter1/ressources/logos/us.png' width='100' /><br>
-                pue = "*Puerto Rico*") #<img src='/user/doau0129/work/chapter1/ressources/logos/puer.png' width='100' /><br>
+  logos_loc <- c(bel = "*Belize*",  #<img src='/user/doau0129/work/chapter2/ressources/logos/belize.png' width='100' /><br>
+                boc = "*Panama*", #<img src='/user/doau0129/work/chapter2/ressources/logos/pan.png' width='100' /><br>
+                flo = "*Florida*", #<img src='/user/doau0129/work/chapter2/ressources/logos/us.png' width='100' /><br>
+                pue = "*Puerto Rico*") #<img src='/user/doau0129/work/chapter2/ressources/logos/puer.png' width='100' /><br>
 
   # create list of colors to use in plots 
   spec_colors <- c("nig" = '#FF0033', "chl" = '#9900CC', "abe" = '#996600', "gut" = '#0000FF',
