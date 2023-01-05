@@ -86,8 +86,15 @@ cmp_glob[cmp_glob<0] <- " _ "
 colnames(cmp_glob)[1] <- "POPULATIONS"
 
 
+# fills <- rep("grey", each=nrow(cmp_glob[1:10,1]))
+
+tt <- ttheme_default() #core=list(bg_params=list(fill=fills, col = "gray56"))
+tt$core$fg_params <- list(fontface=matrix(c(2,1,1,1,1,1,1,1,1,1,1), ncol=ncol(cmp_glob),nrow=nrow(cmp_glob),byrow=TRUE))
+
 pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/fst/fst_pairwise_table_nowindow.pdf", height = 3.2, width = 8.5)
 # p<-tableGrob(cmp_glob)
-grid.table(cmp_glob)
+grid.table(cmp_glob, theme=tt)
+# grid.table(cmp_glob[1:10,1], theme=tt)
+
 dev.off()
 

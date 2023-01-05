@@ -206,7 +206,7 @@ geo_label <- c("abe" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/aft
                "pue" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png' width='60' /><br>*H. puella*",
                "ran" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png' width='60' /><br>*H. randallorum*",
                "uni" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png' width='60' /><br>*H. unicolor*",
-               "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_tan.l.cairo.png' width='60' /><br>*H. affinis*")
+               "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_sp.l.cairo.png' width='60' /><br>*Hypoplectrus* sp.")
 
 
 # Create the plot
@@ -292,6 +292,8 @@ tableS1 <- merge(sample_list2, ben_ena, all = TRUE) %>%
            arrange(Nr) %>%
            summarise(Nr, ID, Species, Location, Date, Latitude, Longitude, Coverage, Accession.Number) %>%
            setNames(., nm = c("Nr", "ID", "Species", "Location", "Date", "Latitude", "Longitude", "Coverage", "Accesion Number"))
+
+tableS1 <- tableS1 %>% mutate(Species = sub("tan", "sp.", Species))
 
 tableS1[is.na(tableS1)] <- "_"
 table_h1 <- tableS1[1:57,]

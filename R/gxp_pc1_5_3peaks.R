@@ -133,3 +133,213 @@ hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom.pdf"),
             # width = 6,
             # height = 5)
 
+
+
+zoom4 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG03_1.png"))
+zoom5 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG04_1.png"))
+zoom6 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG05_1.png"))
+zoom7 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG06_1.png"))
+zoom8 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG09_1.png"))
+zoom9 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG09_2.png"))
+zoom10 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG12_1.png"))
+zoom11 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG19_1.png"))
+zoom12 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG20_1.png"))
+zoom13 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG23_1.png"))
+
+
+g4 <- rasterGrob(zoom4, interpolate = T)
+g5 <- rasterGrob(zoom5, interpolate = T)
+g6 <- rasterGrob(zoom6, interpolate = T)
+g7 <- rasterGrob(zoom7, interpolate = T)
+g8 <- rasterGrob(zoom8, interpolate = T)
+g9 <- rasterGrob(zoom9, interpolate = T)
+g10 <- rasterGrob(zoom10, interpolate = T)
+g11 <- rasterGrob(zoom11, interpolate = T)
+g12 <- rasterGrob(zoom12, interpolate = T)
+g13 <- rasterGrob(zoom13, interpolate = T)
+
+g_plot4 <- ggplot() +
+  annotation_custom(g4) +
+  theme(plot.title = element_text(hjust = 0.15, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, -0.95), "cm"))
+
+
+g_plot5 <- ggplot() +
+  annotation_custom(g5) +
+  theme(plot.title = element_text(hjust = 0.12, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, -0.4), "cm"))
+
+g_plot6 <- ggplot() +
+  annotation_custom(g6) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot7 <- ggplot() +
+  annotation_custom(g7) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot8 <- ggplot() +
+  annotation_custom(g8) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot9 <- ggplot() +
+  annotation_custom(g9) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot10 <- ggplot() +
+  annotation_custom(g10) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot11 <- ggplot() +
+  annotation_custom(g11) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot12 <- ggplot() +
+  annotation_custom(g12) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot13 <- ggplot() +
+  annotation_custom(g13) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g <- ggarrange(g_plot4, g_plot5, g_plot6,
+               g_plot7, g_plot8, g_plot9,
+               g_plot10, g_plot11, g_plot12,
+               g_plot13, ncol = 3, widths = c(1,1), nrow = 4, align = "hv",
+               labels = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j")) 
+
+hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom_others.pdf"),
+          plot = g,
+          width = 10,
+          height = 21)
+
+
+
+zoom14 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG08_1.png"))
+zoom15 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG08_2.png"))
+zoom16 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG08_3.png"))
+zoom17 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG08_4.png"))
+zoom18 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG08_5.png"))
+zoom19 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG08_6.png"))
+
+
+g14 <- rasterGrob(zoom14, interpolate = T)
+g15 <- rasterGrob(zoom15, interpolate = T)
+g16 <- rasterGrob(zoom16, interpolate = T)
+g17 <- rasterGrob(zoom17, interpolate = T)
+g18 <- rasterGrob(zoom18, interpolate = T)
+g19 <- rasterGrob(zoom19, interpolate = T)
+
+
+g_plot14 <- ggplot() +
+  annotation_custom(g14) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot15 <- ggplot() +
+  annotation_custom(g15) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot16 <- ggplot() +
+  annotation_custom(g16) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot17 <- ggplot() +
+  annotation_custom(g17) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot18 <- ggplot() +
+  annotation_custom(g18) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g_plot19 <- ggplot() +
+  annotation_custom(g19) +
+  theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g <- ggarrange(g_plot14, g_plot15, g_plot16,
+               g_plot17, g_plot18, g_plot19, 
+               ncol = 3, widths = c(1,1), nrow = 2, align = "hv",
+               labels = c("a", "b", "c", "d", "e", "f")) 
+
+hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom_LG08.pdf"),
+          plot = g,
+          width = 10,
+          height = 11)
+
+
