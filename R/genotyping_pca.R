@@ -44,9 +44,9 @@ print(out_prefix)
 figure_path <- as.character(args[4]) # Path to the figure folder
 print(figure_path)
 
-output_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
-out_prefix <- "snp_filterd"
-figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/genotyping_pca/"
+# output_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/"
+# out_prefix <- "snp_filterd"
+# figure_path <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/genotyping_pca/"
 
 # -------------------------------------------------------------------------------------------------------------------
 # FUNCTIONS
@@ -120,8 +120,8 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   id <- pca[["sample.id"]]
   data["id"] <- id
   print(data)
-  data$id <- gsub("PL17_108nigbel", "PL17_108indbel", data$id)
-  data$id <- gsub("PL17_111indbel", "PL17_111nigbel", data$id)
+#   data$id <- gsub("PL17_108nigbel", "PL17_108indbel", data$id)
+#   data$id <- gsub("PL17_111indbel", "PL17_111nigbel", data$id)
   print(data[26:36,])
   data["geo"] <- stri_sub(data$id,-3,-1)
   data["spec"] <- stri_sub(data$id,-6,-4)
@@ -253,12 +253,12 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2, labels = c("a", "b", "c", "d"), font.label = list(size = 30))
 
   # Save figures
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_swap.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_swap_genofile.pdf"),
           plot = f,
           width = 40,
           height = 18)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_Lpca_zoom_swap.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_Lpca_zoom_swap_genofile.pdf"),
             plot = g,
             width = 40,
             height = 30)
@@ -273,7 +273,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 # -------------------------------------------------------------------------------------------------------------------
 
 # Perform PCA
-# genotyping_pca_files(vcf_file,output_path,out_prefix)
+genotyping_pca_files(vcf_file,output_path,out_prefix)
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)
