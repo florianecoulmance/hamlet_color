@@ -868,7 +868,7 @@ echo \${PREFIX}                                                                 
 # tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
 
 
-echo -e "PL17_108nigbel PL17_108change\nPL17_111inbel PL17_108nigbel" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
+echo -e "PL17_108nigbel PL17_108change\nPL17_111indbel PL17_108nigbel" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
 bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd1.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
 echo -e "PL17_108change PL17_111indbel" > $BASE_DIR/outputs/lof/change_sample2.txt
 bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample2.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${P}/\${PREFIX}_filterd1.vcf.gz # use the sample name change file to rename samples in the genotyping file with BCFTools
