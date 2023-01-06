@@ -214,7 +214,7 @@ grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.v
                                                                              # keep the indiviuals' name in a new txt file
         
 
-java -Xmx1024m -Xms512M -jar /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/PGDSpider2-cli.jar -inputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf -inputformat VCF -outputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt -outputformat NEWHYBRIDS -spid $BASE_DIR/ressources/vcf2nh.spid
+/usr/bin/java -Xmx1024m -Xms512M -jar /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/PGDSpider2-cli.jar -inputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf -inputformat VCF -outputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt -outputformat NEWHYBRIDS -spid $BASE_DIR/ressources/vcf2nh.spid
 
 # use PGDSpider2 to create a newhybrid formatted file to be able to use with NEWHYBRID
 # input the vcf file with 80 SNPs
