@@ -261,8 +261,8 @@ POP_DEUX=\${PREFIX##*_}
 echo \${POP_DEUX}
 
 mkdir -p $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}_nhinput                              # create an output folder for each pairwise comparison
-scp -r $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the NEWHYBRID formatted file with 80 SNP positions to the new output folder
-scp -r $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the list of individual from both population of the pairwise comparison to the new output folder
+scp -r $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the NEWHYBRID formatted file with 80 SNP positions to the new output folder
+scp -r $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the list of individual from both population of the pairwise comparison to the new output folder
 
 Rscript $BASE_DIR/R/newhybrids.R $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}_nhinput/     # execute the Rscript that performs NEWHYBRIDS
 
