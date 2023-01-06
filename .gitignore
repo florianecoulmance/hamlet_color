@@ -1,4 +1,3 @@
-multi*
 1*
 2*
 3*
@@ -7,7 +6,6 @@ multi*
 PC*
 ./LG*
 images/*
-./multi*
 ./PC*
 NA*
 slurm*
