@@ -215,13 +215,11 @@ grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.v
        cut -f 10- | \                                                                             # keep the indiviuals' name in a new txt file
        sed 's/\\t/\\n/g' > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt 
 
-java -Xmx1024m -Xms512M \                                                                         # use PGDSpider2 to create a newhybrid formatted file to be able to use with NEWHYBRID
-       -jar /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/PGDSpider2-cli.jar \
-       -inputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf \         # input the vcf file with 80 SNPs
-       -inputformat VCF \
-       -outputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt \        # output the formatted file as a txt file ready to be used in NEWHYBRID
-       -outputformat NEWHYBRIDS \
-       -spid $BASE_DIR/ressources/vcf2nh.spid
+java -Xmx1024m -Xms512M -jar /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/PGDSpider2-cli.jar -inputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf -inputformat VCF -outputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt -outputformat NEWHYBRIDS -spid $BASE_DIR/ressources/vcf2nh.spid
+
+# use PGDSpider2 to create a newhybrid formatted file to be able to use with NEWHYBRID
+# input the vcf file with 80 SNPs
+# output the formatted file as a txt file ready to be used in NEWHYBRID
 
 
 EOA
