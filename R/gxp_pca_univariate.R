@@ -86,19 +86,19 @@ plot_pca <- function(pcf, pcs, data, center_points, variance, file_pc1, file_pc2
                                 "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
                                 "ind" = '#66CCFF', "pue" = '#FFCC00', "flo" = '#33FFCC', "tan" = '#333333',
                                 "uni" = '#66CC00'),
-                       labels = c("nig" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_nigricans.l.cairo.png' width='90' /><br>*H. nigricans*",
-                                  "chl" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_chlorurus.l.cairo.png' width='90' /><br>*H. chlorurus*",
-                                  "abe" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_aberrans.l.cairo.png' width='90' /><br>*H. aberrans*",
-                                  "gut" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_guttavarius.l.cairo.png' width='90' /><br>*H. guttavarius*",
-                                  "gum" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gumigutta.l.cairo.png' width='90' /><br>*H. gummigutta*",
-                                  "ran" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png' width='90' /><br>*H. randallorum*",
-                                  "gem" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gemma.l.cairo.png' width='90' /><br>*H. gemma*",
-                                  "may" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_maya.l.cairo.png' width='90' /><br>*H. maya*",
-                                  "ind" = "<img src='//Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_indigo.l.cairo.png' width='90' /><br>*H. indigo*",
-                                  "pue" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png' width='90' /><br>*H. puella*",
-                                  "flo" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_floridae.l.cairo.png' width='90' /><br>*H. floridae*",
-                                  "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_sp.l.cairo.png' width='90' /><br>*Hypoplectrus* sp.",
-                                  "uni" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png' width='90' /><br>*H. unicolor*"),
+                       labels = c("nig" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_nigricans.l.cairo.png' width='90' /><br>*H. nigricans*",
+                                  "chl" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_chlorurus.l.cairo.png' width='90' /><br>*H. chlorurus*",
+                                  "abe" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_aberrans.l.cairo.png' width='90' /><br>*H. aberrans*",
+                                  "gut" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_guttavarius.l.cairo.png' width='90' /><br>*H. guttavarius*",
+                                  "gum" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_gumigutta.l.cairo.png' width='90' /><br>*H. gummigutta*",
+                                  "ran" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_randallorum.l.cairo.png' width='90' /><br>*H. randallorum*",
+                                  "gem" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_gemma.l.cairo.png' width='90' /><br>*H. gemma*",
+                                  "may" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_maya.l.cairo.png' width='90' /><br>*H. maya*",
+                                  "ind" = "<img src='//user/doau0129/work/chapter2/ressources/logos/H_indigo.l.cairo.png' width='90' /><br>*H. indigo*",
+                                  "pue" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_puella.l.cairo.png' width='90' /><br>*H. puella*",
+                                  "flo" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_floridae.l.cairo.png' width='90' /><br>*H. floridae*",
+                                  "tan" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_sp.l.cairo.png' width='90' /><br>*Hypoplectrus* sp.",
+                                  "uni" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_unicolor.l.cairo.png' width='90' /><br>*H. unicolor*"),
                        breaks = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue",
                                   "flo", "tan", "uni")) +
     scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
@@ -197,7 +197,7 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   
   # Combine PCs info with image info and calculate centroids for each species group 
   meta_table <- merge(pca_pheno, im, by = 'im') # Merge image metadata file to PCA results table 
-  # print(meta_table)
+  print(meta_table)
   centroids <- aggregate(cbind(pca_pheno[[pc_first]],pca_pheno[[pc_second]])~spec,pca_pheno,mean) # Create centroid table for PC1 PC2 for each of the species group
   # print(centroids)
   centroids <- centroids %>% setNames(., nm = c("spec", pc_first, pc_second))
@@ -210,19 +210,19 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   # print(centroids)
   
   df <- data.frame(spec = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue", "flo", "tan", "uni"),
-                   link = c("/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_nigricans.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_chlorurus.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_aberrans.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_guttavarius.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gumigutta.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gemma.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_maya.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_indigo.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_floridae.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_sp.l.cairo.png",
-                            "/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png"))
+                   link = c("/user/doau0129/work/chapter2/ressources/logos/H_nigricans.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_chlorurus.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_aberrans.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_guttavarius.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_gumigutta.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_randallorum.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_gemma.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_maya.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_indigo.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_puella.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_floridae.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_sp.l.cairo.png",
+                            "/user/doau0129/work/chapter2/ressources/logos/H_unicolor.l.cairo.png"))
   
   centroids <- merge(centroids, df, by = 'spec') # Merge centroid table with the image and PCA data table
   # print(centroids)
@@ -244,10 +244,10 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
   f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
   
-  # img1 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_first,".png"))
-  # img2 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_second,".png"))
-  img1 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_first,".png"))
-  img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_second,".png"))
+  img1 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_first,".png"))
+  img2 <- readPNG(paste0("/user/doau0129/work/chapter1/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_second,".png"))
+  # img1 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_first,".png"))
+  # img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_second,".png"))
   
   # Plot the phenotype PCA and save it as figure
   p <- plot_pca(pc_first, pc_second, meta_table_centroid, centroids, var, f1, f2, img1, img2, figure_path, dataset)
@@ -273,9 +273,9 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
 
 # Analyses of image PCA and gwas of PC1 and PC2
 # Open all needed files
-pheno_PC <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";") %>% 
-            mutate(spec = ifelse(sample == "PL17_23nigpue", "tan", spec), 
-                   sample = gsub("PL17_23nigpue", "PL17_23tanpue", sample))
+pheno_PC <- read.csv(paste0(metadata, dataset, "_PCs.csv"), sep = ";") #%>% 
+            # mutate(spec = ifelse(sample == "PL17_23nigpue", "tan", spec), 
+            #        sample = gsub("PL17_23nigpue", "PL17_23tanpue", sample))
 print(pheno_PC)
 
 # pca_pheno <- read.csv("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/LAB_fullm_left_54off_59on_PCs.csv", sep = ";")
@@ -286,28 +286,29 @@ immeta <- read.table(file = paste0(metadata, "image_metadata.tsv"), sep = '\t', 
 
 # Create a column with image name without suffix
 immeta["im"] <- gsub('.{4}$', '', immeta$image)
+print(immeta$im)
 
-p1 <- pca_analysis("PC1", "PC2", pheno_PC, pheno_var, immeta)
+# p1 <- pca_analysis("PC1", "PC2", pheno_PC, pheno_var, immeta)
 p2 <- pca_analysis("PC1", "PC3", pheno_PC, pheno_var, immeta)
-p3 <- pca_analysis("PC1", "PC4", pheno_PC, pheno_var, immeta)
+# p3 <- pca_analysis("PC1", "PC4", pheno_PC, pheno_var, immeta)
 p4 <- pca_analysis("PC1", "PC5", pheno_PC, pheno_var, immeta)
-p5 <- pca_analysis("PC2", "PC3", pheno_PC, pheno_var, immeta)
+# p5 <- pca_analysis("PC2", "PC3", pheno_PC, pheno_var, immeta)
 p6 <- pca_analysis("PC2", "PC4", pheno_PC, pheno_var, immeta)
-p7 <- pca_analysis("PC2", "PC5", pheno_PC, pheno_var, immeta)
-p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
-p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
-p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
-p11 <- pca_analysis("PC1", "PC6", pheno_PC, pheno_var, immeta)
+# p7 <- pca_analysis("PC2", "PC5", pheno_PC, pheno_var, immeta)
+# p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
+# p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
+# p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
+# p11 <- pca_analysis("PC1", "PC6", pheno_PC, pheno_var, immeta)
 
-plot <- ((p1 | p2 | p3) / (p5 | p6 | p7) / (p8 | p9 | p10))
+# plot <- ((p1 | p2 | p3) / (p5 | p6 | p7) / (p8 | p9 | p10))
 
-plot <- ggarrange(p1, p3, p5, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = TRUE, legend = "bottom")
+# plot <- ggarrange(p1, p3, p5, p7, p8, p9, p10, ncol = 3, nrow = 3, common.legend = TRUE, legend = "bottom")
 
-hypo_save(filename = paste0(figure_path,"pca_univariate_gwas.png"),
-          type = "cairo",
-          plot = plot,
-          width = 30,
-          height = 31)
+# hypo_save(filename = paste0(figure_path,"pca_univariate_gwas.png"),
+#           type = "cairo",
+#           plot = plot,
+#           width = 30,
+#           height = 31)
 
 ### histogram 
 names <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10", "PC11", "PC12", "PC13", "PC14", "PC15")
@@ -328,7 +329,7 @@ v <- ggplot(data=pheno_var_5, aes(x=X, y=percent)) +
         axis.line = element_line(colour = "black"),
         text = element_text(size=35))
   
-hypo_save(filename = paste0(figure_path,"figures/genotyping_pca/ld0.2_nomaf_corr/var_histogram.pdf"),
+hypo_save(filename = paste0(figure_path,"var_histogram.pdf"),
           plot = v,
           width = 20,
           height = 12)
@@ -339,19 +340,19 @@ hypo_save(filename = paste0(figure_path,"figures/genotyping_pca/ld0.2_nomaf_corr
 #                               "gum" = '#FF00FF', "ran" = '#666699', "gem" = '#CC0000', "may" = '#FF9933',
 #                               "ind" = '#66CCFF', "pue" = '#FFCC00', "flo" = '#33FFCC', "tan" = '#333333',
 #                               "uni" = '#66CC00'),
-#                      labels = c("nig" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_nigricans.l.cairo.png' width='60' /><br>*H. nigricans*",
-#                                 "chl" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_chlorurus.l.cairo.png' width='60' /><br>*H. chlorurus*",
-#                                 "abe" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_aberrans.l.cairo.png' width='60' /><br>*H. aberrans*",
-#                                 "gut" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_guttavarius.l.cairo.png' width='60' /><br>*H. guttavarius*",
-#                                 "gum" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gumigutta.l.cairo.png' width='60' /><br>*H. gummigutta*",
-#                                 "ran" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_randallorum.l.cairo.png' width='60' /><br>*H. randallorum*",
-#                                 "gem" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_gemma.l.cairo.png' width='60' /><br>*H. gemma*",
-#                                 "may" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_maya.l.cairo.png' width='60' /><br>*H. maya*",
-#                                 "ind" = "<img src='//Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_indigo.l.cairo.png' width='60' /><br>*H. indigo*",
-#                                 "pue" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_puella.l.cairo.png' width='60' /><br>*H. puella*",
-#                                 "flo" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_floridae.l.cairo.png' width='60' /><br>*H. floridae*",
-#                                 "tan" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_tan.l.cairo.png' width='60' /><br>*Tan hamlet*",
-#                                 "uni" = "<img src='/Users/fco/Desktop/PhD/1_CHAPTER1/0_IMAGES/after_python/logos/H_unicolor.l.cairo.png' width='60' /><br>*H. unicolor*"),
+#                      labels = c("nig" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_nigricans.l.cairo.png' width='60' /><br>*H. nigricans*",
+#                                 "chl" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_chlorurus.l.cairo.png' width='60' /><br>*H. chlorurus*",
+#                                 "abe" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_aberrans.l.cairo.png' width='60' /><br>*H. aberrans*",
+#                                 "gut" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_guttavarius.l.cairo.png' width='60' /><br>*H. guttavarius*",
+#                                 "gum" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_gumigutta.l.cairo.png' width='60' /><br>*H. gummigutta*",
+#                                 "ran" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_randallorum.l.cairo.png' width='60' /><br>*H. randallorum*",
+#                                 "gem" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_gemma.l.cairo.png' width='60' /><br>*H. gemma*",
+#                                 "may" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_maya.l.cairo.png' width='60' /><br>*H. maya*",
+#                                 "ind" = "<img src='//user/doau0129/work/chapter2/ressources/logos/H_indigo.l.cairo.png' width='60' /><br>*H. indigo*",
+#                                 "pue" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_puella.l.cairo.png' width='60' /><br>*H. puella*",
+#                                 "flo" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_floridae.l.cairo.png' width='60' /><br>*H. floridae*",
+#                                 "tan" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_tan.l.cairo.png' width='60' /><br>*Tan hamlet*",
+#                                 "uni" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_unicolor.l.cairo.png' width='60' /><br>*H. unicolor*"),
 #                      breaks = c("nig", "chl", "abe", "gut", "gum", "ran", "gem", "may", "ind", "pue",
 #                                 "flo", "tan", "uni")) +
 #   # scale_shape_manual(values = c(16,3), labels = c(Off = "flash OFF", On = "flash ON")) +
