@@ -204,13 +204,13 @@ echo \${POP_UN}
 POP_DEUX=\${PREFIX##*_}
 echo \${POP_DEUX}
 
-grep '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf               # retrieve all the content of the vcf file that starts with # (info at the beginning and column names)
+# grep '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf               # retrieve all the content of the vcf file that starts with # (info at the beginning and column names)
            
 
-grep -v '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf | shuf -n 80 | sort -k 1 -k2 >> $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf              # select randomly 80 SNPs out of the 800 most differentiated positions
+# grep -v '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf | shuf -n 80 | sort -k 1 -k2 >> $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf              # select randomly 80 SNPs out of the 800 most differentiated positions
             # add those 80 SNPs it to the previously created vcf files
 
-grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf | cut -f 10- | sed 's/\\t/\\n/g' > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt           # from the newly 80SNPs dataset created, make a list of individuals' name
+# grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf | cut -f 10- | sed 's/\\t/\\n/g' > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt           # from the newly 80SNPs dataset created, make a list of individuals' name
                                                                              # keep the indiviuals' name in a new txt file
         
 
