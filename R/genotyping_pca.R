@@ -220,7 +220,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
         guides(color = guide_legend(nrow = 1))
-  p6 <- p6 + xlim(0.02, 0.04) + ylim(0.27,0.31) #+ scale_x_continuous(position = "top")
+  p6 <- p6 + xlim(-0.04, -0.02) + ylim(0.27,0.31) #+ scale_x_continuous(position = "top")
 
   # PC1 vs PC2 zoom 4
   p7 <- ggplot(data,aes(x=PC1,y=PC2,color=spec, label = id)) + geom_point(size = 7, aes(shape=geo)) +
@@ -232,7 +232,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
         guides(color = guide_legend(nrow = 1))
-  p7 <- p7 + xlim(-0.04, 0.015) + ylim(-0.08,0.025) #+ scale_x_continuous(position = "top")
+  p7 <- p7 + xlim(-0.015, 0.04) + ylim(-0.08,0.025) #+ scale_x_continuous(position = "top")
   
 
   # PC1 vs PC2 zoom 5
@@ -245,7 +245,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
                   panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA, size=0.9),
                   text = element_text(size=30), legend.key=element_blank()) +
         guides(color = guide_legend(nrow = 1))
-  p8 <- p8 + xlim(-0.005, 0.015) + ylim(-0.08,0.025) #+ scale_x_continuous(position = "top")
+  p8 <- p8 + xlim(-0.015, -0.005) + ylim(-0.08,0.025) #+ scale_x_continuous(position = "top")
   
 
   # Arrange all plots in pae
@@ -273,7 +273,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 # -------------------------------------------------------------------------------------------------------------------
 
 # Perform PCA
-genotyping_pca_files(vcf_file,output_path,out_prefix)
+# genotyping_pca_files(vcf_file,output_path,out_prefix)
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)
