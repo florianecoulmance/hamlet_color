@@ -512,7 +512,7 @@ ml FriBidi
 ml HarfBuzz
 
 # Input the multivariate analysis of choice
-AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
+AVG=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
 
 # Extract name of the multivariate analysis, color space and mask names
 B=\$(basename "\${AVG}")
@@ -543,10 +543,10 @@ echo \${MASK}
 
 # Create appropriate subfolders 
 mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/
-mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/
+mkdir $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/
 
 # Run the R and python plot analyses
-Rscript $BASE_DIR/R/gxp_save_snps.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
+Rscript $BASE_DIR/R/gxp_save_snps.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
 
 
 EOA
@@ -577,7 +577,7 @@ ml FriBidi
 ml HarfBuzz
 
 # Input the multivariate analysis of choice
-AVG=$BASE_DIR/outputs/7_gxp/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
+AVG=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
 
 # Extract name of the multivariate analysis, color space and mask names
 B=\$(basename "\${AVG}")
@@ -616,8 +616,8 @@ CHROM="LG\${LG}"
 FILE_N="\${NAME}_LG\${LG}"
 echo \${FILE_N}
 
-#python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
+python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
 
 
 EOA
