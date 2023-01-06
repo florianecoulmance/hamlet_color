@@ -144,7 +144,7 @@ echo \${pheno}
 tr=(PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10)                # Create file with list of PCs for further job array steps
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/pcs.fofn
 
-sort -k1 \${fam}                                                                      # Sort the .fam file on the individuals' labels column
+sort -k1 \${fam} > \${fam}                                                                     # Sort the .fam file on the individuals' labels column
 
 # Merge genotyping binary .fam file and phenotype file
 awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' \${pheno} | \
