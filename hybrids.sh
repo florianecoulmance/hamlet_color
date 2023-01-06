@@ -81,10 +81,7 @@ echo \${POP_DEUX}
 vcfsamplenames \${INPUT} | grep \${POP_UN} > $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop           # create list of individuals per population of the pairwise comparison 
 vcfsamplenames \${INPUT} | grep \${POP_DEUX} > $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop       # put the list of individuals in 1 file for both of the populations
 
-vcftools --gzvcf \${INPUT} \
-    --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop \                                   # calculate pairwise Fst and save in file
-    --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop \
-    --stdout | > $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}.fst.tsv
+vcftools --gzvcf \${INPUT} --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop --stdout > $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}.fst.tsv
 
 ls -1 $BASE_DIR/outputs/9_newhyb/*.fst.tsv > $BASE_DIR/outputs/lof/8_fst.fofn                 # add all pairwise Fst file names and path to a file
 
