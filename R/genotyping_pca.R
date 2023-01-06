@@ -273,7 +273,7 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
 # -------------------------------------------------------------------------------------------------------------------
 
 # Perform PCA
-#genotyping_pca_files(vcf_file,output_path,out_prefix)
+genotyping_pca_files(vcf_file,output_path,out_prefix)
 
 # Create pca plots
 genotyping_pca_plots(output_path, out_prefix, figure_path)

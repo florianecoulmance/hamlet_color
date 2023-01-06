@@ -838,7 +838,7 @@ cat > $jobfile14 <<EOA # generate the job file
 #!/usr/bin/env bash
 #SBATCH --job-name=14_changes
 #SBATCH --partition=carl.p
-#SBATCH --array=1-2
+#SBATCH --array=1
 #SBATCH --output=$BASE_DIR/logs/14_changes_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/14_changes_%A_%a.err
 #SBATCH --nodes=1
@@ -868,7 +868,7 @@ echo \${PREFIX}                                                                 
 # tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
 
 
-echo -e "PL17_108nigbel PL17_108change\nPL17_111indbel PL17_108nigbel" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
+echo -e "PL17_35puepue PL17_35indpue\nPL17_23nigpue PL17_23tanpue\nPL17_108nigbel PL17_108change\nPL17_111indbel PL17_108nigbel" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
 bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd1.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
 echo -e "PL17_108change PL17_111indbel" > $BASE_DIR/outputs/lof/change_sample2.txt
 bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample2.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${P}/\${PREFIX}_filterd1.vcf.gz # use the sample name change file to rename samples in the genotyping file with BCFTools
@@ -901,7 +901,7 @@ cat > $jobfiled <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=d_pca
 #SBATCH --partition=carl.p
-#SBATCH --array=1-2
+#SBATCH --array=1
 #SBATCH --output=$BASE_DIR/logs/d_pca_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/d_pca_%A_%a.err
 #SBATCH --nodes=1
