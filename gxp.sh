@@ -513,6 +513,7 @@ ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
 ml FriBidi
 ml HarfBuzz
 
+
 # Input the multivariate analysis of choice
 AVG=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5.mvplink.50k.5k.txt.gz
 
@@ -574,7 +575,7 @@ cat > $jobfile8 <<EOA # generate the job file
 
 
 ml hpc-env/8.3
-ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
+ml R/4.0.2-foss-2019b
 ml FriBidi
 ml HarfBuzz
 
