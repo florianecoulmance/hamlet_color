@@ -293,7 +293,9 @@ tableS1 <- merge(sample_list2, ben_ena, all = TRUE) %>%
            summarise(Nr, ID, Species, Location, Date, Latitude, Longitude, Coverage, Accession.Number) %>%
            setNames(., nm = c("Nr", "ID", "Species", "Location", "Date", "Latitude", "Longitude", "Coverage", "Accesion Number"))
 
-tableS1 <- tableS1 %>% mutate(Species = sub("tan", "sp.", Species))
+tableS1 <- tableS1 %>% mutate(Species = sub("tan", "sp.", Species),
+                              Species = ifelse(ID == "PL17_111", "nig", Species),
+                              Species = ifelse(ID == "PL17_108", "ind", Species))
 
 tableS1[is.na(tableS1)] <- "_"
 table_h1 <- tableS1[1:57,]
