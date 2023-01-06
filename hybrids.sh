@@ -86,7 +86,7 @@ vcftools --gzvcf \${INPUT} \
     --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop \
     --stdout | > $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}.fst.tsv
 
-ls -1 $BASE_DIR/outputs/9_newhyb/*.fst.tsv.gz > $BASE_DIR/outputs/lof/8_fst.fofn                 # add all pairwise Fst file names and path to a file
+ls -1 $BASE_DIR/outputs/9_newhyb/*.fst.tsv > $BASE_DIR/outputs/lof/8_fst.fofn                 # add all pairwise Fst file names and path to a file
 
 
 EOA
