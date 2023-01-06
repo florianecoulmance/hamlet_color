@@ -84,7 +84,7 @@ vcfsamplenames \${INPUT} | grep \${POP_DEUX} > $BASE_DIR/outputs/9_newhyb/\${POP
 vcftools --gzvcf \${INPUT} \
     --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop \                                   # calculate pairwise Fst and save in file
     --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop \
-    --stdout | gzip > $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}.fst.tsv.gz
+    --stdout | > $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}.fst.tsv
 
 ls -1 $BASE_DIR/outputs/9_newhyb/*.fst.tsv.gz > $BASE_DIR/outputs/lof/8_fst.fofn                 # add all pairwise Fst file names and path to a file
 
