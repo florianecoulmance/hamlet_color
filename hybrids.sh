@@ -164,14 +164,9 @@ echo \${POP_UN}
 POP_DEUX=\${PREFIX##*_}
 echo \${POP_DEUX}
 
-vcftools \                                                                                        # from the genotyping file, retrieve all individuals from both populations
-  --gzvcf \${INPUT} \                                                                             # and keep the 800 most differentiated positions based on the position file created at job1
-   --keep $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop \
-   --keep $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop \
-   --thin 5000 \
-   --out $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX} \
-   --positions $BASE_DIR/outputs/9_newhyb/\${PREFIX}_800SNPs.snps \
-   --recode                                                                                       # output with recode.vcf extension
+vcftools --gzvcf \${INPUT} --keep $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop --keep $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop --thin 5000 --out $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX} --positions $BASE_DIR/outputs/9_newhyb/\${PREFIX}_800SNPs.snps --recode                                                                                    # from the genotyping file, retrieve all individuals from both populations
+                                                                                # and keep the 800 most differentiated positions based on the position file created at job1
+                                                                                                              # output with recode.vcf extension
 
 EOA
 
