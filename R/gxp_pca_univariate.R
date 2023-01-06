@@ -316,7 +316,7 @@ pheno_var_5 <- pheno_var[0:15,]
 pheno_var_5["PCs"] <- names
 pheno_var_5["percent"] <- pheno_var_5$X0*100
 
-var <- merge(pheno_var_5, pheno_cum_5, by="X")
+# var <- merge(pheno_var_5, pheno_cum_5, by="X")
 
 v <- ggplot(data=pheno_var_5, aes(x=X, y=percent)) +
   geom_bar(stat="identity", fill = "#CC79A7") +
