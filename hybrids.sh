@@ -36,7 +36,7 @@ mkdir $BASE_DIR/figures/
 
 # Outputs repo
 mkdir $BASE_DIR/outputs/
-mkdir $BASE_DIR/outputs/8_hybrids/
+mkdir $BASE_DIR/outputs/9_newhyb/
 
 # Annex folder for list of files
 mkdir $BASE_DIR/outputs/lof/
@@ -66,7 +66,7 @@ cat > $jobfile0 <<EOA # generate the job file
 #SBATCH --time=04:00:00
  
 
-INPUT=$BASE_DIR/outputs/09_1_snpfiltration/snp_filterd.vcf.gz                                     # input the genotyping file with SNPs created by step 14 of genotyping.sh pipeline
+INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                                     # input the genotyping file with SNPs created by step 14 of genotyping.sh pipeline
 
 tr=(indbel/maybel indbel/nigbel indbel/puebel maybel/nigbel maybel/puebel nigbel/puebel           # create list of species pairwise comparison keeping populations that have >5 individuals represented
 nigboc/pueboc nigboc/uniboc pueboc/uniboc chlpue/puepue chlpue/unipue puepue/unipue)
@@ -78,15 +78,15 @@ echo \${POP_UN}                                                                 
 POP_DEUX=\${PAIR##*/}
 echo \${POP_DEUX}
 
-vcfsamplenames \${INPUT} | grep \${POP_UN} > $BASE_DIR/outputs/8_hybrids/\${POP_UN}.pop           # create list of individuals per population of the pairwise comparison 
-vcfsamplenames \${INPUT} | grep \${POP_DEUX} > $BASE_DIR/outputs/8_hybrids/\${POP_DEUX}.pop       # put the list of individuals in 1 file for both of the populations
+vcfsamplenames \${INPUT} | grep \${POP_UN} > $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop           # create list of individuals per population of the pairwise comparison 
+vcfsamplenames \${INPUT} | grep \${POP_DEUX} > $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop       # put the list of individuals in 1 file for both of the populations
 
 vcftools --gzvcf \${INPUT} \
-    --weir-fst-pop $BASE_DIR/outputs/8_hybrids/\${POP_UN}.pop \                                   # calculate pairwise Fst and save in file
-    --weir-fst-pop $BASE_DIR/outputs/8_hybrids/\${POP_DEUX}.pop \
-    --stdout | gzip > $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}.fst.tsv.gz
+    --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop \                                   # calculate pairwise Fst and save in file
+    --weir-fst-pop $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop \
+    --stdout | gzip > $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}.fst.tsv.gz
 
-ls -1 $BASE_DIR/outputs/8_hybrids/*.fst.tsv.gz > $BASE_DIR/outputs/lof/8_fst.fofn                 # add all pairwise Fst file names and path to a file
+ls -1 $BASE_DIR/outputs/9_newhyb/*.fst.tsv.gz > $BASE_DIR/outputs/lof/8_fst.fofn                 # add all pairwise Fst file names and path to a file
 
 
 EOA
@@ -150,7 +150,7 @@ cat > $jobfile2 <<EOA # generate the job file
 #SBATCH --time=03:00:00
 
 
-INPUT=$BASE_DIR/outputs/old/09_1_snpfiltration/snp_filterd.vcf.gz                                 # input the genotyping file with SNPs created by step 14 of genotyping.sh pipeline
+INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                                 # input the genotyping file with SNPs created by step 14 of genotyping.sh pipeline
 echo \${INPUT}
 
 INPUT_PAIRS=$BASE_DIR/outputs/lof/8_fst.fofn                                                      # input the list of pairwise Fst files created at job0
@@ -169,11 +169,11 @@ echo \${POP_DEUX}
 
 vcftools \                                                                                        # from the genotyping file, retrieve all individuals from both populations
   --gzvcf \${INPUT} \                                                                             # and keep the 800 most differentiated positions based on the position file created at job1
-   --keep $BASE_DIR/outputs/8_hybrids/\${POP_UN}.pop \
-   --keep $BASE_DIR/outputs/8_hybrids/\${POP_DEUX}.pop \
+   --keep $BASE_DIR/outputs/9_newhyb/\${POP_UN}.pop \
+   --keep $BASE_DIR/outputs/9_newhyb/\${POP_DEUX}.pop \
    --thin 5000 \
-   --out $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX} \
-   --positions $BASE_DIR/outputs/8_hybrids/\${PREFIX}_800SNPs.snps \
+   --out $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX} \
+   --positions $BASE_DIR/outputs/9_newhyb/\${PREFIX}_800SNPs.snps \
    --recode                                                                                       # output with recode.vcf extension
 
 EOA
@@ -212,22 +212,22 @@ echo \${POP_UN}
 POP_DEUX=\${PREFIX##*_}
 echo \${POP_DEUX}
 
-grep '#' $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf > \                # retrieve all the content of the vcf file that starts with # (info at the beginning and column names)
-         $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf  
+grep '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf > \                # retrieve all the content of the vcf file that starts with # (info at the beginning and column names)
+         $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf  
 
-grep -v '#' $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf | \             # select randomly 80 SNPs out of the 800 most differentiated positions
+grep -v '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf | \             # select randomly 80 SNPs out of the 800 most differentiated positions
        shuf -n 80 | \
-       sort -k 1 -k2 >> $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf     # add those 80 SNPs it to the previously created vcf files
+       sort -k 1 -k2 >> $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf     # add those 80 SNPs it to the previously created vcf files
 
-grep '#CHROM' $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf | \           # from the newly 80SNPs dataset created, make a list of individuals' name
+grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf | \           # from the newly 80SNPs dataset created, make a list of individuals' name
        cut -f 10- | \                                                                             # keep the indiviuals' name in a new txt file
-       sed 's/\\t/\\n/g' > $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt 
+       sed 's/\\t/\\n/g' > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt 
 
 java -Xmx1024m -Xms512M \                                                                         # use PGDSpider2 to create a newhybrid formatted file to be able to use with NEWHYBRID
        -jar /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/PGDSpider2-cli.jar \
-       -inputfile $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf \         # input the vcf file with 80 SNPs
+       -inputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf \         # input the vcf file with 80 SNPs
        -inputformat VCF \
-       -outputfile $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt \        # output the formatted file as a txt file ready to be used in NEWHYBRID
+       -outputfile $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt \        # output the formatted file as a txt file ready to be used in NEWHYBRID
        -outputformat NEWHYBRIDS \
        -spid $BASE_DIR/ressources/vcf2nh.spid
 
@@ -271,11 +271,11 @@ echo \${POP_UN}
 POP_DEUX=\${PREFIX##*_}
 echo \${POP_DEUX}
 
-mkdir -p $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput                              # create an output folder for each pairwise comparison
-scp -r $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the NEWHYBRID formatted file with 80 SNP positions to the new output folder
-scp -r $BASE_DIR/outputs/8_hybrids/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the list of individual from both population of the pairwise comparison to the new output folder
+mkdir -p $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}_nhinput                              # create an output folder for each pairwise comparison
+scp -r $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.txt $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the NEWHYBRID formatted file with 80 SNP positions to the new output folder
+scp -r $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/ # copy the list of individual from both population of the pairwise comparison to the new output folder
 
-Rscript $BASE_DIR/R/newhybrids.R $BASE_DIR/outputs/8_hybrids/\${POP_UN}_\${POP_DEUX}_nhinput/     # execute the Rscript that performs NEWHYBRIDS
+Rscript $BASE_DIR/R/newhybrids.R $BASE_DIR/outputs/9_newhyb/\${POP_UN}_\${POP_DEUX}_nhinput/     # execute the Rscript that performs NEWHYBRIDS
 
 
 EOA

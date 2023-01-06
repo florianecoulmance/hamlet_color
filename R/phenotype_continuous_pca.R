@@ -128,7 +128,8 @@ write_metadata_gxp <- function(PCs, path_meta, effect, m_type, dat) {
                         sample = gsub("PL17_5pueboc", "PL17_05pueboc", sample),
                         sample = gsub("PL17_160pueflo", "PL17_160floflo", sample),
                         sample = gsub("PL17_125tanbel", "PL17_125ranbel", sample),
-                        sample = gsub("PL17_62puepue", "PL17_62chlpue", sample))
+                        sample = gsub("PL17_62puepue", "PL17_62chlpue", sample),
+                        sample = gsub("PL17_23nigpue", "PL17_23tanpue", sample))
   
   # Reorganise and arrange table
   PCs["geo"] <- str_sub(PCs$sample,-3,-1)
