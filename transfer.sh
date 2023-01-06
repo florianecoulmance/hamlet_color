@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=carl.p
-#SBATCH --nodes=1
+#SBATCH --nodes=1 
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=90G

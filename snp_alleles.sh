@@ -1,7 +1,7 @@
 #!/bin/bash
 # by: Floriane Coulmance: 17/10/2022
 # usage:
-# sbatch fst.sh -i <PATH> -j <JOB_ID>
+# sbatch fst.sh -i <PATH> -j <JOB_ID> 
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script

@@ -1,7 +1,7 @@
 
 VCFtools - 0.1.16
 (C) Adam Auton and Anthony Marcketta 2009
-
+ 
 Parameters as interpreted:
 	--gzvcf /user/doau0129/work/chapter1//outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/abebel.pop

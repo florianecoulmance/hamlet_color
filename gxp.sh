@@ -54,7 +54,9 @@ echo $TYPE
 mkdir $BASE_DIR/outputs/7_gxp/
 
 # Repo for the corresponding dataset
-mkdir $BASE_DIR/outputs/7_gxp/$DATASET/
+mkdir $BASE_DIR/outputs/7_gxp/$TYPE/
+mkdir $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/
+mkdir $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/
 
 # Repo for the figures
 mkdir $BASE_DIR/figures/
@@ -92,24 +94,24 @@ INPUT_BI=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz              
 vcftools \
       --gzvcf \${INPUT_BI} \
       --plink \
-      --out $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink
+      --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink
 
-# Conver to hapmap / not mandatory to run
+# Convert to hapmap / not mandatory to run
 plink \
-      --file $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink \
+      --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
       --recode12 \
-      --out $BASE_DIR/outputs/7_gxp/$DATASET/hapmap
+      --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/hapmap
 
 # Convert plink genotyping file to binary files to be used in GWAS
 plink \
     --noweb \
-    --file $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink \
+    --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
     --make-bed \
-    --out $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary
+    --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary
 
 # Save a copy of the binary .fam file
-cp $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam \
-   $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_sauvegarde.fam
+cp $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam \
+   $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_sauvegarde.fam
 
 
 EOA
@@ -135,7 +137,7 @@ cat > $jobfile1 <<EOA # generate the job file
 
 # PREPARATION OF THE MERGED GENOTYPES AND PHENOTYPES ----------------------------
 
-fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam                             # Path to the genotyping plink binary file
+fam=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam                             # Path to the genotyping plink binary file
 pheno=$BASE_DIR/metadata/${DATASET}_PCs.csv                                           # Path to the phenotype file
 echo \${pheno}
 
@@ -146,33 +148,33 @@ sort -k1 \${fam}                                                                
 
 # Merge genotyping binary .fam file and phenotype file
 awk -F ";" '{print \$17,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10}' \${pheno} | \
-sort -k1 > $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1
+sort -k1 > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_intermediate1
 
-join \${fam} $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate1 | \
+join \${fam} $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_intermediate1 | \
 awk -F " " '{print \$1,\$2,\$3,\$4,\$5,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15,\$16}' \
-> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate
+> $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_intermediate
 
 # Format the merged file for use in GWAS
 echo -e 'label Within_family_ID ID_father ID_mother Sex PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10' \
-> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$DATASET/pheno_intermediate \
->> $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam
+> $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_table.fam && cat $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_intermediate \
+>> $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_table.fam
 
 
 # PREPARATION OF THE FILES FOR MVPLINK -------------------------------------------
 
-MAP=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.map                                    # Input the plink .map file   
-PED=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink.ped                                    # Input the plink .ped file
-cp \${MAP} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.map                            # Copy both files to new files with different names, necessarry for MVPLINK analysis
-cp \${PED} $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.ped
+MAP=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink.map                                    # Input the plink .map file   
+PED=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink.ped                                    # Input the plink .ped file
+cp \${MAP} $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/gwas_multi.map                            # Copy both files to new files with different names, necessarry for MVPLINK analysis
+cp \${PED} $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/gwas_multi.ped
 
-P=$BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam                                    # Input the just created genotype + phenotype file
+P=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_table.fam                                    # Input the just created genotype + phenotype file
 
 # Select needed column for MVPLINK analysis and output to .phen file with same naming as previous step
 awk -F " " '{print \$1,\$2,\$6,\$7,\$8,\$9,\$10,\$11,\$12,\$13,\$14,\$15}' \${P} \
-> $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+> $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/gwas_multi.phen
 
 var="FID IID PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10"                                # Add column name row to file 
-sed -i "1s/.*/\${var}/" $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen
+sed -i "1s/.*/\${var}/" $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/gwas_multi.phen
 
 
 EOA
@@ -203,7 +205,7 @@ body() {                                                                        
 	"\$@"
 }
 
-fam=$BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary.fam                             # Input the genotyping binary .fam file
+fam=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam                             # Input the genotyping binary .fam file
 INPUT_TR=$BASE_DIR/outputs/lof/pcs.fofn                                               # Input list of PCs to consider
 
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
@@ -215,13 +217,13 @@ echo \${BASE_NAME}
 echo \${BASE_NAME}_\${TRAITS}
 
 # Create list of samples to keep 
-awk '{print \$1}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam | tail -n +2 > \${BASE_NAME}_\${TRAITS}.txt
+awk '{print \$1}' $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_table.fam | tail -n +2 > \${BASE_NAME}_\${TRAITS}.txt
 
 # Create appropriated .bed file with only needed samples 
 plink --bed \${BASE_NAME}.bed --bim \${BASE_NAME}.bim --fam \${BASE_NAME}.fam --keep-fam \${BASE_NAME}_\${TRAITS}.txt --make-bed --out \${BASE_NAME}_\${TRAITS}
 
 # Create the specific trait .fam file by subsetting the phenotype + genotype file
-awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$DATASET/pheno_table.fam | \
+awk -v t="\${TRAITS}" 'NR==1 {for (i=1; i<=NF; i++) {f[\$i] = i}} {print \$(f["label"]), \$(f["Within_family_ID"]), \$(f["ID_father"]), \$(f["ID_mother"]), \$(f["Sex"]), \$(f[t])}' $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/pheno_table.fam | \
 sed '1d' > \${BASE_NAME}_\${TRAITS}.fam
 
 # cp \${BASE_NAME}.bed \${BASE_NAME}_\${TRAITS}.bed                                     # Copy binary files to new renamed files (necessary for GEMMA)
@@ -236,19 +238,19 @@ mkdir $BASE_DIR/output/$DATASET/
 gemma -bfile \${BASE_NAME}_\${TRAITS} -gk 1 -o /$DATASET/\${TRAITS}
 
   # 2) fit linear model using gemma (-lm)
-gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /$DATASET/\${TRAITS}.lm
+#gemma -bfile \${BASE_NAME}_\${TRAITS} -lm 4 -miss 0.1 -notsnp -o /$DATASET/\${TRAITS}.lm
 
   # 3) fit linear mixed model using gemma (-lmm)
 gemma -bfile \${BASE_NAME}_\${TRAITS} -k output/$DATASET/\${TRAITS}.cXX.txt -lmm 4 -o /$DATASET/\${TRAITS}.lmm
 
   # 4) reformat output
-sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lm.assoc.txt | \
-      cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz
+# sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lm.assoc.txt | \
+#       cut -f 2,3,9-14 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz
 sed 's/\\trs\\t/\\tCHROM\\tPOS\\t/g; s/\\([0-2][0-9]\\):/\\1\\t/g' output/$DATASET/\${TRAITS}.lmm.assoc.txt | \
-      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lmm.GxP.txt.gz
+      cut -f 2,3,8-10,13-15 | body sort -k1,1 -k2,2n | gzip > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}.lmm.GxP.txt.gz
 
   # 5) run univariate plink
-plink --bfile \${BASE_NAME}_\${TRAITS} --assoc --allow-no-sex --out $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}
+plink --bfile \${BASE_NAME}_\${TRAITS} --assoc --allow-no-sex --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}
 
 
 EOA
@@ -284,19 +286,19 @@ INPUT_TR=$BASE_DIR/outputs/lof/pcs.fofn                                         
 TRAITS=\$(cat \${INPUT_TR} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)             # Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
 echo \${TRAITS}
 
-rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.bed                                                       # Remove the previously duplicated files
-rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.bim
-rm $BASE_DIR/outputs/7_cdgxp/$DATASET/GxP_plink_binary_\${TRAITS}.log
-rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.nosex
-rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.fam
-rm $BASE_DIR/outputs/7_gxp/$DATASET/GxP_plink_binary_\${TRAITS}.txt
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_\${TRAITS}.bed                                                       # Remove the previously duplicated files
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_\${TRAITS}.bim
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_\${TRAITS}.log
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_\${TRAITS}.nosex
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_\${TRAITS}.fam
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_\${TRAITS}.txt
 
-lm=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz                          # Path to GEMMA lm output file
-echo \${lm}
-lmm=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lmm.GxP.txt.gz                        # Path to GEMMA lmm output file
+# lm=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.lm.GxP.txt.gz                          # Path to GEMMA lm output file
+# echo \${lm}
+lmm=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}.lmm.GxP.txt.gz                        # Path to GEMMA lmm output file
 echo \${lmm}
 
-pli=$BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.qassoc                                # Input the univariate plink result file
+pli=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}.qassoc                                # Input the univariate plink result file
 
 # Format the univariate plink result file
 awk '{print \$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9}' \${pli} | \
@@ -305,7 +307,7 @@ sed 's/SNP BP /CHROM POS /g' | \
 awk '{sub(/\:.*$/,"",\$1); print \$0}' | \
 awk '{if (\$3!="NA"){ print}}' | \
 body sort -k1,1 -k2,2n | \
-gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz
+gzip > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}.assoc.txt.gz
 
 win5=50000                                                                            # Create 2 sets of parameters for GWAS average
 step5=5000
@@ -317,14 +319,14 @@ step1=1000
 echo \${win1}
 echo \${step1}
 
-$BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}                                  # Run the average over genome window for both lm and lmm GEMMA results and each set of parameters
-$BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
+# $BASE_DIR/sh/gxp_slider.sh \${lm} \${win5} \${step5}                                  # Run the average over genome window for both lm and lmm GEMMA results and each set of parameters
+# $BASE_DIR/sh/gxp_slider.sh \${lm} \${win1} \${step1}
 $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win5} \${step5}
 $BASE_DIR/sh/gxp_slider.sh \${lmm} \${win1} \${step1}
 
 # Run the average over genome window for univariate PLINK results and each set of parameters
-$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win5} \${step5}
-$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${TRAITS}.assoc.txt.gz \${win1} \${step1}
+$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}.assoc.txt.gz \${win5} \${step5}
+$BASE_DIR/sh/assoc_slider.sh $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${TRAITS}.assoc.txt.gz \${win1} \${step1}
 
 
 EOA
@@ -339,7 +341,7 @@ cat > $jobfile4 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=4_mvplink.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-55
+#SBATCH --array=1-14
 #SBATCH --output=$BASE_DIR/logs/4_mvplink_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/4_mvplink_%A_%a.err
 #SBATCH --nodes=1
@@ -364,7 +366,7 @@ echo \${COL}
 # echo \${P}
 
 # Run the MVPLINK command on the combinations of multivariate traits
-/user/doau0129/work/software/plink.multivariate --file $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi --mqfam --mult-pheno $BASE_DIR/outputs/7_gxp/$DATASET/gwas_multi.phen --pheno-name \${COL} --out $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}
+/user/doau0129/work/software/plink.multivariate --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/gwas_multi --mqfam --mult-pheno $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/gwas_multi.phen --pheno-name \${COL} --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}
 
 
 EOA
@@ -379,7 +381,7 @@ cat > $jobfile5 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=5_slider.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-55
+#SBATCH --array=1-14
 #SBATCH --output=$BASE_DIR/logs/5_slider_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/5_slider_%A_%a.err
 #SBATCH --nodes=1
@@ -403,7 +405,7 @@ echo \${MV}
 NAME="\$(cut -d ' ' -f 1 <<<"\${MV}")"                                                # Find the name of the combination
 echo \${NAME}
 
-FILE=$BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mqfam.total                            # Input output of mvplink analysis
+FILE=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}.mqfam.total                            # Input output of mvplink analysis
 echo \${FILE}
 
 # Pre clean the output file
@@ -413,7 +415,7 @@ sed 's/SNP BP /CHROM POS /g' | \
 awk '{sub(/\:.*$/,"",\$1); print \$0}' | \
 awk '{if (\$3!="NA"){ print}}' | \
 body sort -k1,1 -k2,2n | \
-gzip > $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
+gzip > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}.mvplink.txt.gz
 
 win5=50000                                                                            # Create different sets of parameters
 step5=5000
@@ -426,11 +428,11 @@ echo \${win1}
 echo \${step1}
 
 # Run the genome average of MVPLINK output with different set of parameters
-$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win5} \${step5}
-$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz \${win1} \${step1}
+$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}.mvplink.txt.gz \${win5} \${step5}
+$BASE_DIR/sh/mvplink_slider.sh $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}.mvplink.txt.gz \${win1} \${step1}
 
 # No average just logarithmic of GWAS values
-$BASE_DIR/sh/mvplink_log.sh $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}.mvplink.txt.gz
+$BASE_DIR/sh/mvplink_log.sh $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}.mvplink.txt.gz
 
 
 EOA
@@ -459,28 +461,28 @@ ml R/4.0.2-foss-2019b
 ml FriBidi
 ml HarfBuzz
 
-ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
-ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.assoc.50k.5k.txt.gz > $BASE_DIR/outputs/lof/assoc_50k.fofn
+ls -1 $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/mvplink_50k.fofn
+ls -1 $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/*.assoc.50k.5k.txt.gz > $BASE_DIR/outputs/lof/assoc_50k.fofn
 
-rm $BASE_DIR/outputs/7_gxp/$DATASET/\*.tmp
+rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\*.tmp
 
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_gemma
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC2
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC3
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC4
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC5
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC6
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC7
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC8
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC9
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_byPCs
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_gemma
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC2
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC3
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC4
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC5
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC6
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC7
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC8
+# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC9
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_byPCs
 
-Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_plink
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_plink
 
-Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
+Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
-Rscript $BASE_DIR/R/gxp_pca_univariate.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
+Rscript $BASE_DIR/R/gxp_pca_univariate.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
 
 EOA

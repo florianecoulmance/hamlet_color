@@ -64,7 +64,7 @@ cat > $jobfile0 <<EOA # generate the job file
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=04:00:00
-
+ 
 
 INPUT=$BASE_DIR/outputs/09_1_snpfiltration/snp_filterd.vcf.gz                                     # input the genotyping file with SNPs created by step 14 of genotyping.sh pipeline
 

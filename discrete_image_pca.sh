@@ -33,7 +33,7 @@ done
 
 # ********* Create necessary variables *********
 # -------------------------------------------------
-
+ 
 # To get the right dataset in the software output folder where all combinations of dataset are found
 ALIGN_FOLDER="left_54off_59on"
 echo $ALIGN_FOLDER

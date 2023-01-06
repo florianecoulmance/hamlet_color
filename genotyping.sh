@@ -915,7 +915,7 @@ ml hpc-env/8.3                                                                  
 ml R/4.0.2-foss-2019b
 #ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
 ml FriBidi
-ml HarfBuzz
+ml HarfBuzz 
 
 INPUT_PCA=$BASE_DIR/outputs/lof/17_pca.fofn                                           # input the file of list of files (4 files)
 PCA=\$(cat \${INPUT_PCA} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)               # create 1 job per genotyping file (4)
