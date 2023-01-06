@@ -203,7 +203,7 @@ if (analysis == "univariate_gemma") {
   if (analysis == "multivariate_plink_PC1") {
     files <- grep("PC1_", f, value = TRUE)
     print(files)
-    traits <- list("PC1_10", "PC1_2", "PC1_3", "PC1_4", "PC1_5", "PC1_6", "PC1_7", "PC1_8", "PC1_9") #"PC1_11", "PC1_12", "PC1_13", "PC1_14", "PC1_15", 
+    traits <- list("PC1_2", "PC1_3", "PC1_4", "PC1_5") #"PC1_11", "PC1_12", "PC1_13", "PC1_14", "PC1_15", 
     print(traits)
     files_l <- concat_files_mul(files,data_path)
 
