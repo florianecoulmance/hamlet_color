@@ -165,8 +165,8 @@ echo \${INPUT_POP}
 #   grep \$k $BASE_DIR/outputs/8_fst/pop.txt  | cut -f 1 > $BASE_DIR/outputs/8_fst/pop.\$k.txt
 #   done                                                                                          # separate the different populations into different files
 
-
-POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abebel.txt \                                      # create string for vcftools arguments including all the population files
+# create string for vcftools arguments including all the population files
+POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abebel.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abeboc.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abepue.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.chlpue.txt \
@@ -195,14 +195,14 @@ POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abebel.txt \                    
   # fst by SNP      # use VCFTOOLS to calculate FST by SNP
      # ----------
 vcftools --gzvcf \${INPUT_VCF} \
-     \$POP \                                                              
+     \$POP \
      --stdout  2> multi_fst_snp.log | \
      gzip > $BASE_DIR/outputs/8_fst/multi_fst_snp.tsv.gz
 
 
 # fst 50kb window  # use VCFTOOLS to calculate FST by 50kb SNP windows of the genome
      # ---------------
-vcftools --gzvcf \${INPUT_VCF} \                                                               
+vcftools --gzvcf \${INPUT_VCF} \
       \$POP \
      --fst-window-step 5000 \
      --fst-window-size 50000 \
@@ -211,8 +211,8 @@ vcftools --gzvcf \${INPUT_VCF} \
 
 # fst 10kb window  # use VCFTOOLS to calcultae FST by 10kb SNP windows of the genome
      # ---------------
-vcftools --gzvcf \${INPUT_VCF} \                                                               
-      \$POP \   
+vcftools --gzvcf \${INPUT_VCF} \
+      \$POP \
      --fst-window-step 1000 \
      --fst-window-size 10000 \
      --stdout  2> multi_fst.10k.log | \
@@ -339,17 +339,18 @@ grep \${LOC1} \${POP} > $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop1.tx
 grep \${LOC2} \${POP} > $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt     # this will be used as an input for FST calculations
 
 
-vcftools --gzvcf \${VCF} \                                                                     # use VCFTOOLS to calculate pairwise FST
+# use VCFTOOLS to calculate pairwise FST
+vcftools --gzvcf \${VCF} \
       --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
       --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
-      --fst-window-step 5000 \                                                                 # use SNP windows of 50kb
+      --fst-window-step 5000 \
       --fst-window-size 50000 \
       --out $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.50k 2> $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.50k.log
 
-vcftools --gzvcf \${VCF} \                  
+vcftools --gzvcf \${VCF} \
       --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop1.txt \
       --weir-fst-pop $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}_pop2.txt \
-      --fst-window-size 10000 \                                                                # use SNP windows of 10kb
+      --fst-window-size 10000 \
       --fst-window-step 1000 \
       --out $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.10k 2> $BASE_DIR/outputs/8_fst/\${SP}_\${LOC1}_\${LOC2}.10k.log
 
@@ -381,7 +382,8 @@ cat > $jobfile5 <<EOA # generate the job file
 
 cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
 
-cat $BASE_DIR/outputs/8_fst/\*.50k.log | \                                            # find lines where mean and weighted FST estimates are reported
+# find lines where mean and weighted FST estimates are reported
+cat $BASE_DIR/outputs/8_fst/\*.50k.log | \
     grep -E 'Weir and Cockerham|--out' | \
     grep -A 3 50k | \
     sed '/^--/d; s/^.*--out //g; s/.50k//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
