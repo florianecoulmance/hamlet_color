@@ -159,17 +159,17 @@ echo \${INPUT_VCF}
 INPUT_POP=$BASE_DIR/outputs/8_fst/hamlets.pop.txt                                      # input the list of samples table created at the previous step
 echo \${INPUT_POP}
 
-awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/8_fst/pop.txt           # from samples file modify and create an intermediate file with hamlet population names
+# awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/8_fst/pop.txt           # from samples file modify and create an intermediate file with hamlet population names
 
-for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
-  grep \$k $BASE_DIR/outputs/8_fst/pop.txt  | cut -f 1 > $BASE_DIR/outputs/8_fst/pop.\$k.txt
-  done                                                                                          # separate the different populations into different files
+# for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
+#   grep \$k $BASE_DIR/outputs/8_fst/pop.txt  | cut -f 1 > $BASE_DIR/outputs/8_fst/pop.\$k.txt
+#   done                                                                                          # separate the different populations into different files
 
 
 POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abebel.txt \                                      # create string for vcftools arguments including all the population files
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abeboc.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abepue.txt \
-   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.chlp ue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.chlpue.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.floflo.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.gemflo.txt \
    --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.gumboc.txt \
@@ -194,7 +194,8 @@ POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abebel.txt \                    
 
   # fst by SNP      # use VCFTOOLS to calculate FST by SNP
      # ----------
-vcftools --gzvcf \${INPUT_VCF} \$POP \                                                              
+vcftools --gzvcf \${INPUT_VCF} \
+     \$POP \                                                              
      --stdout  2> multi_fst_snp.log | \
      gzip > $BASE_DIR/outputs/8_fst/multi_fst_snp.tsv.gz
 
