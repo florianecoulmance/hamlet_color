@@ -162,55 +162,55 @@ echo \${INPUT_POP}
 awk '{print \$1"\\t"\$2\$3}' \${INPUT_POP} > $BASE_DIR/outputs/8_fst/pop.txt           # from samples file modify and create an intermediate file with hamlet population names
 
 for k in abebel abeboc abepue chlpue floflo gemflo gumboc gutpue indbel indpue maybel nigbel nigboc nigflo puebel pueboc pueflo puepue ranbel tanpue uniboc uniflo unipue; do
-  grep \$k pop.txt | cut -f 1 > $BASE_DIR/outputs/fst/pop.\$k.txt
+  grep \$k $BASE_DIR/outputs/8_fst/pop.txt  | cut -f 1 > $BASE_DIR/outputs/8_fst/pop.\$k.txt
   done                                                                                          # separate the different populations into different files
 
 
-POP="--weir-fst-pop $BASE_DIR/outputs/fst/pop.abebel.txt \                                      # create string for vcftools arguments including all the population files
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.abeboc.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.abepue.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.chlp ue.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.floflo.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.gemflo.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.gumboc.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.gutpue.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.indbel.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.indpue.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.maybel.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigbel.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigboc.txt \
-   --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigflo.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.nigpue.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.puebel.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.pueboc.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.pueflo.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.puepue.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.ranbel.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.tanpue.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.uniboc.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.uniflo.txt \
-  --weir-fst-pop $BASE_DIR/outputs/fst/pop.unipue.txt"
+POP="--weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abebel.txt \                                      # create string for vcftools arguments including all the population files
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abeboc.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.abepue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.chlp ue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.floflo.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.gemflo.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.gumboc.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.gutpue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.indbel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.indpue.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.maybel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.nigbel.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.nigboc.txt \
+   --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.nigflo.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.nigpue.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.puebel.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.pueboc.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.pueflo.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.puepue.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.ranbel.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.tanpue.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.uniboc.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.uniflo.txt \
+  --weir-fst-pop $BASE_DIR/outputs/8_fst/pop.unipue.txt"
 
 
-  # fst by SNP
+  # fst by SNP      # use VCFTOOLS to calculate FST by SNP
      # ----------
-vcftools --gzvcf \${INPUT_VCF} \                                                                # use VCFTOOLS to calculate FST by SNP
-      \$POP \
+vcftools --gzvcf \${INPUT_VCF} \$POP \                                                              
      --stdout  2> multi_fst_snp.log | \
      gzip > $BASE_DIR/outputs/8_fst/multi_fst_snp.tsv.gz
 
-     # fst 50kb window
+
+# fst 50kb window  # use VCFTOOLS to calculate FST by 50kb SNP windows of the genome
      # ---------------
-vcftools --gzvcf \${INPUT_VCF} \                                                               # use VCFTOOLS to calculate FST by 50kb SNP windows of the genome
+vcftools --gzvcf \${INPUT_VCF} \                                                               
       \$POP \
      --fst-window-step 5000 \
      --fst-window-size 50000 \
      --stdout  2> multi_fst.50k.log | \
      gzip > $BASE_DIR/outputs/8_fst/multi_fst.50k.tsv.gz
 
-     # fst 10kb window
+# fst 10kb window  # use VCFTOOLS to calcultae FST by 10kb SNP windows of the genome
      # ---------------
-vcftools --gzvcf \${INPUT_VCF} \                                                               # use VCFTOOLS to calcultae FST by 10kb SNP windows of the genome
+vcftools --gzvcf \${INPUT_VCF} \                                                               
       \$POP \   
      --fst-window-step 1000 \
      --fst-window-size 10000 \
