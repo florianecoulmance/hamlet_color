@@ -528,7 +528,7 @@ cat > $jobfile9 <<EOA # generate the job file
 #cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
 
 # find lines where mean and weighted FST estimates are reported
-zless $BASE_DIR/outputs/8_fst/\*_nowindow.log | \
+zless $BASE_DIR/outputs/8_fst/*_nowindow.log | \
     grep -E 'Weir and Cockerham|--out' | \
     grep -A 8 nowindow | \
     sed '/^--/d; s/^.*--out //g; s/.nowindow//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
