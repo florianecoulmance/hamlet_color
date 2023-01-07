@@ -1,0 +1,56 @@
+INFO  07-01 00:46:05,816 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:05,817 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:05,817 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:05,816 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:05,920 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:05,949 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+DEBUG 07-01 00:46:05,967 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:05,966 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:05,977 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:05,979 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:05,989 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:05,993 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,003 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,006 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,055 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,078 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+INFO  07-01 00:46:06,107 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:06,133 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:06,142 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+INFO  07-01 00:46:06,159 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+INFO  07-01 00:46:06,172 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:06,185 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+INFO  07-01 00:46:06,197 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+INFO  07-01 00:46:06,212 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+DEBUG 07-01 00:46:06,268 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,268 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,302 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+INFO  07-01 00:46:06,306 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+DEBUG 07-01 00:46:06,310 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,311 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,319 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,328 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+INFO  07-01 00:46:06,334 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+WARN  07-01 00:46:06,388 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+INFO  07-01 00:46:06,411 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+DEBUG 07-01 00:46:06,416 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+WARN  07-01 00:46:06,441 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+WARN  07-01 00:46:06,442 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+WARN  07-01 00:46:06,449 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+INFO  07-01 00:46:06,452 (PGDSpiderConfig.java:loadConfig:69)  -Failed to load PGDSpider configuration from /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml! Loading default configuration.
+WARN  07-01 00:46:06,486 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+DEBUG 07-01 00:46:06,528 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,555 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,579 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+DEBUG 07-01 00:46:06,604 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+INFO  07-01 00:46:06,622 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
+WARN  07-01 00:46:06,711 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+DEBUG 07-01 00:46:06,733 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+WARN  07-01 00:46:06,765 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+DEBUG 07-01 00:46:06,774 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
+WARN  07-01 00:46:06,813 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+WARN  07-01 00:46:06,820 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+WARN  07-01 00:46:06,855 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
+ERROR 07-01 00:46:06,872 (VcfParser.java:parse:383)  -No variant sites in the specified regions!
+ERROR 07-01 00:46:06,932 (NewHybridsWriter.java:write:143)  -No Microsat, AFLP, SNP or Standard data in the input file. NEWHYBRIDS can only handle these data types!!!
+WARN  07-01 00:46:06,985 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
