@@ -1,9 +1,10 @@
 #!/usr/bin/env Rscript
 # by: Floriane Coulmance: 21/06/2022
 # usage:
-# Rscript .R <fst_pairwise_table.R> <fst_glob>
+# Rscript fst_pairwise_table.R <fst_glob> <figure_path>
 # -------------------------------------------------------------------------------------------------------------------
-# fst_glob in : $BASE_DIR/outputs/8_fst/$DATASET/fst_global_pop.txt
+# fst_glob in : $BASE_DIR/outputs/8_fst/fst_globals_pop_nowindow.txt
+# figure_path : $BASE_DIR/figures/8_fst/
 # -------------------------------------------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -31,12 +32,13 @@ library(gridExtra)
 
 # Get the arguments in variables
 args = commandArgs(trailingOnly=FALSE)
-args = args[6]
+args = args[6:7]
 print(args)
 
 fst_glob <- as.character(args[1]) # Path to the global fst file
 # fst_glob <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/fst_globals_pop_nowindow.txt"
-
+figure_path <- as.character(args[2])
+# figure_path <- "/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/8_fst/
 
 # -------------------------------------------------------------------------------------------------------------------
 # FUNCTIONS
@@ -91,7 +93,7 @@ colnames(cmp_glob)[1] <- "POPULATIONS"
 tt <- ttheme_default() #core=list(bg_params=list(fill=fills, col = "gray56"))
 tt$core$fg_params <- list(fontface=matrix(c(2,1,1,1,1,1,1,1,1,1,1), ncol=ncol(cmp_glob),nrow=nrow(cmp_glob),byrow=TRUE))
 
-pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/fst/fst_pairwise_table_nowindow.pdf", height = 3.2, width = 8.5)
+pdf(paste0(figure_path,"fst_pairwise_table_nowindow.pdf"), height = 3.2, width = 8.5)
 # p<-tableGrob(cmp_glob)
 grid.table(cmp_glob, theme=tt)
 # grid.table(cmp_glob[1:10,1], theme=tt)

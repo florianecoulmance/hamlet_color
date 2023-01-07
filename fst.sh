@@ -31,6 +31,9 @@ done
 # Repo for gxp outputs
 mkdir $BASE_DIR/outputs/8_fst/
 
+# Repo for gxp figures
+mkdir $BASE_DIR/figures/8_fst/
+
 
 
 # ********* Jobs creation *************************
@@ -524,7 +527,8 @@ cat > $jobfile9 <<EOA # generate the job file
 
 #cd $BASE_DIR/outputs/8_fst/                                                           # move to folder where log files from FST calculation can be found
 
-zless $BASE_DIR/outputs/8_fst/\*_nowindow.log | \                                            # find lines where mean and weighted FST estimates are reported
+# find lines where mean and weighted FST estimates are reported
+zless $BASE_DIR/outputs/8_fst/\*_nowindow.log | \
     grep -E 'Weir and Cockerham|--out' | \
     grep -A 8 nowindow | \
     sed '/^--/d; s/^.*--out //g; s/.nowindow//g; /^Output/d; s/Weir and Cockerham //g; s/ Fst estimate: /\t/g' | \
@@ -586,6 +590,36 @@ vcftools --gzvcf \${INPUT} \${POP} --out $BASE_DIR/outputs/8_fst/all_pop 2> $BAS
 
 EOA
 
+
+# ------------------------------------------------------------------------------
+# Job 11 make the pairwise fst comparison table
+
+jobfile11=11_table_pair.tmp # temp file
+cat > $jobfile11 <<EOA # generate the job file
+#!/bin/bash
+#SBATCH --job-name=11_table_pair
+#SBATCH --partition=carl.p
+#SBATCH --output=$BASE_DIR/logs/11_table_pair_%A_%a.out
+#SBATCH --error=$BASE_DIR/logs/11_table_pair_%A_%a.err
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=32G
+#SBATCH --time=04:30:00
+
+
+module load hpc-env/8.3                                                                           # load necessary environment for necessary version of R 
+module load R/4.0.2-foss-2019b
+ml FriBidi
+ml HarfBuzz
+
+
+INPUT=$BASE_DIR/outputs/8_fst/fst_globals_pop_nowindow.txt  
+
+Rscript $BASE_DIR/R/fst_pairwise_table.R \${INPUT} $BASE_DIR/figures/8_fst/
+
+
+EOA
 
 
 # ********** Schedule the job launching ***********
@@ -697,12 +731,24 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid10" ];
+if [ "$JID_RES" = "jid11" ];
+then
+  echo "*****   10_test4       : DONE         **"
+elif [ "$JID_RES" = "jid10" ]
 then
   jid10=$(sbatch ${jobfile10})
 else
   jid10=$(sbatch --dependency=afterok:${jid9##* } ${jobfile10})
 fi
+
+
+if [ "$JID_RES" = "jid11" ];
+then
+  jid11=$(sbatch ${jobfile11})
+else
+  jid11=$(sbatch --dependency=afterok:${jid10##* } ${jobfile11})
+fi
+
 
 
 # ******** Remove useless files and folders *******
