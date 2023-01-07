@@ -58,7 +58,7 @@ cat > $jobfile0 <<EOA # indicate that EOA is the end of the file
 
 INPUT=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                                 # input the genotyping file with SNPs only created with the genotyping.sh pipeline
 
-tr=(nig pue bel boc flo puer)                                                                   # list of 2 species and 3 locations that have enough data points to be analysed for FST 
+tr=(nig pue bel boc puer)                                                                   # list of 2 species and 3 locations that have enough data points to be analysed for FST 
 printf "%s\n" "\${tr[@]}" > $BASE_DIR/outputs/lof/fst_species.fofn                              # put this list with each entry in a new line in a file
 
 INPUT_SP=$BASE_DIR/outputs/lof/fst_species.fofn                                                 # use the previous file as input and create a job for each line of this file
