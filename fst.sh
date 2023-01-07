@@ -127,10 +127,8 @@ cat > $jobfile1 <<EOA # generate the job file
 INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                             # input the SNP dataset 
 echo \${INPUT_VCF}
 
-vcfsamplenames \${INPUT_VCF} | \                                                                # get all samples from input file and modify to get a table that is tab separated
-       grep "abe\\|gum\\|ind\\|may\\|nig\\|pue\\|ran\\|uni\\|gem\\|flo\\|chl\\|tan\\|gut" | \
-       awk '{print \$1"\\t"\$1}' | \
-       sed 's/\\t.*\\(...\\)\\(...\\)\$/\\t\\1\\t\\2/g' > $BASE_DIR/outputs/8_fst/hamlets.pop.txt
+vcfsamplenames \${INPUT_VCF} | grep "abe\\|gum\\|ind\\|may\\|nig\\|pue\\|ran\\|uni\\|gem\\|flo\\|chl\\|tan\\|gut" | awk '{print \$1"\\t"\$1}' | sed 's/\\t.*\\(...\\)\\(...\\)\$/\\t\\1\\t\\2/g' > $BASE_DIR/outputs/8_fst/hamlets.pop.txt
+# get all samples from input file and modify to get a table that is tab separated
 
 
 EOA
@@ -220,7 +218,7 @@ vcftools --gzvcf \${INPUT_VCF} \                                                
      gzip > $BASE_DIR/outputs/8_fst/multi_fst.10k.tsv.gz
 
 
-Rscript \$BASE_DIR/R/table_fst_outliers.R multi_fst.50k.tsv.gz $BASE_DIR/outputs/8_fst/ # creates table of outlier positions/regions from FST values _ find original R code here : https://github.com/k-hench/hamlet_radiation/blob/master/R/table_fst_outliers.R, output is fst_outliers_998.tsv
+Rscript $BASE_DIR/R/table_fst_outliers.R multi_fst.50k.tsv.gz $BASE_DIR/outputs/8_fst/ # creates table of outlier positions/regions from FST values _ find original R code here : https://github.com/k-hench/hamlet_radiation/blob/master/R/table_fst_outliers.R, output is fst_outliers_998.tsv
 
 
 EOA
