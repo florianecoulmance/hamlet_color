@@ -1,53 +1,27 @@
 
 VCFtools - 0.1.16
 (C) Adam Auton and Anthony Marcketta 2009
- 
+
 Parameters as interpreted:
 	--gzvcf /user/doau0129/work/chapter1//outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/abebel.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/abeboc.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/abepue.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/chlpue.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/floflo.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/gemflo.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/gumboc.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/gutpue.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/indbel.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/indpue.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/maybel.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/nigbel.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/nigboc.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/nigflo.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/puebel.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/pueboc.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/pueflo.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/puepue.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/ranbel.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/tanpue.pop
-	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/uniboc.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/uniflo.pop
 	--weir-fst-pop /user/doau0129/work/chapter1//outputs/8_fst/unipue.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/abebel.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/abeboc.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/abepue.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/chlpue.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/floflo.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/gemflo.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/gumboc.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/gutpue.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/indbel.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/indpue.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/maybel.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/nigbel.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/nigboc.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/nigflo.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/puebel.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/pueboc.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/pueflo.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/puepue.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/ranbel.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/tanpue.pop
-	--keep /user/doau0129/work/chapter1//outputs/8_fst/uniboc.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/uniflo.pop
 	--keep /user/doau0129/work/chapter1//outputs/8_fst/unipue.pop
 	--out /user/doau0129/work/chapter1//outputs/8_fst/all_pop
@@ -66,10 +40,10 @@ Warning: Expected at least 2 parts in INFO entry: ID=MLEAC,Number=A,Type=Integer
 Warning: Expected at least 2 parts in INFO entry: ID=MLEAF,Number=A,Type=Float,Description="Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed">
 Warning: Expected at least 2 parts in INFO entry: ID=MLEAF,Number=A,Type=Float,Description="Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed">
 Keeping individuals in 'keep' list
-After filtering, kept 112 out of 113 Individuals
+After filtering, kept 82 out of 113 Individuals
 Outputting Weir and Cockerham Fst estimates.
 	Fst: Only using diploid sites.
-Weir and Cockerham mean Fst estimate: 0.047864
-Weir and Cockerham weighted Fst estimate: 0.037356
+Weir and Cockerham mean Fst estimate: 0.020869
+Weir and Cockerham weighted Fst estimate: 0.033743
 After filtering, kept 15900414 out of a possible 15900414 Sites
-Run Time = 760.00 seconds
+Run Time = 691.00 seconds

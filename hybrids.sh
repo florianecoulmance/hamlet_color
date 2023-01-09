@@ -56,7 +56,7 @@ cat > $jobfile0 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=0_pairs
 #SBATCH --partition=carl.p
-#SBATCH --array=0-11
+#SBATCH --array=7
 #SBATCH --output=$BASE_DIR/logs/0_pairs_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/0_pairs_%A_%a.err
 #SBATCH --nodes=1
@@ -99,7 +99,7 @@ cat > $jobfile1 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=1_snp
 #SBATCH --partition=carl.p
-#SBATCH --array=1-12
+#SBATCH --array=10
 #SBATCH --output=$BASE_DIR/logs/1_snp_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/1_snp_%A_%a.err
 #SBATCH --nodes=1
@@ -137,7 +137,7 @@ cat > $jobfile2 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=2_vcf
 #SBATCH --partition=carl.p
-#SBATCH --array=1-12
+#SBATCH --array=10
 #SBATCH --output=$BASE_DIR/logs/2_vcf_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/2_vcf_%A_%a.err
 #SBATCH --nodes=1
@@ -180,7 +180,7 @@ cat > $jobfile3 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=3_format
 #SBATCH --partition=carl.p
-#SBATCH --array=1-12
+#SBATCH --array=10
 #SBATCH --output=$BASE_DIR/logs/3_format_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/3_format_%A_%a.err
 #SBATCH --nodes=1
@@ -204,13 +204,13 @@ echo \${POP_UN}
 POP_DEUX=\${PREFIX##*_}
 echo \${POP_DEUX}
 
-# grep '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf               # retrieve all the content of the vcf file that starts with # (info at the beginning and column names)
+grep '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf               # retrieve all the content of the vcf file that starts with # (info at the beginning and column names)
            
 
-# grep -v '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf | shuf -n 80 | sort -k 1 -k2 >> $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf              # select randomly 80 SNPs out of the 800 most differentiated positions
+grep -v '#' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.recode.vcf | shuf -n 80 | sort -k 1 -k2 >> $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf              # select randomly 80 SNPs out of the 800 most differentiated positions
             # add those 80 SNPs it to the previously created vcf files
 
-# grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf | cut -f 10- | sed 's/\\t/\\n/g' > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt           # from the newly 80SNPs dataset created, make a list of individuals' name
+grep '#CHROM' $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs.vcf | cut -f 10- | sed 's/\\t/\\n/g' > $BASE_DIR/outputs/9_newhyb/newHyb.\${POP_UN}_\${POP_DEUX}.80SNPs_individuals.txt           # from the newly 80SNPs dataset created, make a list of individuals' name
                                                                              # keep the indiviuals' name in a new txt file
         
 
@@ -233,7 +233,7 @@ cat > $jobfile4 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=4_nh
 #SBATCH --partition=carl.p
-#SBATCH --array=1-12
+#SBATCH --array=10
 #SBATCH --output=$BASE_DIR/logs/4_nh_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/4_nh_%A_%a.err
 #SBATCH --nodes=1
