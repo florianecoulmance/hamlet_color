@@ -55,7 +55,7 @@ pie_plots <- function(dat) {
   p <- ggplot(data = dat) +
     geom_scatterpie(aes(x=x_pos, y=y_pos, group=allele, r=radius),
                     data=dat, cols=colnames(dat)[2:14], color=NA, alpha=.8) +
-    geom_text(aes(y = y_pos + 3, x = x_pos, 
+    geom_text(aes(y = y_pos + 4, x = x_pos, 
                   label = paste0(label,"\n",allele,"\nnb individuals : ",sum))) +
     scale_fill_manual(values=c("abe"="#E5E5A1",
                                "aff"="#FFB1D8",
@@ -108,7 +108,7 @@ save_plots <- function(plot, label, path_fig) {
   hypo_save(filename = paste0(path_fig,label,"_pie.png"),
             type = "cairo",
             plot = plot,
-            width = 12,
+            width = 8,
             height = 16)
   
 }
