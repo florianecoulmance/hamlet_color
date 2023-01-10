@@ -144,11 +144,11 @@ for (i in names(test[,2:20])) {
                                       endsWith(allele, "0/1") ~ "heterozygous",
                                       endsWith(allele, "1/1") ~ "homozygous alternative"),
                     x_pos = case_when(endsWith(allele, "0/0") ~ 0,
-                                      endsWith(allele, "0/1") ~ 4,
-                                      endsWith(allele, "1/1") ~ 8),
+                                      endsWith(allele, "0/1") ~ 0,
+                                      endsWith(allele, "1/1") ~ 0),
                     y_pos = case_when(endsWith(allele, "0/0") ~ 4,
-                                      endsWith(allele, "0/1") ~ 4,
-                                      endsWith(allele, "1/1") ~ 4),
+                                      endsWith(allele, "0/1") ~ 8,
+                                      endsWith(allele, "1/1") ~ 12),
                     sum = as.numeric(rowSums(.[,2:14])),
                     radius = log(sum)/1.8)
   print(pie_dat)

@@ -53,12 +53,12 @@ cat > $jobfile0 <<EOA # indicate that EOA is the end of the file
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
 
 
-INPUT=$BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/*.txt                                # input the genotyping file with SNPs only created with the genotyping.sh pipeline
+INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/*.txt                                # input the genotyping file with SNPs only created with the genotyping.sh pipeline
 echo \${INPUT}
 
-awk 'FNR==1 && NR!=1 { while (/^<header>/) getline; } 1 {print}' \${INPUT} > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt 
+awk 'FNR==1 && NR!=1 { while (/^<header>/) getline; } 1 {print}' \${INPUT} > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/all.txt 
 
-awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/all.txt > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/all.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
 
 
 EOA
@@ -82,7 +82,7 @@ cat > $jobfile1 <<EOA # indicate that EOA is the end of the file
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
 
 
-INPUT=$BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
+INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
 
 sed 1d \${INPUT} | while read -r line;
     do
@@ -91,10 +91,10 @@ sed 1d \${INPUT} | while read -r line;
         echo \${chrom}
         pos=\$(echo \${line} | awk '{print \$2}')
         echo \${pos}
-        bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v '##' >> $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt
+        bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v '##' >> $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/intermediate.txt
 done
 
-awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/intermediate.txt | sed 's|#||g' > $BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/intermediate.txt | sed 's|#||g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
 
 
 EOA
@@ -123,7 +123,7 @@ ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
 ml FriBidi
 ml HarfBuzz
 
-INPUT=$BASE_DIR/outputs/7_gxp/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
+INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_alleles.txt
 
 Rscript $BASE_DIR/R/snp_alleles_plots.R \${INPUT} $BASE_DIR/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/
 
