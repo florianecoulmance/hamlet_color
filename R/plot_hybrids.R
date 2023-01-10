@@ -1,10 +1,10 @@
 #!/usr/bin/env Rscript
 # by: Floriane Coulmance: 02/02/2022
 # usage:
-# Rscript plot_hybrids.R <newhybrid_directory> <result_directory>
+# Rscript plot_hybrids.R <newhybrid_directory> <figure_dir>
 # -------------------------------------------------------------------------------------------------------------------
 # newhybrid_directory : $BASE_DIR/outputs/9_newhyb/
-# result_directory : $BASE_DIR/figures/9_newhyb/
+# figure_dir : $BASE_DIR/figures/9_newhyb/
 # -------------------------------------------------------------------------------------------------------------------
 
 
@@ -120,10 +120,14 @@ getPofZ <- function(res_paths) {
                                                  unname() %>%
                                                  unlist())
   
+  print(NHres)
+
   # Rename column names for big table
   bin_tib <- tibble(bin_generic = c(colN, "F1", "F2"),
                     bin = c(paste0(c(pops[1],pops[1],pops[2],pops[2]), c('_pure','_BC','_pure','_BC')), "F1", "F2"))
   
+  print(bin_tib)
+
   # Create final data table
   data <- NHres %>%
           pivot_longer(names_to = 'bin_generic',
@@ -147,9 +151,12 @@ plot_loc <- function(loc){
   
   # Create big data table combining all files from different pairwise comparison and keep track of pairwise comparison label 
   data <- map_dfr(.x = fold_paths[str_sub(fold_paths,-23,-21) == loc],
-                  .f = getPofZ)
-  print(data)
+                  .f = getPofZ) %>%
+          write_tsv(path = str_c(fig_path, loc, "_hybrids",'.txt' )) # write output to file
   
+  print(data)
+  # write_tsv(path = str_c(fig_path, loc, "_hybrids",'.txt' )) # write output to file
+
   # Find samples that are hybrids
   is_hybr <- data %>%
     filter(!(grepl(pattern = "_pure", bin))) %>%
