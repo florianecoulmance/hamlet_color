@@ -108,7 +108,7 @@ save_plots <- function(plot, label, path_fig) {
   hypo_save(filename = paste0(path_fig,label,"_pie.png"),
             type = "cairo",
             plot = plot,
-            width = 2,
+            width = 3,
             height = 16)
   
 }
@@ -146,7 +146,7 @@ for (i in names(test[,2:20])) {
                     x_pos = case_when(endsWith(allele, "0/0") ~ 0,
                                       endsWith(allele, "0/1") ~ 0,
                                       endsWith(allele, "1/1") ~ 0),
-                    y_pos = case_when(endsWith(allele, "0/0") ~ 22,
+                    y_pos = case_when(endsWith(allele, "0/0") ~ 20,
                                       endsWith(allele, "0/1") ~ 12,
                                       endsWith(allele, "1/1") ~ 4),
                     sum = as.numeric(rowSums(.[,2:14])),
