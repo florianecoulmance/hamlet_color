@@ -96,7 +96,7 @@ pie_plots <- function(dat) {
           axis.ticks = element_blank(),
           axis.text = element_blank(),
           panel.border = element_blank()) +
-    guides(fill = guide_legend(nrow = 1)) +
+    guides(fill = guide_legend(nrow = 1))
 
   
 }
