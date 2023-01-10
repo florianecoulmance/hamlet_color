@@ -146,7 +146,7 @@ for (i in names(test[,2:20])) {
                     x_pos = case_when(endsWith(allele, "0/0") ~ 0,
                                       endsWith(allele, "0/1") ~ 0,
                                       endsWith(allele, "1/1") ~ 0),
-                    y_pos = case_when(endsWith(allele, "0/0") ~ 28,
+                    y_pos = case_when(endsWith(allele, "0/0") ~ 22,
                                       endsWith(allele, "0/1") ~ 12,
                                       endsWith(allele, "1/1") ~ 4),
                     sum = as.numeric(rowSums(.[,2:14])),
