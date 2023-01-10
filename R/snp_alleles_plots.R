@@ -86,17 +86,18 @@ pie_plots <- function(dat) {
                                  "uni" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_unicolor.l.cairo.png' width='40' /><br>*H. unicolor*",
                                  "tan" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_tan.l.cairo.png' width='40' /><br>*H. affinis*")) + 
     
-    guides(fill = guide_legend(nrow = 2)) +
     theme(legend.title=element_blank(),
           panel.background = element_rect(fill = "white"),
           panel.grid = element_blank(),
-          legend.position="bottom",
+          legend.position="none",
           legend.text =  element_markdown(size = 10),
           legend.key=element_blank(),
           axis.title = element_blank(),
           axis.ticks = element_blank(),
           axis.text = element_blank(),
-          panel.border = element_blank())
+          panel.border = element_blank()) +
+    guides(fill = guide_legend(nrow = 1)) +
+
   
 }
 
@@ -146,9 +147,9 @@ for (i in names(test[,2:20])) {
                     x_pos = case_when(endsWith(allele, "0/0") ~ 0,
                                       endsWith(allele, "0/1") ~ 0,
                                       endsWith(allele, "1/1") ~ 0),
-                    y_pos = case_when(endsWith(allele, "0/0") ~ 4,
-                                      endsWith(allele, "0/1") ~ 8,
-                                      endsWith(allele, "1/1") ~ 12),
+                    y_pos = case_when(endsWith(allele, "0/0") ~ 28,
+                                      endsWith(allele, "0/1") ~ 12,
+                                      endsWith(allele, "1/1") ~ 4),
                     sum = as.numeric(rowSums(.[,2:14])),
                     radius = log(sum)/1.8)
   print(pie_dat)
