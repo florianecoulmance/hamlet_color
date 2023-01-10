@@ -108,8 +108,8 @@ save_plots <- function(plot, label, path_fig) {
   hypo_save(filename = paste0(path_fig,label,"_pie.png"),
             type = "cairo",
             plot = plot,
-            width = 16,
-            height = 84,8)
+            width = 8,
+            height = 42.4)
   
 }
 
