@@ -96,8 +96,7 @@ pie_plots <- function(dat) {
           axis.ticks = element_blank(),
           axis.text = element_blank(),
           panel.border = element_blank()) +
-    guides(fill = guide_legend(nrow = 1))
-
+    guides(fill = guide_legend(nrow = 1)) 
   
 }
 
@@ -110,7 +109,7 @@ save_plots <- function(plot, label, path_fig) {
             type = "cairo",
             plot = plot,
             width = 12,
-            height = 8.5)
+            height = 16)
   
 }
 
@@ -159,5 +158,3 @@ for (i in names(test[,2:20])) {
   save_plots(p,i,figure_path)
   
 }
-
-
