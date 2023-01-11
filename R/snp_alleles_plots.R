@@ -110,10 +110,10 @@ get_leg <- function(dat) {
 
 p <- ggplot(data = dat) +
     geom_scatterpie(aes(x=x_pos, y=y_pos, group=allele, r=radius),
-                    data=dat, cols=colnames(dat)[2:14], color=NA, alpha=.8) +
-    geom_text(aes(y = y_pos + 4, x = x_pos, 
-                  label = paste0(label,"\n",allele,"\nnb individuals : ",sum)),
-              size=20) +
+                    data=dat, cols=colnames(dat)[2:14], color=NA, alpha=0) +
+    # geom_text(aes(y = y_pos + 4, x = x_pos, 
+    #               label = paste0(label,"\n",allele,"\nnb individuals : ",sum)),
+    #           size=20) +
     scale_fill_manual(values=c("abe"="#E5E5A1",
                               #  "aff"="#FFB1D8",
                                "chl"="#8B4513",
@@ -149,7 +149,7 @@ p <- ggplot(data = dat) +
         axis.ticks = element_blank(),
         legend.position = c(0.5, 0.5), # move the legend to the center
         legend.title = element_blank(),
-        legend.text = element_text(size = 40),
+        legend.text = element_markdown(size = 10),,
         legend.key = element_rect(fill='NA'),
         panel.grid = element_blank(),
         panel.border = element_blank())
