@@ -111,9 +111,9 @@ get_leg <- function(dat) {
 p <- ggplot(data = dat) +
     geom_scatterpie(aes(x=x_pos, y=y_pos, group=allele, r=radius),
                     data=dat, cols=colnames(dat)[2:14], color=NA, alpha=0) +
-    # geom_text(aes(y = y_pos + 4, x = x_pos, 
-    #               label = paste0(label,"\n",allele,"\nnb individuals : ",sum)),
-    #           size=20) +
+    geom_text(aes(y = y_pos + 4, x = x_pos, 
+                  label = paste0(label,"\n",allele,"\nnb individuals : ",sum)),
+              size=20, alpha=0) +
     scale_fill_manual(values=c("abe"="#E5E5A1",
                               #  "aff"="#FFB1D8",
                                "chl"="#8B4513",
@@ -143,16 +143,17 @@ p <- ggplot(data = dat) +
                                  "uni" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_unicolor.l.cairo.png' width='40' /><br>*H. unicolor*",
                                  "tan" = "<img src='/user/doau0129/work/chapter2/ressources/logos/H_sp.l.cairo.png' width='40' /><br>*Hypoplectrus* sp.")) + 
     
-  guides(fill = guide_legend(nrow = 1)) +
   theme(axis.title = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
         legend.position = c(0.5, 0.5), # move the legend to the center
         legend.title = element_blank(),
         legend.text = element_markdown(size = 10),,
-        legend.key = element_rect(fill='NA'),
+        legend.key = element_blank(),
         panel.grid = element_blank(),
-        panel.border = element_blank())
+        panel.border = element_blank()) +
+  guides(fill = guide_legend(nrow = 2))
+
 
 }
 
