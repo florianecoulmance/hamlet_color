@@ -152,7 +152,7 @@ p <- ggplot(data = dat) +
         legend.key = element_blank(),
         panel.grid = element_blank(),
         panel.border = element_blank()) +
-  guides(fill = guide_legend(override.aes = list(alpha=1, size = 40), nrow = 2))
+  guides(fill = guide_legend(override.aes = list(alpha=1, size = 10), nrow = 2))
 
 
 }
