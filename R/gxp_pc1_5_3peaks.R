@@ -157,21 +157,27 @@ pie_3 <- ggplot() +
                panel.border = element_blank(),
                plot.margin = unit(c(-2, 0, 0, 0), "cm"))
 
-g <- ggarrange(p, ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,1)), ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1)), ncol = 1, nrow = 3, align = "hv",
-                 widths = c(2, 2), heights = c(1, 3)) 
+g <- ggarrange(p, ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,1), align = "h"), ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1), align = "h"), ncol = 1, nrow = 3, align = "hv",
+                 widths = c(2, 2, 5), heights = c(1, 4, 7)) 
   
+
+pc <- ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1), align = "hv", labels = c("a", "b", "c"))
 
 # try <- ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3)
 
 
-hypo_save(filename = paste0(figure_path,"PC1_5_gwas_zoom.pdf"),
+hypo_save(filename = paste0(figure_path,"test.pdf"),
             plot = g,
             width = 8.3,
-            height = 10)
+            height = 13)
           
             # width = 6,
             # height = 5)
 
+hypo_save(filename = paste0(figure_path,"test2.pdf"),
+          plot = pc,
+          width = 8.3,
+          height = 12)
 
 
 # zoom4 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG03_1.png"))
