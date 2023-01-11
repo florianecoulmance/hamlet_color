@@ -90,7 +90,7 @@ pie_plots <- function(dat) {
     theme(legend.title=element_blank(),
           panel.background = element_rect(fill = "white"),
           panel.grid = element_blank(),
-          legend.position="bottom",
+          legend.position="none",
           legend.text =  element_markdown(size = 10),
           legend.key=element_blank(),
           axis.title = element_blank(),
@@ -151,8 +151,10 @@ p <- ggplot(data = dat) +
         legend.text = element_markdown(size = 10),
         legend.key = element_blank(),
         panel.grid = element_blank(),
-        panel.border = element_blank()) +
-  guides(fill = guide_legend(override.aes = list(alpha=1, size = 9), nrow = 2))
+        panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  guides(fill = guide_legend(override.aes = list(alpha=1, size = 8), nrow = 2))
 
 
 }
