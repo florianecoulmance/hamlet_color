@@ -110,7 +110,7 @@ get_leg <- function(dat) {
 
 p <- ggplot(data = dat) +
     geom_scatterpie(aes(x=x_pos, y=y_pos, group=allele, r=radius),
-                    data=dat, cols=colnames(dat)[2:14], color=NA, alpha=0) +
+                    data=dat, cols=colnames(dat)[2:14], color=NA, alpha=.8) +
     geom_text(aes(y = y_pos + 4, x = x_pos, 
                   label = paste0(label,"\n",allele,"\nnb individuals : ",sum)),
               size=20, alpha=0) +
