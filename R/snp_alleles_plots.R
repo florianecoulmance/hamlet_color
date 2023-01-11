@@ -90,7 +90,7 @@ pie_plots <- function(dat) {
     theme(legend.title=element_blank(),
           panel.background = element_rect(fill = "white"),
           panel.grid = element_blank(),
-          legend.position="none",
+          legend.position="bottom",
           legend.text =  element_markdown(size = 10),
           legend.key=element_blank(),
           axis.title = element_blank(),
@@ -148,7 +148,7 @@ p <- ggplot(data = dat) +
         axis.ticks = element_blank(),
         legend.position = c(0.5, 0.5), # move the legend to the center
         legend.title = element_blank(),
-        legend.text = element_markdown(size = 10),,
+        legend.text = element_markdown(size = 10),
         legend.key = element_blank(),
         panel.grid = element_blank(),
         panel.border = element_blank()) +
