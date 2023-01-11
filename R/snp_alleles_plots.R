@@ -214,7 +214,7 @@ for (i in names(test[,2:20])) {
   save_plots(p,i,figure_path)
 
   l <- get_leg(pie_dat)
-  hypo_save(filename = paste0(path_fig,label,"legend.png"),
+  hypo_save(filename = paste0(figure_path,"legend.png"),
             type = "cairo",
             plot = l,
             width = 8.3,
