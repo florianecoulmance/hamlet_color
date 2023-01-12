@@ -156,9 +156,10 @@ echo \${CHROM}
 
 INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}.snp.txt
 
+TAB=\$'\t' 
 
 awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="."}' \${INPUT} | \
-sed 's/RANGE CHROM POS POS/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
+sed 's/RANGE CHROM POS POS/Unique Peak ID\${TAB}chromosome\${TAB}starting position\${TAB}ending position\${TAB}Strand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
 
 # annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff.gz -annStats PC1_5_\${CHROM}_homer_output_annStats.txt > PC1_5_\${CHROM}_homer_output.txt
 
