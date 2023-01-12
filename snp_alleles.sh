@@ -157,7 +157,7 @@ echo \${CHROM}
 INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}.snp.txt
 
 gzip -d /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz > $BASE_DIR/HP_genome_unmasked_01.fa
-gzip -d /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff.gz > gzip -d $BASE_DIR/HP.annotation.named.\${CHROM}.gff
+gzip -d /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff.gz > $BASE_DIR/HP.annotation.named.\${CHROM}.gff
 
 # awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
 # sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
