@@ -162,7 +162,7 @@ INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\$
 # awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
 # sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
 
-/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
+/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gff /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
 
 
 
