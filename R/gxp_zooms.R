@@ -4,7 +4,7 @@
 # -------------------------------------------------------------------------------------------------------------------
 # data_path in : $BASE_DIR/outputs/7_gxp/$DATASET
 # data_file in : *mvplink.50k.5k.txt.gz
-# figure_path in : $BASE_DIR/outputs/figures/7_gxp/$DATASET/\${NAME}
+# figure_path in : $BASE_DIR//figures/7_gxp/$DATASET/\${NAME}
 # pc in : 55 names of univariate and multivariate PCs association analysis
 # chromosome in one of the 24 hamlets Linkage Group
 # -------------------------------------------------------------------------------------------------------------------
