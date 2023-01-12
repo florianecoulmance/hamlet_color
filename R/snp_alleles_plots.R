@@ -221,7 +221,7 @@ for (i in names(test[,2:20])) {
             type = "cairo",
             plot = l,
             width = 8.3,
-            height = 2)
+            height = 1)
 
   
 }
