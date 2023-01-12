@@ -138,13 +138,13 @@ cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 #!/bin/bash
 #SBATCH --job-name=3_snp_anno                                                               # set the jobname
 #SBATCH --partition=carl.p                                                                      # set the cluster partition to use
-#SBATCH --array=5
+#SBATCH --array=0-10
 #SBATCH --output=$BASE_DIR/logs/3_snp_anno_%A_%a.out                                        # send the job output file to the log folder
 #SBATCH --error=$BASE_DIR/logs/3_snp_anno_%A_%a.err                                         # send the job error file to the log folder
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=20G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --mem-per-cpu=70G                                                                       # set the estimated memory needed for the job to run
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
 
 
@@ -156,9 +156,11 @@ echo \${CHROM}
 
 INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}.snp.txt
 
+gzip -d /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz > /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa
+gzip -d /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff.gz > gzip -d /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff
 
-awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
-sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
+# awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
+# sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
 
 /user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
 
