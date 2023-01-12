@@ -69,6 +69,8 @@ chart1 <- readPNG(paste0(figure_path,"PC1_5/LG04_11599216_pie.png"))
 chart2 <- readPNG(paste0(figure_path,"PC1_5/LG12_20232954_pie.png"))
 chart3 <- readPNG(paste0(figure_path,"PC1_5/LG12_22227968_pie.png"))
 
+lgd <- readPNG(paste0(figure_path,"PC1_5/legend.png"))
+
 threshold <- 2.5
 thresh <- file_gwas[file_gwas[, "AVG_P"] >= threshold,]
 print(thresh)
@@ -95,6 +97,8 @@ g3 <- rasterGrob(zoom3, interpolate = T)
 pie1 <- rasterGrob(chart1, interpolate = T)
 pie2 <- rasterGrob(chart2, interpolate = T)
 pie3 <- rasterGrob(chart3, interpolate = T)
+
+legd <- rasterGrob(lgd, interpolate = T)
 
 g_plot1 <- ggplot() +
            annotation_custom(g1) +
@@ -135,7 +139,7 @@ pie_1 <- ggplot() +
                panel.background = element_blank(),
                panel.grid = element_blank(),
                panel.border = element_blank(),
-               plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+               plot.margin = unit(c(-1, 0, 0, 0), "cm"))
 
 pie_2 <- ggplot() + 
          annotation_custom(pie2) +
@@ -145,7 +149,7 @@ pie_2 <- ggplot() +
                panel.background = element_blank(),
                panel.grid = element_blank(),
                panel.border = element_blank(),
-               plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+               plot.margin = unit(c(-1, 0, 0, 0), "cm"))
 
 pie_3 <- ggplot() + 
          annotation_custom(pie3) +
@@ -155,13 +159,36 @@ pie_3 <- ggplot() +
                panel.background = element_blank(),
                panel.grid = element_blank(),
                panel.border = element_blank(),
-               plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+               plot.margin = unit(c(-1, 0, 0, 0), "cm"))
 
-g <- ggarrange(p, ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,1), align = "h"), ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1), align = "h"), ncol = 1, nrow = 3, align = "hv",
-                 widths = c(2, 2, 5), heights = c(1, 4, 7)) 
+legend <- ggplot() + 
+          annotation_custom(legd) +
+          # ggtitle("g") +
+          theme(plot.title = element_text(hjust = 0.11, vjust = -2, size = 13, face = "bold"),
+                plot.background = element_blank(),
+                panel.background = element_blank(),
+                panel.grid = element_blank(),
+                panel.border = element_blank(),
+                plot.margin = unit(c(-2, 0, 0, 0), "cm"))
+
+g <- ggarrange(p,
+               ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3, widths = c(1,1,1), align = "h"),
+               ggarrange(pie_1, pie_2, pie_3, widths = c(0.5, 0.5, 0.5), ncol = 3),
+               legend,
+               ncol = 1,
+               nrow = 4,
+               align = "hv",
+               widths = c(2, 2, 10, 2),
+               heights = c(2, 5, 5, 2)) 
   
 
-pc <- ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1), align = "hv", labels = c("a", "b", "c"))
+pc <- ggarrange(ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1), align = "hv", labels = c("a", "b", "c")),
+                legend,
+                ncol = 1,
+                nrow = 2,
+                align = "hv",
+                widths = c(2, 2),
+                heights = c(2, 0.5))
 
 # try <- ggarrange(g_plot1, g_plot2, g_plot3, ncol = 3)
 
@@ -169,7 +196,7 @@ pc <- ggarrange(pie_1, pie_2, pie_3, ncol = 3, widths = c(1,1,1), align = "hv", 
 hypo_save(filename = paste0(figure_path,"test.pdf"),
             plot = g,
             width = 8.3,
-            height = 13)
+            height = 11)
           
             # width = 6,
             # height = 5)
@@ -177,7 +204,7 @@ hypo_save(filename = paste0(figure_path,"test.pdf"),
 hypo_save(filename = paste0(figure_path,"test2.pdf"),
           plot = pc,
           width = 8.3,
-          height = 12)
+          height = 13)
 
 
 # zoom4 <- readPNG(paste0(figure_path,"PC1_5/PC1_5_LG03_1.png"))
