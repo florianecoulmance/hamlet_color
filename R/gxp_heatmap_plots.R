@@ -196,7 +196,7 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
 
 
 # Determine the list of traits to analyse
-traits <- list("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+traits <- list("PC1", "PC2", "PC3", "PC4", "PC5")
 print(traits)
 
 # Analyses of 10 univariate PCs and their heatmaps
