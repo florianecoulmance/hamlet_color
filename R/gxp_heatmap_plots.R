@@ -175,12 +175,12 @@ univariate_plots <- function(path_univariate, trait_list, fig_path, dat) {
   }
   
   plot_final <- ggarrange(p[[1]], p[[2]], p[[3]], p[[4]], p[[5]],
-                          p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], 
-                          ncol = 2, nrow = 5,  align = "v",
+                          # p[[6]], p[[7]], p[[8]], p[[9]], p[[10]], 
+                          ncol = 2, nrow = 3,  align = "v",
                           common.legend = TRUE)
   
   
-  hypo_save(filename = paste0(figure_path,"univariate_comparison.png"), type="cairo",
+  hypo_save(filename = paste0(figure_path,"univariate_comparison.pdf"),
             plot = plot_final,
             width = 20,
             height = 23)
