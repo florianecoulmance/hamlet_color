@@ -138,7 +138,7 @@ cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 #!/bin/bash
 #SBATCH --job-name=3_snp_anno                                                               # set the jobname
 #SBATCH --partition=carl.p                                                                      # set the cluster partition to use
-#SBATCH --array=0-23
+#SBATCH --array=0-10
 #SBATCH --output=$BASE_DIR/logs/3_snp_anno_%A_%a.out                                        # send the job output file to the log folder
 #SBATCH --error=$BASE_DIR/logs/3_snp_anno_%A_%a.err                                         # send the job error file to the log folder
 #SBATCH --nodes=1
@@ -148,7 +148,7 @@ cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
 
 
-chr=(01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24)
+chr=(03 04 05 06 07 08 09 12 19 20 23)
 LG=\${chr[\${SLURM_ARRAY_TASK_ID}]}
 echo \${LG}
 CHROM="LG\${LG}"
