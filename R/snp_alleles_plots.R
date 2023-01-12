@@ -154,7 +154,7 @@ p <- ggplot(data = dat) +
         panel.border = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +
-  guides(fill = guide_legend(override.aes = list(alpha=1, size = 8), nrow = 2))
+  guides(fill = guide_legend(override.aes = list(alpha=1, size = 7), nrow = 2))
 
 
 }
