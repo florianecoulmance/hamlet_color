@@ -1,6 +1,6 @@
 # Code repository for: Phenotypic and genomic dissection of color pattern variation in a reef fish radiation
 
-This repository contains the original bioinformatic analysis behind the paper **Phenotypic and genomic dissection of color pattern variation in a reef fish radiation** by Coulmance, Akkaynak, Le Poul, Hoppner, McMillan and Puebla.
+This repository contains the original bioinformatic analysis behind the paper *Phenotypic and genomic dissection of color pattern variation in a reef fish radiation* by Coulmance, Akkaynak, Le Poul, Hoppner, McMillan and Puebla.
 It covers all steps from genotyping based on raw sequencing data, over population genetic analysis to the final plotting of the figures used within the publication.
 It covers all image analysis steps from aligned photographs.
 
