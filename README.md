@@ -17,49 +17,12 @@ There are four more accompanying repositories for this publication:
 In this folder, you will need all necessary files and subfolders to be able to run the different pipelines : 
 The folder tree is  :
 
-===== ressources/
-|
-===== metadata/
-|
-===== python/
-|
-===== R/
-|
-===== sh/
-|
-===== images/ # will be created by pipelines
-|
-===== figures/
-|
-===== outputs/ # will be created by pipelines
-
-### The ressources folder must have these files and subfolders :
-HP_genome_unmasked_01.dict 
-HP_genome_unmasked_01.fa.amb  
-HP_genome_unmasked_01.fa.bwt  
-HP_genome_unmasked_01.fa.gz   
-HP_genome_unmasked_01.fa.sa  
-HP_genome_unmasked_01.fa    
-HP_genome_unmasked_01.fa.ann  
-HP_genome_unmasked_01.fa.fai  
-HP_genome_unmasked_01.fa.pac  
-logos/
-images/
-
-With logos containing all .svg and .png image for each species and sites used in the creation of graphs
-With images/ being the output folder from the image alignment software + 2 additional files:
-===== body_mask.tif
-===== full_mask.tif 
-
-### In metadata these files are needed :
-image_metadata.tsv
-metadata_gxp_ben_floridae_complete
-list
 
 All the output files and figures will be created by the various pipelines.
 All figures presented in the paper will be found in the figures/ folder.
 
-All necessary code for each of these pipelines is found in folders R/ python/ and sh/ 
+All necessary code for each of these pipelines is found in folders R/ python/ and sh/
+The pipelines are all the files finishing by .sh in the root folder.
 
 
 ## Run pipelines
