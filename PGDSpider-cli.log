@@ -1,4 +1,0 @@
-INFO  09-01 22:09:55,958 (PGDSpiderConfig.java:loadConfig:64)  -load PGDSpider configuration from: /user/doau0129/miniconda3/share/pgdspider-2.1.1.5-0/spider.conf.xml
-DEBUG 09-01 22:09:56,100 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
-DEBUG 09-01 22:09:56,128 (ParserFactory.java:getParserInstance:177)  -New VcfParser instance
-WARN  09-01 22:09:56,568 (NewHybridsWriter.java:parseAlignedSampleData:571)  -Data are converted to integers (A=1, T=2, G=3, C=4)!
