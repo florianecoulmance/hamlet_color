@@ -53,7 +53,7 @@ cat > $jobfile0 <<EOA # indicate that EOA is the end of the file
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
 
 
-INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/*.txt                                # input the genotyping file with SNPs only created with the genotyping.sh pipeline
+INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/*.snp.txt                                # input the genotyping file with SNPs only created with the genotyping.sh pipeline
 echo \${INPUT}
 
 awk 'FNR==1 && NR!=1 { while (/^<header>/) getline; } 1 {print}' \${INPUT} > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/all.txt 
@@ -148,13 +148,15 @@ cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
 
 
-chr=(03 04 05 06 07 08 09 12 19 20 23)
-LG=\${chr[\${SLURM_ARRAY_TASK_ID}]}
-echo \${LG}
-CHROM="LG\${LG}"
-echo \${CHROM}
+# chr=(03 04 05 06 07 08 09 12 19 20 23)
+# LG=\${chr[\${SLURM_ARRAY_TASK_ID}]}
+# echo \${LG}
+# CHROM="LG\${LG}"
+# echo \${CHROM}
 
-INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}.snp.txt
+# INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}.snp.txt
+
+INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
 
 # gzip -d /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz > $BASE_DIR/HP_genome_unmasked_01.fa
 # gzip -d /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff.gz > $BASE_DIR/HP.annotation.named.\${CHROM}.gff
@@ -162,8 +164,16 @@ INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\$
 # awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
 # sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
 
-/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gff /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
+awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
+sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt
 
+
+# /user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gff /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
+
+PC1_5_all_homer
+/nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf
+
+/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output.txt
 
 
 EOA
