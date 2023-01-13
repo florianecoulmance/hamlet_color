@@ -170,8 +170,8 @@ sed 's/RANGE\tCHROM\tPOS\tPOS\t\./Unique Peak ID\tchromosome\tstarting position\
 
 # /user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gff /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
 
-PC1_5_all_homer
-/nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf
+# PC1_5_all_homer
+# /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf
 
 /user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output.txt
 

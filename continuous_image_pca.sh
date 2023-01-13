@@ -2,7 +2,7 @@
 # by: Floriane Coulmance: 11/05/2021
 # usage:
 # sbatch continuous_image_pca.sh -i PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j AB -k fullm -l 54off_59on -m all 
-# sbatch continuous_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <MASK> -l <DATA> -m <SUB_DATA> -n <SIDE>
+# sbatch continuous_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <MASK> -l <DATA> -m <SUB_DATA>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script 
