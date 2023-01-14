@@ -12,10 +12,8 @@ slurm*
 logs/*
 outputs/*
 output/*
-ressources/*
 annotations/*
 temp_files/*
-data/*
 .DS_Store
 .Rproj.user
 .Rhistory
