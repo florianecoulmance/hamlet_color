@@ -7,7 +7,8 @@ Apart from this, the ressources folder also contains some intermediate results f
 
 The following structure is assumed:
 
-.
+
+.<br>
 ├── HP_genome_unmasked_01.dict<br>
 ├── HP_genome_unmasked_01.fa<br>
 ├── HP_genome_unmasked_01.fa.amb<br>
@@ -138,7 +139,7 @@ The following structure is assumed:
 │                       ├── PL17_82puepor-l1-s3-f4-c2-d1.png<br>
 │                       ├── PL17_85indpor-l1-s3-f4-c2-d1.png<br>
 │                       └── PL17_86chlpor-l1-s3-f4-c2-d1.png<br>
-└── logos
+└── logos<br>
     ├── belize.png<br>
     ├── generic_hamlet_l.c.svg<br>
     ├── generic_hamlet_r.c.svg<br>
