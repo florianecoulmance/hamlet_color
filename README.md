@@ -14,7 +14,7 @@ There are four more accompanying repositories for this publication:
 
 ## Setup
 
-In this folder, you will need all necessary files and subfolders to be able to run the different pipelines : 
+In this folder, you will need all necessary files and subfolders to be able to run the different pipelines.
 The folder tree is:<br> 
 
 ```
@@ -38,7 +38,7 @@ The folder tree is:<br>
 All the output files and figures will be created by the various pipelines.<br> 
 All figures presented in the paper will be found in the ```figures/``` folder.<br> 
 
-All necessary code for each of these pipelines is found in folders ```R/ python/``` and ```sh/```<br> 
+All necessary code for each of these pipelines is found in folders ```R/```, ```python/``` and ```sh/```<br> 
 The pipelines are all the files finishing by ```.sh``` in the root folder.<br> 
 
 
@@ -54,7 +54,7 @@ See example for Pipeline 1<br>
 genotyping.sh
 sbatch genotyping.sh -i <PATH> -j <JOB_ID>
 ```
-example : ```sbatch genotyping.sh -i /user/doau0129/work/hamlet_color/ -j jid6``` (will start from jobfile6 in genotyping.sh)<br> 
+example : ```sbatch genotyping.sh -i /user/doau0129/work/hamlet_color/ -j jid6``` will start from jobfile6 in genotyping.sh<br> 
 
 ### Pipeline 2: Fst statistics<br> 
 ```

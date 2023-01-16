@@ -1,9 +1,9 @@
 # The resources folder
 
 This folder contains mostly external data which are not novel but inherited from previous work.<br>
-The reference genome of the hamlet is from ___<br>
+The reference genome of the hamlet is from Hench *et al.* 2019.<br>
 
-Apart from this, the ressources folder also contains some intermediate results from this study that were reused a later stages. This refers specifically to the sub-folder images/ which contains the output folder from the image alignment software and 2 additional mask files that where created manually with a mean image of all aligned images in python and GIMP.<br>
+Apart from this, the ressources folder also contains some intermediate results from this study that were reused a later stages. This refers specifically to the sub-folder ```images/``` which contains the output folder from the image alignment software and 2 additional mask files that where created manually with a mean image of all aligned images in python and GIMP.<br>
 
 The following structure is assumed:<br>
 
