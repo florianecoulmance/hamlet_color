@@ -47,71 +47,13 @@ The pipelines are all the files finishing by ```.sh``` in the root folder.<br>
 All code are run on the University of Oldenburg cluster. Depending on your environment, you might have to install the following dependencies.<br>
 
 Bash:<br>
-- GATK
-- vcftools
-- PGDSpider2<br>
-- PLINK
-- GEMMA
-- PLINK multivariate<br>
+```GATK``` ```vcftools``` ```PGDSpider2``` ```PLINK``` ```GEMMA``` ```PLINK multivariate```
 
 R:<br>
-- R4.0.2
-- parallelnewhybrid
-- gdsfmt
-- SNPRelate
-- tidyverse
-- stringr
-- stringi
-- ggplot2
-- ggpubr
-- ggtext
-- hypoimg
-- ggspatial
-- sf
-- rnaturalearth
-- rnaturalearthdata
-- rgeos
-- reshape2
-- scatterpie
-- GenomicOriginsScripts
-- grid
-- gridExtra
-- dplyr
-- vroom
-- hypogen
-- patchwork
-- png
-- scales
-- plyr
-- ggimage
-- broom
-- dbplyr
-- ggrepel
-- furrr
-- ggraph
-- tidygraph
-- ape
-- igraph
-- paletteer
-- ggthemes
-- prismatic
-
-<br>
+```R4.0.2``` ```parallelnewhybrid``` ```gdsfmt``` ```SNPRelate``` ```tidyverse``` ```stringr``` ```stringi``` ```ggplot2``` ```ggpubr``` ```ggtext``` ```hypoimg``` ```ggspatial``` ```sf``` ```rnaturalearth``` ```rnaturalearthdata``` ```rgeos``` ```reshape2``` ```scatterpie``` ```GenomicOriginsScripts``` ```grid``` ```gridExtra``` ```dplyr``` ```vroom``` ```hypogen``` ```patchwork``` ```png``` ```scales``` ```plyr``` ```ggimage``` ```broom``` ```dbplyr``` ```ggrepel``` ```furrr``` ```ggraph``` ```tidygraph``` ```ape``` ```igraph``` ```paletteer``` ```ggthemes``` ```prismatic```
 
 Python:<br>
-- python3
-- Image
-- seaborn
-- sys
-- os
-- numpy
-- PIL
-- matplotlib
-- skimage
-- pylab
-- pandas
-- cv2
-- sklearn<br>
+```python3``` ```Image``` ```seaborn``` ```sys``` ```os``` ```numpy``` ```PIL``` ```matplotlib``` ```skimage``` ```pylab``` ```pandas``` ```cv2``` ```sklearn```
 
 
 ## Run pipelines<br> 
