@@ -1,7 +1,7 @@
 # The resources folder
 
 This folder contains mostly external data which are not novel but inherited from previous work.<br>
-The reference genome of the hamlet is from Hench *et al.* 2019. ([doi: 10.1038/s41559-019-0814-5])<br>
+The reference genome of the hamlet is from Hench *et al.* 2019. [doi: 10.1038/s41559-019-0814-5](doi: 10.1038/s41559-019-0814-5)<br>
 
 Apart from this, the ressources folder also contains some intermediate results from this study that were reused a later stages. This refers specifically to the sub-folder ```images/``` which contains the output folder from the image alignment software and 2 additional mask files that where created manually with a mean image of all aligned images in python and GIMP.<br>
 
@@ -199,6 +199,10 @@ The following structure is assumed:<br>
 
 ---
 
-## References 
+**References:**
 
-[(doi: 10.1038/s41559-019-0814-5)]
+Hench, K., Vargas, M., Höppner, M. P., McMillan, W. O., & Puebla, O. (2019). Inter-chromosomal coupling between vision and pigmentation genes during genomic divergence. **Nature Ecology & Evolution**, 3 (4), 657–667. https://doi.org/10.1038/s41559-019-0814-5
+
+Hench, K., Vargas, M., Höppner, M. P., McMillan, W. O., & Puebla, O. (2019). Data from: Inter-chromosomal coupling between vision and pigmentation genes during genomic divergence. **Dryad**. https://doi.org/10.5061/DRYAD.PG8Q56G
+
+---
