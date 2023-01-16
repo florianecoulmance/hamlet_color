@@ -17,6 +17,8 @@ There are four more accompanying repositories for this publication:
 In this folder, you will need all necessary files and subfolders to be able to run the different pipelines : 
 The folder tree is:<br> 
 
+```
+```
 
 All the output files and figures will be created by the various pipelines.<br> 
 All figures presented in the paper will be found in the figures/ folder.<br> 

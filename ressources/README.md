@@ -7,7 +7,7 @@ Apart from this, the ressources folder also contains some intermediate results f
 
 The following structure is assumed:
 
-
+```
 .<br>
 ├── HP_genome_unmasked_01.dict<br>
 ├── HP_genome_unmasked_01.fa<br>
@@ -195,3 +195,4 @@ The following structure is assumed:
     └── us.png<br>
 
 7 directories, 177 files
+```

@@ -3,6 +3,7 @@
 This folder contains the raw sequencing data that is the original input of the study.
 The following structure is assumed:
 
+```
 .<br>
 ├── G06203-L1_S1_L001_R1_001.fastq.gz<br>
 ├── G06203-L1_S1_L001_R2_001.fastq.gz<br>
@@ -240,3 +241,4 @@ The following structure is assumed:
 └── J02913-L1_S150_L004_R2_001.fastq.gz<br>
 
 0 directories, 234 files
+```
