@@ -622,6 +622,7 @@ Rscript $BASE_DIR/R/fst_pairwise_table.R \${INPUT} $BASE_DIR/figures/8_fst/
 EOA
 
 
+
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 

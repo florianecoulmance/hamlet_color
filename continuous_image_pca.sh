@@ -1,15 +1,15 @@
 #!/bin/bash
 # by: Floriane Coulmance: 11/05/2021
 # usage:
-# sbatch continuous_image_pca.sh -i PATH:/Users/fco/Desktop/PhD/1_CHAPTER1/> -j AB -k fullm -l 54off_59on -m all 
 # sbatch continuous_image_pca.sh -i <PATH> -j <COLOR_SPACE> -k <MASK> -l <DATA> -m <SUB_DATA>
+# sbatch continuous_image_pca.sh -i hamlet_color/ -j LAB -k fullm -l 54off_59on -m all 
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script 
-# COLOR_SPACE : LAB, AB or L
-# MASK : bodym (for mask without fins), fullm (for mask including all fins)
-# DATA : 54off_59on, 54off, 59on, 38barred, 75unbarred
-# SUB_DATA : all, on, off, barred, unbarred
+# COLOR_SPACE : LAB
+# MASK : fullm (for mask including all fins)
+# DATA : 54off_59on
+# SUB_DATA : all
 # ------------------------------------------------------------------------------
 
 
