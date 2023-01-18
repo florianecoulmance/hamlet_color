@@ -1,7 +1,7 @@
 #!/bin/bash
 # by: Floriane Coulmance: 17/10/2022
 # usage:
-# sbatch fst.sh -i <PATH> -j <JOB_ID> 
+# sbatch snp_alleles.sh -i <PATH> -j <JOB_ID> 
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script
@@ -127,18 +127,19 @@ INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_al
 
 Rscript $BASE_DIR/R/snp_alleles_plots.R \${INPUT} $BASE_DIR/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/
 
+
 EOA
 
 
+
 # ------------------------------------------------------------------------------
-# Job 3 
+# Job 3 annotate SNP loci of interest to get info on genes and transcripts
 
 jobfile3=3_snp_anno.tmp # generate a temp file that will be launched
 cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 #!/bin/bash
 #SBATCH --job-name=3_snp_anno                                                               # set the jobname
 #SBATCH --partition=carl.p                                                                      # set the cluster partition to use
-#SBATCH --array=5
 #SBATCH --output=$BASE_DIR/logs/3_snp_anno_%A_%a.out                                        # send the job output file to the log folder
 #SBATCH --error=$BASE_DIR/logs/3_snp_anno_%A_%a.err                                         # send the job error file to the log folder
 #SBATCH --nodes=1
@@ -146,6 +147,14 @@ cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=70G                                                                       # set the estimated memory needed for the job to run
 #SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
+
+awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="."}' \${INPUT} | \
+sed 's/RANGE\tCHROM\tPOS\tPOS\t\./Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt
+
+/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output.txt
 
 
 # chr=(03 04 05 06 07 08 09 12 19 20 23)
@@ -156,29 +165,16 @@ cat > $jobfile3 <<EOA # indicate that EOA is the end of the file
 
 # INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}.snp.txt
 
-INPUT=$BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_snp_all.txt
-
 # gzip -d /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz > $BASE_DIR/HP_genome_unmasked_01.fa
 # gzip -d /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff.gz > $BASE_DIR/HP.annotation.named.\${CHROM}.gff
 
 # awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="+"}' \${INPUT} | \
 # sed 's/RANGE\tCHROM\tPOS\tPOS\t+/Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt
 
-awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="."}' \${INPUT} | \
-sed 's/RANGE\tCHROM\tPOS\tPOS\t\./Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt
-
-
 # /user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gff /user/doau0129/data/annotations/HP.annotation.named.\${CHROM}.gff -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_\${CHROM}_homer_output.txt
-
-# PC1_5_all_homer
-# /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf
-
-/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf -annStats $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/continuous/LAB/LAB_fullm_54off_59on/PC1_5/PC1_5_all_homer_output.txt
 
 
 EOA
-
-
 
 
 
@@ -219,9 +215,6 @@ then
 else
   jid3=$(sbatch --dependency=afterok:${jid2##* } ${jobfile3})
 fi
-
-
-
 
 
 
