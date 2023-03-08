@@ -65,10 +65,10 @@ then
 elif [ "$MASK" = "bodym" ];
 then
   MASK_FILE=body_mask.tif
-elif [ "$MASK" = "pnu_dctm" ];
+elif [ "$MASK" = "pnudctm" ];
 then
   MASK_FILE=pue_nig_uni_dct_mask.tif
-elif [ "$MASK" = "pnu_fullm" ];
+elif [ "$MASK" = "pnufullm" ];
 then
   MASK_FILE=pue_nig_uni_full_mask.tif
 else

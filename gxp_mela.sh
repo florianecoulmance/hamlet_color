@@ -1,7 +1,7 @@
 #!/bin/bash
 # by: Floriane Coulmance: 08/03/2023
 # usage:
-# gxp_mela.sh -i <PATH> -j <JOB_ID> -k <DATASET>
+# sbatch gxp_mela.sh -i <PATH> -j <JOB_ID> -k <DATASET>
 # ------------------------------------------------------------------------------
 # PATH corresponds to the path to the base directory, all outputs and necessary
 # folder will be created by the script
@@ -385,10 +385,10 @@ M=\${C%%_*}
 echo \${M}
 
 # Based on mask name, input mask file
-if [ "\${M}" = "pnu_dctm" ];
+if [ "\${M}" = "pnudctm" ];
 then
   MASK=$BASE_DIR/ressources/images/pue_nig_uni_dct_mask.tif
-elif [ "\${M}" = "pnu_fullm" ]
+elif [ "\${M}" = "pnufullm" ]
 then
   MASK=$BASE_DIR/ressources/images/pue_nig_uni_full_mask.tif
 else
@@ -450,10 +450,10 @@ M=\${C%%_*}
 echo \${M}
 
 # Based on mask name, input mask file
-if [ "\${M}" = "pnu_dctm" ];
+if [ "\${M}" = "pnudctm" ];
 then
   MASK=$BASE_DIR/ressources/images/pue_nig_uni_dct_mask.tif
-elif [ "\${M}" = "pnu_fullm" ]
+elif [ "\${M}" = "pnufullm" ]
 then
   MASK=$BASE_DIR/ressources/images/pue_nig_uni_full_mask.tif
 else
