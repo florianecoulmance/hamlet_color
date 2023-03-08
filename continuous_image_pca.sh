@@ -65,6 +65,12 @@ then
 elif [ "$MASK" = "bodym" ];
 then
   MASK_FILE=body_mask.tif
+elif [ "$MASK" = "pnu_dctm" ];
+then
+  MASK_FILE=pue_nig_uni_dct_mask.tif
+elif [ "$MASK" = "pnu_fullm" ];
+then
+  MASK_FILE=pue_nig_uni_full_mask.tif
 else
   echo "choose appropriate option"
 fi
