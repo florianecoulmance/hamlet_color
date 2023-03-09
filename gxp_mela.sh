@@ -102,17 +102,17 @@ INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz             
 INPUT_PNU=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz
 
 # Perform genotyping PCA
-FILE=\${INPUT_PNU##*/}                                                                      # extract prefix for further analysis and naming of files
+FILE=\${INPUT_VCF##*/}                                                                      # extract prefix for further analysis and naming of files
 PREFIX=\${FILE%%.*}
 echo \$INPUT_PNU
 echo \$FILE
 echo \$PREFIX
 
-TEST=\${PREFIX}_test
+TEST=\${PREFIX}
 echo \$TEST
 
-Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_PNU} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
-Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_VCF} $BASE_DIR/outputs/pca/ \${TEST} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
+#Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_PNU} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
+Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_VCF} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
 
 # # Convert the genotyping file to plink format
 # vcftools \

@@ -253,12 +253,12 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2, labels = c("a", "b", "c", "d"), font.label = list(size = 30))
 
   # Save figures
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_swap_genofile.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_swap_genofile_testmela.pdf"),
           plot = f,
           width = 40,
           height = 18)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_Lpca_zoom_swap_genofile.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_Lpca_zoom_swap_genofile_testmela.pdf"),
             plot = g,
             width = 40,
             height = 30)
