@@ -88,7 +88,7 @@ cat > $jobfile0 <<EOA # generate the job file
 #SBATCH --time=06:00:00
 
 
-# INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                    # Input the bi allelic genotyping file
+INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                    # Input the bi allelic genotyping file
 
 # bcftools view -S $BASE_DIR/outputs/6_genotyping/6_1_snp/pue_nig_uni_list -o $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz \${INPUT_VCF}
 # tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz                                        # create index for the file just created
@@ -102,7 +102,11 @@ echo \$INPUT_PNU
 echo \$FILE
 echo \$PREFIX
 
-Rscript $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
+TEST=\${PREFIX}_test
+echo \$TEST
+
+Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_PNU} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
+Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_VCF} $BASE_DIR/outputs/pca/ \${TEST} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
 
 # # Convert the genotyping file to plink format
 # vcftools \
