@@ -18,8 +18,8 @@ library(ggplot2)
 library(tidyverse)
 library(hypogen)
 library(hypoimg)
-library(dplyr)
 library(plyr)
+library(dplyr)
 
 
 # -------------------------------------------------------------------------------------------------------------------
