@@ -111,31 +111,31 @@ echo \$PREFIX
 TEST=\${PREFIX}
 echo \$TEST
 
-#Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_PNU} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
-Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_VCF} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
+# Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_PNU} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
+# Rscript $BASE_DIR/R/genotyping_pca.R \${INPUT_VCF} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
 
-# # Convert the genotyping file to plink format
-# vcftools \
-#       --gzvcf \${INPUT_PNU} \
-#       --plink \
-#       --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink
+# Convert the genotyping file to plink format
+vcftools \
+      --gzvcf \${INPUT_PNU} \
+      --plink \
+      --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink
 
-# # Convert to hapmap / not mandatory to run
-# plink \
-#       --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
-#       --recode12 \
-#       --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/hapmap
+# Convert to hapmap / not mandatory to run
+plink \
+      --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
+      --recode12 \
+      --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/hapmap
 
-# # Convert plink genotyping file to binary files to be used in GWAS
-# plink \
-#     --noweb \
-#     --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
-#     --make-bed \
-#     --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary
+# Convert plink genotyping file to binary files to be used in GWAS
+plink \
+    --noweb \
+    --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
+    --make-bed \
+    --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary
 
-# # Save a copy of the binary .fam file
-# cp $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam \
-#    $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_sauvegarde.fam
+# Save a copy of the binary .fam file
+cp $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam \
+   $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_sauvegarde.fam
 
 
 EOA
@@ -550,7 +550,7 @@ elif [ "$JID_RES" = "jid4" ]
 then
   jid4=$(sbatch ${jobfile4})
 else
-  jid4=$(sbatch --dependency=afterok:${jid1##* } ${jobfile4})
+  jid4=$(sbatch --dependency=afterok:${jid3##* } ${jobfile4})
 fi
 
 
