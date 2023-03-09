@@ -88,35 +88,44 @@ cat > $jobfile0 <<EOA # generate the job file
 #SBATCH --time=06:00:00
 
 
-INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                    # Input the bi allelic genotyping file
+# INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                    # Input the bi allelic genotyping file
 
-bcftools view -S $BASE_DIR/outputs/6_genotyping/6_1_snp/pue_nig_uni_list -o $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz \${INPUT_VCF}
-tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz                                        # create index for the file just created
+# bcftools view -S $BASE_DIR/outputs/6_genotyping/6_1_snp/pue_nig_uni_list -o $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz \${INPUT_VCF}
+# tabix -p vcf $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz                                        # create index for the file just created
 
 INPUT_PNU=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd_pnu.vcf.gz
 
-# Convert the genotyping file to plink format
-vcftools \
-      --gzvcf \${INPUT_PNU} \
-      --plink \
-      --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink
+# Perform genotyping PCA
+FILE=\${INPUT_PNU##*/}                                                                      # extract prefix for further analysis and naming of files
+PREFIX=\${FILE%%.*}
+echo \$INPUT_PNU
+echo \$FILE
+echo \$PREFIX
 
-# Convert to hapmap / not mandatory to run
-plink \
-      --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
-      --recode12 \
-      --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/hapmap
+Rscript $BASE_DIR/R/genotyping_pca.R \${PCA} $BASE_DIR/outputs/pca/ \${PREFIX} $BASE_DIR/figures/genotyping_pca/             # run the R script for plots
 
-# Convert plink genotyping file to binary files to be used in GWAS
-plink \
-    --noweb \
-    --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
-    --make-bed \
-    --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary
+# # Convert the genotyping file to plink format
+# vcftools \
+#       --gzvcf \${INPUT_PNU} \
+#       --plink \
+#       --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink
 
-# Save a copy of the binary .fam file
-cp $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam \
-   $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_sauvegarde.fam
+# # Convert to hapmap / not mandatory to run
+# plink \
+#       --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
+#       --recode12 \
+#       --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/hapmap
+
+# # Convert plink genotyping file to binary files to be used in GWAS
+# plink \
+#     --noweb \
+#     --file $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink \
+#     --make-bed \
+#     --out $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary
+
+# # Save a copy of the binary .fam file
+# cp $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary.fam \
+#    $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/GxP_plink_binary_sauvegarde.fam
 
 
 EOA
@@ -322,7 +331,7 @@ ls -1 $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/*.assoc.50k.5k.txt.gz 
 rm $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\*.tmp
 
 # Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_gemma
-# Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
+Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC1
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC2
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC3
 Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ multivariate_plink_PC4
@@ -335,7 +344,7 @@ Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATA
 
 # Rscript $BASE_DIR/R/gxp_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ univariate_plink
 
-Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
+# Rscript $BASE_DIR/R/gxp_heatmap_plots.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
 Rscript $BASE_DIR/R/gxp_pca_univariate.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $DATASET $BASE_DIR/metadata/ $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/
 
