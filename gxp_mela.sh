@@ -87,6 +87,12 @@ cat > $jobfile0 <<EOA # generate the job file
 #SBATCH --mem-per-cpu=20G
 #SBATCH --time=06:00:00
 
+ml hpc-env/8.3                                                                        # need to load environments that have the righ ressources for plots 
+ml R/4.0.2-foss-2019b
+#ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
+ml FriBidi
+ml HarfBuzz 
+
 
 INPUT_VCF=$BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz                    # Input the bi allelic genotyping file
 
