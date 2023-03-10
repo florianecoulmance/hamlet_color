@@ -436,7 +436,7 @@ cat > $jobfile6 <<EOA # generate the job file
 #!/bin/bash
 #SBATCH --job-name=6_heat.tmp
 #SBATCH --partition=carl.p
-#SBATCH --array=1
+#SBATCH --array=0-23
 #SBATCH --output=$BASE_DIR/logs/6_heat_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/6_heat_%A_%a.err
 #SBATCH --nodes=1
