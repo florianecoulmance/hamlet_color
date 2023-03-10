@@ -493,7 +493,7 @@ echo \${FILE_N}
 
 # python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
 Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
-Rscript $BASE_DIR/R/gxp_pc1_5_3peaks.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/
+# Rscript $BASE_DIR/R/gxp_pc1_5_3peaks.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/
 
 EOA
 

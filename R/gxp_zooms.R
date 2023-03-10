@@ -17,8 +17,8 @@ rm(list = ls())
 # Load needed library
 # library(broom, lib.loc=.libPaths()[-1])
 # library(dbplyr, lib.loc=.libPaths()[-1])
-library(broom)
-library(dbplyr)
+# library(broom)
+# library(dbplyr)
 library(GenomicOriginsScripts)
 library(ggplot2)
 library(ggrepel)
@@ -395,7 +395,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
 }
 
 
-plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
+plot_regions <- function(region, outlier_list, label, path, pc_name, chromosome) {
   
   # Create plot for regions with highest associations within each LG
 
@@ -410,7 +410,7 @@ plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
                                                      project_case())
   
   # Save the file in .png file
-  hypo_save(filename = paste0(path, name, "_", chromosome, ".png"),
+  hypo_save(filename = paste0(path, pc_name, "_", chromosome, ".png"),
             plot = p_single,
             width = 32,
             # height = 18,
