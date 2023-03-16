@@ -165,11 +165,11 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
                           lwd = 0.9, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
-                          color = "grey") +
+                          color = "red") +
     # add gene extent if direction is unknowns
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(!strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
-                          lwd = 0.9, color = "grey") +
+                          lwd = 0.9, color = "red") +
     # add gene label
     ggplot2::geom_text(data = df_list[[1]],
                        aes(x = labelx, label = gsub("hpv1g000000", ".", label), y = yl - 0.5), size = 7)
