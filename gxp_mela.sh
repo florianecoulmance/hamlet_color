@@ -447,7 +447,9 @@ cat > $jobfile6 <<EOA # generate the job file
 
 
 ml hpc-env/8.3
-ml R/4.0.2-foss-2019b
+#ml R/4.1.0-foss-2019b-2021.06
+#ml R/4.0.2-foss-2019b
+ml R-core/4.2.2-intel-2019b
 ml FriBidi
 ml HarfBuzz
 
