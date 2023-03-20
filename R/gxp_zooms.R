@@ -19,7 +19,7 @@ rm(list = ls())
 #library(dbplyr, lib.loc=.libPaths()[-1])
 library(broom)
 library(dbplyr)
-#library(GenomicOriginsScripts)
+library(GenomicOriginsScripts)
 library(ggplot2)
 library(ggrepel)
 library(tidyverse)
@@ -27,11 +27,11 @@ library(hypogen)
 library(hypoimg)
 library(dplyr)
 library(furrr)
-#library(ggraph)
-#library(tidygraph)
+library(ggraph)
+library(tidygraph)
 library(ggtext)
 library(ape)
-#library(igraph)
+library(igraph)
 library(png)
 
 
@@ -165,11 +165,11 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
                           lwd = 0.9, arrow = arrow(length = unit(1.5,"pt"), type = "closed"),
-                          color = "red") +
+                          color = clr_genes) +
     # add gene extent if direction is unknowns
     ggplot2::geom_segment(data = (df_list[[1]] %>% dplyr::filter(!strand %in% c("+", "-"))),
                           aes(x = ps, xend = pe, y = yl, yend = yl, group = Parent),
-                          lwd = 0.9, color = "red") +
+                          lwd = 0.9, color = clr_genes) +
     # add gene label
     ggplot2::geom_text(data = df_list[[1]],
                        aes(x = labelx, label = gsub("hpv1g000000", ".", label), y = yl - 0.5), size = 7)
@@ -196,7 +196,7 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
                                 position = 'top',
                                 expand = c(0,0),
                                 limits = c(start-window_buffer*1.25, end+window_buffer*1.25),
-                                labels = function (x) {x/(10^6)}) +
+                                labels = ax_scl) +
     # layout y ayis
     ggplot2::scale_y_continuous(name = expression(bolditalic(Genes)), expand = c(0,.4)) +
     # use same boundaries for all panels
@@ -293,8 +293,8 @@ plot_panel_gxp <- function (lg, start, end, trait, ...) {
     theme_hypo() + hypogen::theme_hypo_anno_extra() + 
     ggplot2::theme(legend.position = "none",
                    axis.title.y = ggplot2::element_text(angle = 90, size = 26), 
-                   axis.line.y = ggplot2::element_line(size = 0.25), 
-                   axis.ticks.y = ggplot2::element_line(size = 0.25), 
+                   axis.line.y = ggplot2::element_line(size = plot_lwd), 
+                   axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
                    axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
                    axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_text(size = 24),
@@ -335,8 +335,8 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
   theme_hypo() + hypogen::theme_hypo_anno_extra() + 
   ggplot2::theme(legend.position = "none",
                  axis.title.y = ggplot2::element_text(angle = 90, size = 26), 
-                 axis.line.y = ggplot2::element_line(size = 0.25), 
-                 axis.ticks.y = ggplot2::element_line(size = 0.25), 
+                 axis.line.y = ggplot2::element_line(size = plot_lwd), 
+                 axis.ticks.y = ggplot2::element_line(size = plot_lwd), 
                  axis.title.x = ggplot2::element_blank(), axis.line.x = ggplot2::element_blank(), 
                  axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(),
                  axis.text.y = ggplot2::element_text(size = 24),
@@ -455,7 +455,7 @@ cool_genes <-  c('arl3','kif16b','cdx1','hmcn2', 'sox10','smarca4', 'rorb', 'alo
 window_buffer <- 2.5*10^5
 
 # set color parameter for plot line
-gxp_clr <- c("#5B9E2E") #%>% darken(factor = .95)
+gxp_clr <- c("#5B9E2E") %>% darken(factor = .95)
 
 
 # Analysis ----------------------------------------------------------------------------------------------------------
