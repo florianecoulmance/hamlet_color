@@ -15,8 +15,8 @@
 rm(list = ls())
 
 # Load needed library
-#library(broom, lib.loc=.libPaths()[-1])
-#library(dbplyr, lib.loc=.libPaths()[-1])
+# library(broom, lib.loc=.libPaths()[-1])
+# library(dbplyr, lib.loc=.libPaths()[-1])
 library(broom)
 library(dbplyr)
 library(GenomicOriginsScripts)
@@ -140,14 +140,12 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
                                  anno_rown = 3, width = 0.1, gene_color = 'darkgray', start, end) {
   
   # Extract annotation information of specific LG range and plot the specific region
-  print("here15")  
+  
   # Import annotation data for a specific LG (chromosome) and range
   df_list <- hypogen::hypo_annotation_get(searchLG = searchLG, xrange = xrange,
                                           genes_of_interest = genes_of_interest,
                                           genes_of_sec_interest = genes_of_sec_interest,
                                           anno_rown = anno_rown)
-  print("here16")
-  print(df_list)
   # Plot the annotation
   ggplot2::ggplot() +
     # add exon 
@@ -174,7 +172,6 @@ custom_annoplot_flo <- function (..., searchLG, xrange, genes_of_interest = c(),
     ggplot2::geom_text(data = df_list[[1]],
                        aes(x = labelx, label = gsub("hpv1g000000", ".", label), y = yl - 0.5), size = 7)
   
-    print("here17")
 }
 
 
@@ -184,8 +181,7 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
   
   # Create plot title
   ttle <- stringr::str_sub(outlier_id,1,4) #%>% stringr::str_c(.,' (',project_inv_case(label),')')
-  print(ttle)  
-  print("here12")
+  
   # Create plot of region annotation
   p <- custom_annoplot_flo(searchLG = lg,
                            xrange = c(start-window_buffer*1.25,end+window_buffer*1.25),
@@ -212,7 +208,7 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
                    axis.text.y = ggplot2::element_blank(),
                    axis.ticks.y = ggplot2::element_blank(),
                    axis.text.x = element_text(size = 24))
-  print("here13")
+  
   # Use correct greek symbols in labels if needed
   if(outlier_id == 'LG17_1') {
     p$layers[[5]]$data$label <- p$layers[[5]]$data$label %>%
@@ -220,7 +216,6 @@ plot_panel_anno_flo <- function(outlier_id, label, lg, start, end, genes = c(),.
       stringr::str_replace(.,  'beta', "\u03B2")
   }
   
-  print("here14")
   p
   
 }
@@ -349,43 +344,34 @@ plot_panel_gxp_snp <- function (lg, start, end, trait, ...) {
 plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, label, trait, heatmap, ...) {
   
   # Create zoom plots into GWAS peak regions for one particular LG, with all necessary 
-  print("here5")
+
   print(heatmap)
 
   # Annotation pannel
   p_g <- plot_panel_anno_flo(lg = lg, outlier_id = outlier_id, label = label,
                              start = start, end = end, genes = cool_genes)
 
-  print("here6")
-
   # Pannel for GWAS peak zoomed and 50kb averaged windows
   p_gxp <- plot_panel_gxp(lg = lg, start = start, end = end, trait = pcs)
-
-  print("here7")
+  
   # Pannel for GWAS SNPs zoomed
   #p_snp <- plot_panel_gxp_snp(lg = lg, start = start, end = end, trait = pcs)
-
-  print("here8")  
+  
   #Pannel for heatmap
   img <- readPNG(heatmap)
   g <- rasterGrob(img[1:540,,], interpolate=TRUE, width = 1)
   g2 <- rasterGrob(img[665:820,,], interpolate=TRUE)
-  
-  print("here9")
   g_plot <- ggplot() + annotation_custom(g) + theme(plot.background = element_blank(), 
                                                     panel.background = element_blank(),
                                                     panel.grid = element_blank(), 
                                                     panel.border = element_blank(),
                                                     plot.margin = unit(c(0, 0, 0, 0), "cm"))
-  
-  print("here9")
   g2_plot <- ggplot() + annotation_custom(g2) + theme(plot.background = element_blank(), 
                                                       panel.background = element_blank(),
                                                       panel.grid = element_blank(), 
                                                       panel.border = element_blank(),
                                                       plot.margin = unit(c(0, 0, 0, 0), "cm"))
   
-  print("here10")
   # Assemble all panels
   if (text) {
     p_curtain <- cowplot::plot_grid(p_g, p_gxp, g_plot, g2_plot, ncol = 1, align = "v",
@@ -396,7 +382,7 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
                                     ncol = 1, align = "v", rel_heights = c(1, rep(0.8, 7)), axis="tblr")
   }
   
-  print("here11")
+
   hypo_save(filename = paste0(figure_path, pc, "_", outlier_id, ".png"),
             plot = p_curtain,
             width = 11.2,
@@ -409,10 +395,10 @@ plot_curt <- function (outlier_id, outlier_nr, lg, start, end, text = TRUE, labe
 }
 
 
-plot_regions <- function(region, outlier_list, label, path, pc_name, chromosome) {
+plot_regions <- function(region, outlier_list, label, path, name, chromosome) {
   
   # Create plot for regions with highest associations within each LG
-  print("here2")
+
   # Create the plot
   p_single <- region %>% filter(outlier_id %in% outlier_list) %>%
                          left_join(label) %>%
@@ -423,9 +409,8 @@ plot_regions <- function(region, outlier_list, label, path, pc_name, chromosome)
                                             labels = letters[1:length(outlier_list)] %>%
                                                      project_case())
   
-  print("here3")  
-# Save the file in .png file
-  hypo_save(filename = paste0(path, pc_name, "_", chromosome, ".png"),
+  # Save the file in .png file
+  hypo_save(filename = paste0(path, name, "_", chromosome, ".png"),
             plot = p_single,
             width = 32,
             # height = 18,
@@ -433,7 +418,7 @@ plot_regions <- function(region, outlier_list, label, path, pc_name, chromosome)
             type = 'cairo')
   
   p_single
-  print("here4")
+  
 }
 
 
@@ -524,9 +509,7 @@ if (nb <= 4) {
 
 # Plot and save as table GWAS peaks for the LG
 if (nb != 0) {
-  print("here1")
   plot_regions(region_table, outlier_pick, region_label_tibbles, figure_path, pc, chrom)
-  print("herefin")
 } else {
   print("this chromosome does not have peaks")
 }
