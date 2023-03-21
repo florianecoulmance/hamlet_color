@@ -447,7 +447,7 @@ cat > $jobfile6 <<EOA # generate the job file
 
 
 ml hpc-env/8.3
-ml R-core/4.1.0-foss-2019b
+#ml R-core/4.1.0-foss-2019b
 ml FriBidi
 ml HarfBuzz
 
@@ -491,8 +491,8 @@ CHROM="LG\${LG}"
 FILE_N="\${NAME}_LG\${LG}"
 echo \${FILE_N}
 
-# python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
-Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
+python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
+#Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
 # Rscript $BASE_DIR/R/gxp_pc1_5_3peaks.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/
 
 EOA
