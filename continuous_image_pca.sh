@@ -101,7 +101,8 @@ mkdir $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/
 # -------------------------------------------------
 
 # Modify images according to color space, perform PCA files and create heatmaps per PCs
-/user/doau0129/miniconda3/bin/python3 ./python/phenotype_continuous.py \
+# /user/doau0129/miniconda3/bin/python3 
+pythonm3 ./python/phenotype_continuous.py \
          $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/ \
          $BASE_DIR/ressources/images/$MASK_FILE \
          $COLOR_SPACE \
@@ -111,19 +112,19 @@ mkdir $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/
          $DATASET \
 
 # Load necessary environment
-ml hpc-env/8.3
-ml R/4.0.2-foss-2019b
-ml FriBidi
-ml HarfBuzz
+# ml hpc-env/8.3
+# ml R/4.0.2-foss-2019b
+# ml FriBidi
+# ml HarfBuzz
 
 # Create the image metadata table to use in further GWAS, plot the PCA
-Rscript R/phenotype_continuous_pca.R \
-         $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
-         $COLOR_SPACE \
-         $BASE_DIR/metadata/ \
-         ${DATASET}_PCs.csv \
-         ${DATASET}_var.csv \
-         $BASE_DIR/metadata/image_metadata.tsv \
-         $MASK \
-         $DATASET \
-         $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \
+# Rscript R/phenotype_continuous_pca.R \
+#          $BASE_DIR/images/continuous/$COLOR_SPACE/$DATASET/ \
+#          $COLOR_SPACE \
+#          $BASE_DIR/metadata/ \
+#          ${DATASET}_PCs.csv \
+#          ${DATASET}_var.csv \
+#          $BASE_DIR/metadata/image_metadata.tsv \
+#          $MASK \
+#          $DATASET \
+#          $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/ \

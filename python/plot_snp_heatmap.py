@@ -128,14 +128,33 @@ def make_heat(b_m, rgb_m, pca, weights, pcs, effect):
     print(-max_val, -min_val)
     
     # Create colormap for futur transformation of im_pcs to raster
-    norm = matplotlib.colors.Normalize(-0.005,0.005)
-    colors = [[norm(-0.005), "darkblue"],
-          [norm(-0.003), "blue"],
-          [norm(-0.001), "lightblue"],
+    # norm = matplotlib.colors.Normalize(-0.005,0.005)      # original version for GxP
+    # colors = [[norm(-0.005), "darkblue"],
+    #       [norm(-0.003), "blue"],
+    #       [norm(-0.001), "lightblue"],
+    #       [norm(0), "grey"],
+    #       [norm(0.001), "yellow"],
+    #       [norm(0.003), "orange"],
+    #       [norm( 0.005), "darkred"]]
+
+    norm = matplotlib.colors.Normalize(-0.03,0.03)            # Version for pnudctm
+    colors = [[norm(-0.03), "darkblue"],
+          [norm(-0.02), "blue"],
+          [norm(-0.01), "lightblue"],
           [norm(0), "grey"],
-          [norm(0.001), "yellow"],
-          [norm(0.003), "orange"],
-          [norm( 0.005), "darkred"]]
+          [norm(0.01), "yellow"],
+          [norm(0.02), "orange"],
+          [norm(0.03), "darkred"]]
+
+    # norm = matplotlib.colors.Normalize(-0.004,0.004)            # version for pnufullm
+    # colors = [[norm(-0.004), "darkblue"],
+    #       [norm(-0.0026), "blue"],
+    #       [norm(-0.0013), "lightblue"],
+    #       [norm(0), "grey"],
+    #       [norm(0.0013), "yellow"],
+    #       [norm(0.0026), "orange"],
+    #       [norm(0.004), "darkred"]]
+
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
     mapper = cm.ScalarMappable(cmap=cmap,norm=norm)
 
@@ -156,19 +175,40 @@ def plot_heat(im_table, figure_path, region_id):
     Creates a panel of 5 heatmaps per regions corresponding to the 5 highest associated SNPs of the region
     '''
 
-    norm = matplotlib.colors.Normalize(-0.005,0.005) # <-- norm to use further to create own color map
+    # norm = matplotlib.colors.Normalize(-0.005,0.005) # <-- norm to use further to create own color map , original version
+    norm = matplotlib.colors.Normalize(-0.03,0.03) # pnu dctm version
+    # norm = matplotlib.colors.Normalize(-0.004,0.004) # pnufullm version
 
     # create own colormap gradient
-    colors = [[norm(-0.005), "darkblue"],
-        [norm(-0.003), "blue"],
-        [norm(-0.001), "lightblue"],
+    # colors = [[norm(-0.005), "darkblue"],
+    #     [norm(-0.003), "blue"],
+    #     [norm(-0.001), "lightblue"],
+    #     [norm(0), "grey"],
+    #     [norm(0.001), "yellow"],
+    #     [norm(0.003), "orange"],
+    #     [norm( 0.005), "darkred"]]
+
+    colors = [[norm(-0.03), "darkblue"],        # pnu dctm version
+        [norm(-0.02), "blue"],
+        [norm(-0.01), "lightblue"],
         [norm(0), "grey"],
-        [norm(0.001), "yellow"],
-        [norm(0.003), "orange"],
-        [norm( 0.005), "darkred"]]
-    
+        [norm(0.01), "yellow"],
+        [norm(0.02), "orange"],
+        [norm(0.03), "darkred"]]
+
+    # colors = [[norm(-0.004), "darkblue"],        # pnu fullm version
+    #     [norm(-0.0026), "blue"],
+    #     [norm(-0.0013), "lightblue"],
+    #     [norm(0), "grey"],
+    #     [norm(0.0013), "yellow"],
+    #     [norm(0.0026), "orange"],
+    #     [norm(0.004), "darkred"]]
+        
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors) # <-- with gradient create the colormap for heatmaps
-    bounds = [-0.005, 0, 0.005] # <-- create min and max for the colorbar scale
+    # bounds = [-0.005, 0, 0.005] # <-- create min and max for the colorbar scale , original version
+    bounds = [-0.03, 0, 0.03] # pnudctm version 
+    # bounds = [-0.004, 0, 0.004] # pnufullm version 
+
 
     print(im_table["IMAGE"].values[0].shape)
     img_cropped = im_table["IMAGE"].values[0][200:700, 240:1350, :]
