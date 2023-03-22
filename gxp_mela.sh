@@ -447,7 +447,7 @@ cat > $jobfile6 <<EOA # generate the job file
 
 
 ml hpc-env/8.3
-#ml R-core/4.1.0-foss-2019b
+ml R-core/4.1.0-foss-2019b
 ml FriBidi
 ml HarfBuzz
 
@@ -491,9 +491,114 @@ CHROM="LG\${LG}"
 FILE_N="\${NAME}_LG\${LG}"
 echo \${FILE_N}
 
-python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
-#Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
+#python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${FILE_N}.snp.txt $BASE_DIR/images/$TYPE/$COLOR_SPACE/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${EFF}
+Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME} \${CHROM}
 # Rscript $BASE_DIR/R/gxp_pc1_5_3peaks.R $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/ $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 7 prepare snp position table 
+
+jobfile7=7_table.tmp # generate a temp file that will be launched
+cat > $jobfile7 <<EOA # indicate that EOA is the end of the file
+#!/bin/bash
+#SBATCH --job-name=7_table                                                               # set the jobname
+#SBATCH --partition=carl.p                                                                      # set the cluster partition to use
+#SBATCH --output=$BASE_DIR/logs/7_table_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/7_table_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+INPUT=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/*.snp.txt                                # input the genotyping file with SNPs only created with the genotyping.sh pipeline
+echo \${INPUT}
+
+awk 'FNR==1 && NR!=1 { while (/^<header>/) getline; } 1 {print}' \${INPUT} > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/all.txt 
+
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/all.txt > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_snp_all.txt
+
+
+sed 1d $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_snp_all.txt | while read -r line;
+    do
+        echo \${line}
+        chrom=\$(echo \${line} | awk '{print \$1}')
+        echo \${chrom}
+        pos=\$(echo \${line} | awk '{print \$2}')
+        echo \${pos}
+        bcftools filter -r \${chrom}:\${pos} $BASE_DIR/outputs/6_genotyping/6_1_snp/snp_filterd.vcf.gz | grep -v '##' >> $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/intermediate.txt
+done
+
+
+awk '!seen[\$0]++' $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/intermediate.txt | sed 's|#||g' > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_alleles.txt
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 8 plot pie chart for each SNP
+
+jobfile8=8_pie.tmp # generate a temp file that will be launched
+cat > $jobfile8 <<EOA # indicate that EOA is the end of the file
+#!/bin/bash
+#SBATCH --job-name=8_pie                                                               # set the jobname
+#SBATCH --partition=carl.p                                                                      # set the cluster partition to use
+#SBATCH --output=$BASE_DIR/logs/8_pie_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/8_pie_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=20G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+ml hpc-env/8.3
+ml R-core/4.1.0-foss-2019b
+ml FriBidi
+ml HarfBuzz
+
+
+
+INPUT=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_alleles.txt
+
+Rscript $BASE_DIR/R/snp_alleles_plots.R \${INPUT} $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/
+
+
+EOA
+
+
+
+# ------------------------------------------------------------------------------
+# Job 9 annotate SNP loci of interest to get info on genes and transcripts
+
+jobfile9=9_snp_anno.tmp # generate a temp file that will be launched
+cat > $jobfile9 <<EOA # indicate that EOA is the end of the file
+#!/bin/bash
+#SBATCH --job-name=9_snp_anno                                                               # set the jobname
+#SBATCH --partition=carl.p                                                                      # set the cluster partition to use
+#SBATCH --output=$BASE_DIR/logs/9_snp_anno_%A_%a.out                                        # send the job output file to the log folder
+#SBATCH --error=$BASE_DIR/logs/9_snp_anno_%A_%a.err                                         # send the job error file to the log folder
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=70G                                                                       # set the estimated memory needed for the job to run
+#SBATCH --time=02:30:00                                                                         # set the estimated amount of time for the job to run
+
+
+INPUT=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_snp_all.txt
+
+awk 'BEGIN { OFS="\t" } {print \$6, \$1, \$2, \$2, \$3="."}' \${INPUT} | \
+sed 's/RANGE\tCHROM\tPOS\tPOS\t\./Unique Peak ID\tchromosome\tstarting position\tending position\tStrand/g' > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_all_homer.txt
+
+/user/doau0129/miniconda3/bin/annotatePeaks.pl $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_all_homer.txt /user/doau0129/data/ref_genome/HP_genome_unmasked_01.fa.gz -gtf /nfs/data/zipa6261/Hypoplectrus_genomes/Genome_Hpue/Hpue_annotation_02_AGAT.gtf -annStats $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_all_homer_output_annStats.txt > $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_all_homer_output.txt
+
 
 EOA
 
@@ -502,7 +607,7 @@ EOA
 # ********** Schedule the job launching ***********
 # -------------------------------------------------
 
-if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid1" ] || [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   0_convert_plink : DONE         **"
 else
@@ -510,7 +615,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid2" ] || [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   1_prep          : DONE         **"
 elif [ "$JID_RES" = jid1 ]
@@ -521,7 +626,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid3" ] || [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   2_gemma         : DONE         **"
 elif [ "$JID_RES" = "jid2" ]
@@ -532,7 +637,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid4" ] || [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   3_windows       : DONE         **"
 elif [ "$JID_RES" = "jid3" ]
@@ -543,7 +648,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid5" ] || [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   4_mvplink       : DONE         **"
 elif [ "$JID_RES" = "jid4" ]
@@ -554,7 +659,7 @@ else
 fi
 
 
-if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid6" ] || [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   5_slider        : DONE         **"
 elif [ "$JID_RES" = "jid5" ]
@@ -565,7 +670,7 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid7" ] || [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
   echo "*****   6_plots         : DONE         **"
 elif [ "$JID_RES" = "jid6" ]
@@ -576,9 +681,9 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid8" ] || [ "$JID_RES" = "jid9" ];
 then
-  echo "*****   7_zooms         : DONE         **"
+  echo "*****   7_table         : DONE         **"
 elif [ "$JID_RES" = "jid7" ]
 then
   jid7=$(sbatch ${jobfile7})
@@ -587,13 +692,23 @@ else
 fi
  
 
-if [ "$JID_RES" = "jid8" ];
+if [ "$JID_RES" = "jid9" ];
+then
+  echo "*****   8_pie         : DONE         **"
+elif [ "$JID_RES" = "jid8" ]
 then
   jid8=$(sbatch ${jobfile8})
 else
   jid8=$(sbatch --dependency=afterok:${jid7##* } ${jobfile8})
 fi
 
+
+if [ "$JID_RES" = "jid9" ];
+then
+  jid9=$(sbatch ${jobfile9})
+else
+  jid9=$(sbatch --dependency=afterok:${jid8##* } ${jobfile9})
+fi
 
 
 
@@ -602,79 +717,3 @@ fi
 
 rm *tmp
 # rm -r $BASE_DIR/outputs/lof/
-
-
-
-
-
-
-
-
-
-# # ------------------------------------------------------------------------------
-# # Job 7 create zoom plot on region of interest
-
-# jobfile7=7_zooms.tmp # temp file
-# cat > $jobfile7 <<EOA # generate the job file
-# #!/bin/bash
-# #SBATCH --job-name=7_zooms.tmp
-# #SBATCH --partition=carl.p
-# #SBATCH --array=1-55
-# #SBATCH --output=$BASE_DIR/logs/7_zooms_%A_%a.out
-# #SBATCH --error=$BASE_DIR/logs/7_zooms_%A_%a.err
-# #SBATCH --nodes=1
-# #SBATCH --ntasks=1
-# #SBATCH --cpus-per-task=1
-# #SBATCH --mem-per-cpu=40G
-# #SBATCH --time=04:00:00
-
-
-# ml hpc-env/8.3
-# ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
-# ml FriBidi
-# ml HarfBuzz
-
-
-# ls -1 $BASE_DIR/outputs/7_gxp/$DATASET/*.mvplink.50k.5k.txt.gz > $BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
-
-# INPUT_AVG=$BASE_DIR/outputs/lof/$DATASET_mvplink_50k.fofn
-
-# #Create a job for all the possible phenotypes and the associated .fam file with just one phenotype at a time
-# AVG=\$(cat \${INPUT_AVG} | head -n \${SLURM_ARRAY_TASK_ID} | tail -n 1)
-# echo \${AVG}
-
-# B=\$(basename "\${AVG}")
-# echo \${B}
-# NAME=\${B%%.*}
-# echo \${NAME}
-# EFF=${DATASET%%_*}
-# echo \${EFF}
-
-# C=${DATASET#*_}
-# echo \${C}
-# M=\${C%%_*}
-# echo \${M}
-
-
-# if [ "\${M}" = "fullm" ];
-# then
-#   MASK=$BASE_DIR/ressources/full_mask.tif
-# elif [ "\${M}" = "bodym" ]
-# then
-#   MASK=$BASE_DIR/ressources/body_mask.tif
-# else
-#   echo "please verify your dataset folder spelling in the specified -k parameter"
-# fi
-
-
-# echo \${MASK}
-
-
-# mkdir $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/
-# mkdir $BASE_DIR/outputs/7_gxp/$DATASET/\${NAME}/
-
-# Rscript $BASE_DIR/R/gxp_zooms.R $BASE_DIR/outputs/7_gxp/$DATASET/ \${B} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${NAME}/ \${NAME}
-# python3 $BASE_DIR/python/plot_snp_heatmap.py $BASE_DIR/outputs/7_gxp/$DATASET/\${T}/ \${NAME}.snp.txt $BASE_DIR/images/$DATASET/${DATASET}_modifiedImage.csv \${MASK} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/\${T}/\${NAME}/ \${EFF}
-
-
-# EOA
