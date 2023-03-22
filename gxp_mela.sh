@@ -568,7 +568,7 @@ ml HarfBuzz
 
 INPUT=$BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/PC1_5_alleles.txt
 
-Rscript $BASE_DIR/R/snp_alleles_plots.R \${INPUT} $BASE_DIR/outputs/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/
+Rscript $BASE_DIR/R/snp_alleles_plots.R \${INPUT} $BASE_DIR/figures/7_gxp/$TYPE/$COLOR_SPACE/$DATASET/PC1_5/
 
 
 EOA
