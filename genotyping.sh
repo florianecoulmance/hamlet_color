@@ -868,11 +868,11 @@ echo \${PREFIX}                                                                 
 # tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
 
 
-echo -e "PL17_35puepue PL17_35indpue\nPL17_23nigpue PL17_23tanpue\nPL17_108nigbel PL17_108change\nPL17_111indbel PL17_108nigbel" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
-bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd1.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
-echo -e "PL17_108change PL17_111indbel" > $BASE_DIR/outputs/lof/change_sample2.txt
-bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample2.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${P}/\${PREFIX}_filterd1.vcf.gz # use the sample name change file to rename samples in the genotyping file with BCFTools
-tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
+# echo -e "PL17_35puepue PL17_35indpue\nPL17_23nigpue PL17_23tanpue\nPL17_108nigbel PL17_108change\nPL17_111indbel PL17_108nigbel" > $BASE_DIR/outputs/lof/change_sample.txt          # print the sample name changes to a file
+# bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample.txt -o \${P}/\${PREFIX}_filterd1.vcf.gz \${GENO} # use the sample name change file to rename samples in the genotyping file with BCFTools
+# echo -e "PL17_108change PL17_111indbel" > $BASE_DIR/outputs/lof/change_sample2.txt
+# bcftools reheader --samples $BASE_DIR/outputs/lof/change_sample2.txt -o \${P}/\${PREFIX}_filterd.vcf.gz \${P}/\${PREFIX}_filterd1.vcf.gz # use the sample name change file to rename samples in the genotyping file with BCFTools
+# tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                          # create index for the file just created
 
 
 # LG=\$(zless ~/data/annotations/HP.annotation.named.LG12.gff.gz | grep -w gene | grep -i casz1 | awk '{print \$1}') # get LG (chromosomes) corresponding to region of interest to filter from annotation file
@@ -883,8 +883,10 @@ tabix -p vcf \${P}/\${PREFIX}_filterd.vcf.gz                                    
 # echo \${END}
 
 # vcftools --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz --chr \${LG} --from-bp \${START} --to-bp \${END} --recode --stdout | bgzip > \${P}/\${PREFIX}_filterd_casz1.vcf.gz # VCFTools command to extract a region of interest out of genotyping file
-
 # tabix -p vcf \${P}/\${PREFIX}_filterd_casz1.vcf.gz                                          # create index for the file just created
+
+vcftools --gzvcf \${P}/\${PREFIX}_filterd.vcf.gz --chr LG08 --recode --stdout | bgzip > \${P}/\${PREFIX}_filterd_LG08.vcf.gz # VCFTools command to extract a region of interest out of genotyping file
+tabix -p vcf \${P}/\${PREFIX}_filterd_LG08.vcf.gz
 
 # echo -e "\${P}/\${PREFIX}_filterd.vcf.gz\n\${P}/\${PREFIX}_filterd_casz1.vcf.gz" >> $BASE_DIR/outputs/lof/17_pca.fofn # add end product to file of list of file
 
