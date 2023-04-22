@@ -838,7 +838,7 @@ cat > $jobfile14 <<EOA # generate the job file
 #!/usr/bin/env bash
 #SBATCH --job-name=14_changes
 #SBATCH --partition=carl.p
-#SBATCH --array=1
+#SBATCH --array=2
 #SBATCH --output=$BASE_DIR/logs/14_changes_%A_%a.out
 #SBATCH --error=$BASE_DIR/logs/14_changes_%A_%a.err
 #SBATCH --nodes=1
