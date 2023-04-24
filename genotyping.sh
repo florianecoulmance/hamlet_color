@@ -914,7 +914,8 @@ cat > $jobfiled <<EOA # generate the job file
 
 
 ml hpc-env/8.3                                                                        # need to load environments that have the righ ressources for plots 
-ml R/4.0.2-foss-2019b
+# ml R/4.0.2-foss-2019b
+ml R-core/4.1.0-foss-2019b
 #ml R-bundle-Bioconductor/3.12-foss-2019b-R-4.0.2
 ml FriBidi
 ml HarfBuzz 

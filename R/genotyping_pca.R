@@ -258,10 +258,10 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
           width = 40,
           height = 40)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_LG08_zoom.pdf"),
-            plot = g,
-            width = 40,
-            height = 30)
+#   hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_LG08_zoom.pdf"),
+#             plot = g,
+#             width = 40,
+#             height = 30)
 
 }
 
