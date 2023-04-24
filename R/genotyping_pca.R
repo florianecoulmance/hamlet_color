@@ -18,7 +18,7 @@ library(tidyverse)
 library(stringr)
 library(stringi)
 library(ggplot2)
-library(ggpubr)
+# library(ggpubr)
 library(ggtext)
 library(hypoimg)
 
@@ -249,16 +249,16 @@ genotyping_pca_plots <- function(path, prefix, pathfigure) {
   
 
   # Arrange all plots in pae
-  f <- ggarrange(p1, p2, p3, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1, labels = c("a", "b", "c"), font.label = list(size = 30))
-  g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2, labels = c("a", "b", "c", "d"), font.label = list(size = 30))
+#   f <- ggarrange(p1, p2, p3, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1, labels = c("a", "b", "c"), font.label = list(size = 30))
+#   g <- if(grepl("casz1",prefix)) ggarrange(p1, p4, p5, common.legend = TRUE, legend="bottom", ncol = 3, nrow = 1) else ggarrange(p1, p6, p7, p8, common.legend = TRUE, legend="bottom", ncol = 2, nrow = 2, labels = c("a", "b", "c", "d"), font.label = list(size = 30))
 
   # Save figures
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_pca_swap_genofile_testmela.pdf"),
-          plot = f,
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_LG08.pdf"),
+          plot = p1,
           width = 40,
-          height = 18)
+          height = 40)
 
-  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_Lpca_zoom_swap_genofile_testmela.pdf"),
+  hypo_save(filename = paste0(pathfigure,"ld0.2_nomaf_corr/",prefix,"_LG08_zoom.pdf"),
             plot = g,
             width = 40,
             height = 30)
