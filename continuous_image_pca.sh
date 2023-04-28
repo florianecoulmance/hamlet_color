@@ -102,7 +102,7 @@ mkdir $BASE_DIR/figures/7_gxp/continuous/$COLOR_SPACE/$DATASET/
 
 # Modify images according to color space, perform PCA files and create heatmaps per PCs
 # /user/doau0129/miniconda3/bin/python3 
-pythonm3 ./python/phenotype_continuous.py \
+python3 ./python/phenotype_continuous.py \
          $BASE_DIR/ressources/images/$ALIGN_FOLDER/3-registred/Modalities/RGB/$SUB_DATA/ \
          $BASE_DIR/ressources/images/$MASK_FILE \
          $COLOR_SPACE \
