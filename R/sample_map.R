@@ -43,9 +43,9 @@ args = args[6:7]
 print(args)
 
 gxp_metadata <- as.character(args[1]) # Path to phenotype PCA files folder
-# gxp_metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/metadata_gxp_ben_floridae_complete"
+# gxp_metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/hamlet_color/metadata/metadata_gxp_ben_floridae_complete"
 coverage_table <- as.character(args[2]) # Path to coverage table file
-# coverage_table <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/coverage_table"
+# coverage_table <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/hamlet_color/coverage_table"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -326,7 +326,7 @@ mytheme <- gridExtra::ttheme_default(
 
 Table1 <- tableGrob(table_h1, rows = NULL, theme = mytheme)
 Table2 <- tableGrob(table_h2, rows = NULL, theme = mytheme)
-pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/TableS1.pdf", height = 24, width = 32)
+pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/hamlet_color/figures/TableS1.pdf", height = 24, width = 32)
 # p<-tableGrob(cmp_glob)
 # grid.table(table_h1, rows = NULL)
 

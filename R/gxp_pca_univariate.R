@@ -244,8 +244,8 @@ pca_analysis <- function(pc_first, pc_second, pca_pheno, var, im) {
   f2 <- f2 %>% left_join(hypo_chrom_start) %>% mutate(GPOS = MID_POS + GSTART)
   f2$range <- do.call(paste, c(f2[c("CHROM", "BIN_START", "BIN_END")], sep="_"))
   
-  img1 <- readPNG(paste0("/user/doau0129/work/hamlet_color/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_first,".png"))
-  img2 <- readPNG(paste0("/user/doau0129/work/hamlet_color/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_second,".png"))
+  img1 <- readPNG(paste0("/user/doau0129/work/hamlet_color/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_first,"_originalrescaled.png"))
+  img2 <- readPNG(paste0("/user/doau0129/work/hamlet_color/figures/7_gxp/continuous/LAB/",dataset,"/",dataset,"_",pc_second,"_originalrescaled.png"))
   # img1 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_first,".png"))
   # img2 <- readPNG(paste0("/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/figures/7_gxp/continuous/LAB/LAB_fullm_54off_59on/LAB_fullm_54off_59on_",pc_second,".png"))
   
@@ -288,13 +288,13 @@ immeta <- read.table(file = paste0(metadata, "image_metadata.tsv"), sep = '\t', 
 immeta["im"] <- gsub('.{4}$', '', immeta$image)
 print(immeta$im)
 
-p1 <- pca_analysis("PC1", "PC2", pheno_PC, pheno_var, immeta)
+# p1 <- pca_analysis("PC1", "PC2", pheno_PC, pheno_var, immeta)
 p2 <- pca_analysis("PC1", "PC3", pheno_PC, pheno_var, immeta)
-p3 <- pca_analysis("PC1", "PC4", pheno_PC, pheno_var, immeta)
+# p3 <- pca_analysis("PC1", "PC4", pheno_PC, pheno_var, immeta)
 p4 <- pca_analysis("PC1", "PC5", pheno_PC, pheno_var, immeta)
-p5 <- pca_analysis("PC2", "PC3", pheno_PC, pheno_var, immeta)
+# p5 <- pca_analysis("PC2", "PC3", pheno_PC, pheno_var, immeta)
 p6 <- pca_analysis("PC2", "PC4", pheno_PC, pheno_var, immeta)
-p7 <- pca_analysis("PC2", "PC5", pheno_PC, pheno_var, immeta)
+# p7 <- pca_analysis("PC2", "PC5", pheno_PC, pheno_var, immeta)
 # p8 <- pca_analysis("PC3", "PC4", pheno_PC, pheno_var, immeta)
 # p9 <- pca_analysis("PC3", "PC5", pheno_PC, pheno_var, immeta)
 # p10 <- pca_analysis("PC4", "PC5", pheno_PC, pheno_var, immeta)
