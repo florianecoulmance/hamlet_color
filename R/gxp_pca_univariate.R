@@ -29,7 +29,7 @@ library(stringi)
 library(png)
 library(ggpubr)
 library(scales)
-library(ggimage)
+# library(ggimage)
 
 
 # -------------------------------------------------------------------------------------------------------------------
