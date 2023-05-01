@@ -87,10 +87,11 @@ def modify_image(im_path, bo_mask, bl_mask, effect, path_fig):
 
     for i, f in enumerate(file_list):
         print(i, f)
+        # print(im_path,f)
         # print(path_images+f)
         image = cv2.imread(im_path+f)
         # print(image.shape)
-
+        # print(image)
         image_blurred = image.copy()
         # print(image_blurred.shape)
 
@@ -257,11 +258,20 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     min_val, max_val = min(im_PCscores), max(im_PCscores)
     print(min_val, max_val)
     
-    norm = matplotlib.colors.Normalize(0,0.009)
-    colors = [[norm(0), "grey"],
-          [norm(0.003), "yellow"],
-          [norm(0.006), "orange"],
-          [norm( 0.009), "darkred"]]
+    norm = matplotlib.colors.Normalize(0,0.006)
+    
+    boundaries = [0, 0.002, 0.004, 0.006]
+    hex_colors = sns.color_palette("rocket", n_colors=10).as_hex()
+    print(hex_colors)
+    # hex_colors = [hex_colors[i] for i in range(0, len(hex_colors), 4)]
+    # print(hex_colors)
+    # colors=list(zip(boundaries, hex_colors))
+    # print(colors)
+
+    colors = [[norm(0), "grey"], #grey
+          [norm(0.002), "yellow"], #yellow
+          [norm(0.004), "orange"], #orange
+          [norm(0.006), "darkred"]] #darkred
 
     # if abs(max_val)<abs(min_val):
     #     bounds = [min_val, -max_val, 0, max_val, -min_val]
@@ -273,7 +283,8 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
 
     cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colors)
     mapper = cm.ScalarMappable(cmap=cmap,norm=norm)
-    bounds = [0, 0.003, 0.006, 0.009] # <-- create min and max for the colorbar scale
+    print(mapper)
+    bounds = [0, 0.002, 0.004, 0.006] # <-- create min and max for the colorbar scale
 
     color_mask = np.array([(r, g, b) for r, g, b, a in mapper.to_rgba(im_PCscores)])
     
@@ -302,7 +313,7 @@ def plot_heatmap(b_m, rgb_m, pca, component, effect, res_path, data_name):
     fig.subplots_adjust(hspace = 0.01, wspace = 0.01)  # <-- Add space so the colorbar doesn't overlap the plot
     
     plt.margins(0,0)
-    plt.savefig(res_path+data_name+"_PC"+str(component)+".png",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
+    plt.savefig(res_path+data_name+"_PC"+str(component)+"_originalrescaled.png",bbox_inches='tight') # <-- save in appropriate figure folder with region id as file title
 
 
 
@@ -345,16 +356,16 @@ def main():
     plot_heatmap(bool_mask, rgb_mask, pca_im, 3, color_space, path_figures, dataset)
     plot_heatmap(bool_mask, rgb_mask, pca_im, 4, color_space, path_figures, dataset)
     plot_heatmap(bool_mask, rgb_mask, pca_im, 5, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 6, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 7, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 8, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 9, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 10, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 11, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 12, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 13, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 14, color_space, path_figures, dataset)
-    plot_heatmap(bool_mask, rgb_mask, pca_im, 15, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 6, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 7, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 8, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 9, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 10, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 11, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 12, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 13, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 14, color_space, path_figures, dataset)
+    # plot_heatmap(bool_mask, rgb_mask, pca_im, 15, color_space, path_figures, dataset)
 
 
 

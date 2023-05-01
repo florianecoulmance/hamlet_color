@@ -112,7 +112,7 @@ plot_g_h <- function(table,path,prefix,tr) {
     
 
     # im <- paste0(figure_path+dataset+"_"+trait+".png")
-    img <- readPNG(paste0(path,prefix,"_",tr,".png"))
+    img <- readPNG(paste0(path,prefix,"_",tr,"_originalrescaled.png"))
     g <- rasterGrob(img, interpolate=TRUE)
 
     plot <- ggarrange(p, g, ncol = 2, nrow = 1, widths = c(1.5, 1), heights = c(0.5, 1.5)) + ggtitle(tr) + theme(plot.title = element_text(hjust = 0.8))

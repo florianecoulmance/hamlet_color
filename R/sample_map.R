@@ -43,9 +43,9 @@ args = args[6:7]
 print(args)
 
 gxp_metadata <- as.character(args[1]) # Path to phenotype PCA files folder
-# gxp_metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/metadata/metadata_gxp_ben_floridae_complete"
+# gxp_metadata <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/hamlet_color/metadata/metadata_gxp_ben_floridae_complete"
 coverage_table <- as.character(args[2]) # Path to coverage table file
-# coverage_table <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/chapter1/coverage_table"
+# coverage_table <- "/Users/fco/Desktop/PhD/1_CHAPTER1/1_GENETICS/hamlet_color/coverage_table"
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -279,10 +279,10 @@ sample_list2 <- cov_sample %>%
                 setNames(., nm = c("Nr", "ID", "Species", "Location", "Date", "Latitude", "Longitude", "Coverage"))
 
 
-ben_ena <- data.frame("ID" = c("PL17_89", "PL17_95", "PL17_119", "PL17_120", "PL17_121",
+ben_ena <- data.frame("ID" = c("28366", "28377", "28384", "28386", "28387", "28388", "28390", "28391", "28392", "28394", "28399", "AG9RX_46", "AG9RX_48", "AG9RX_49", "AG9RX_50", "AG9RX_51", "AG9RX_53", "PL17_01", "PL17_02", "PL17_04", "PL17_05", "PL17_103", "PL17_100", "PL17_104", "PL17_105", "PL17_106", "PL17_107", "PL17_108", "PL17_109", "PL17_110", "PL17_111", "PL17_112", "PL17_125", "PL17_117", "PL17_127", "PL17_128", "PL17_132", "PL17_134", "PL17_135", "PL17_136", "PL17_137", "PL17_138", "PL17_139", "PL17_140", "PL17_141", "PL17_143", "PL17_149", "PL17_155", "PL17_157", "PL17_159", "PL17_23", "PL17_35", "PL17_37", "PL17_38", "PL17_39", "PL17_40", "PL17_41", "PL17_42", "PL17_43", "PL17_44", "PL17_50", "PL17_53", "PL17_55", "PL17_54", "PL17_56", "PL17_57", "PL17_60", "PL17_62", "PL17_63", "PL17_64", "PL17_65", "PL17_67", "PL17_68", "PL17_69", "PL17_70", "PL17_71", "PL17_72", "PL17_73", "PL17_74", "PL17_93", "PL17_91", "PL17_90", "PL17_88", "PL17_86", "PL17_87", "PL17_75", "PL17_76", "PL17_77", "PL17_82", "PL17_85", "PL17_97", "PL17_94", "PL17_96", "PL17_99", "28383", "28385", "28389","PL17_66","PL17_89", "PL17_95", "PL17_119", "PL17_120", "PL17_121",
                                "PL17_122", "PL17_123", "PL17_124", "PL17_126", "PL17_142",
                                "PL17_144", "PL17_145", "PL17_148", "PL17_153", "PL17_160"),
-                      "Accession Number" = c("ERS2899590", "ERS2899591", "ERS2899593",
+                      "Accession Number" = c("ERS8632035", "ERS14948427", "ERS14948442", "ERS14948430", "ERS14948426", "ERS14948436", "ERS14948425", "ERS14948444", "ERS14948440", "ERS14948432", "ERS14948433", "ERS14948429", "ERS14948431", "ERS14948424", "ERS14948437", "ERS14948434", "ERS14948435", "ERS14948439", "ERS14948428", "ERS14948438", "ERS14948441", "ERS14948415", "ERS14948407", "ERS14948408", "ERS14948419", "ERS14948401", "ERS14948420", "ERS14948411", "ERS14948417", "ERS14948422", "ERS14948399", "ERS14948405", "ERS14948421", "ERS14948404", "ERS14948402", "ERS14948406", "ERS14948416", "ERS14948448", "ERS14948455", "ERS14948452", "ERS14948453", "ERS14948451", "ERS14948450", "ERS14948456", "ERS14948457", "ERS14948454", "ERS14948447", "ERS14948449", "ERS14948446", "ERS14948445", "ERS14948480", "ERS14948482", "ERS14948469", "ERS14948464", "ERS14948460", "ERS14948466", "ERS14948462", "ERS14948467", "ERS14948461", "ERS14948463", "ERS14948475", "ERS14948476", "ERS14948485", "ERS14948483", "ERS14948484", "ERS14948479", "ERS14948481", "ERS14948465", "ERS14948487", "ERS14948471", "ERS14948490", "ERS14948493", "ERS14948470", "ERS14948486", "ERS14948489", "ERS14948478", "ERS14948472", "ERS14948491", "ERS14948492", "ERS14948412", "ERS14948400", "ERS14948418", "ERS14948398", "ERS14948468", "ERS14948413", "ERS14948458", "ERS14948477", "ERS14948488", "ERS14948473", "ERS14948474", "ERS14948409", "ERS14948410", "ERS14948414", "ERS14948403", "ERS14948443", "ERS14948423", "ERS8632036", "ERS14948459", "ERS2899590", "ERS2899591", "ERS2899593",
                                              "ERS2899594", "ERS2899595", "ERS2899596",
                                              "ERS2899597", "ERS2899598", "ERS2899599",
                                              "ERS2899137", "ERS2899138", "ERS2899139",
@@ -326,7 +326,7 @@ mytheme <- gridExtra::ttheme_default(
 
 Table1 <- tableGrob(table_h1, rows = NULL, theme = mytheme)
 Table2 <- tableGrob(table_h2, rows = NULL, theme = mytheme)
-pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/chapter1/figures/TableS1.pdf", height = 24, width = 32)
+pdf("/Users/fco/Desktop/PHD/1_CHAPTER1/1_GENETICS/hamlet_color/figures/TableS1.pdf", height = 24, width = 32)
 # p<-tableGrob(cmp_glob)
 # grid.table(table_h1, rows = NULL)
 
