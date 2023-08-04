@@ -8,7 +8,7 @@ There are four more accompanying repositories for this publication:
 
     The ENA sequencing repository: contains the raw sequencing data (Accession Nr: PRJEB61240)
     The photographs repository which contains all raw photographs used in the paper and for the image analysis: ___
-    Code for image correction in MatLab developped by [Derya Akkaynak](https://github.com/dakkaynak): [matlab](https://github.com/florianecoulmance/hamlet_color/tree/main/matlab)
+    Code for image correction in MatLab developped by [Derya Akkaynak](https://github.com/dakkaynak) : [matlab](https://github.com/florianecoulmance/hamlet_color/tree/main/matlab)
     Software for image alignment developped by Yann Le Poul: ___
 
 
