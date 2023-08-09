@@ -9,7 +9,7 @@ There are four more accompanying repositories for this publication:
 - Raw sequencing data can be downloaded on ENA: [PRJEB61240](https://www.ebi.ac.uk/ena/browser/view/PRJEB61240)
 - The photographs repository which contains all raw photographs used in the paper and for the image analysis: ___
 - Code for image correction in MatLab developped by [Derya Akkaynak](https://github.com/dakkaynak): [matlab](https://github.com/florianecoulmance/hamlet_color/tree/main/matlab)
-- Software for image alignment developped by Yann Le Poul: ___
+- Software for image alignment developped by Yann Le Poul is adapted from previous version available [**Le Poul, Y., Whibley, A., Chouteau, M., Prunier, F., Llaurens, V., & Joron, M. (2014). Evolution of dominance mechanisms at a butterfly mim- icry supergene. Nature Communications, 5, 1–8.**](https://doi.org/10.1038/ncomms6644), for code and guidance please contact *yann.le.poul@ens-lyon*
 
 
 ## Setup
