@@ -1,15 +1,15 @@
 # Code repository for: *Phenotypic and genomic dissection of color pattern variation in a reef fish radiation*
 
-This repository contains the original bioinformatic analysis behind the paper *Phenotypic and genomic dissection of color pattern variation in a reef fish radiation* by Coulmance, Akkaynak, Le Poul, Hoppner, McMillan and Puebla.<br> 
-It covers all steps from genotyping based on raw sequencing data, over population genetic analysis to the final plotting of the figures used within the publication.<br> 
-It covers all image analysis steps from aligned photographs.<br> 
+This repository contains the bioinformatic analysis of the paper *Phenotypic and genomic dissection of color pattern variation in a reef fish radiation* by Coulmance, Akkaynak, Le Poul, Hoppner, McMillan and Puebla.<br> 
+It covers all steps from genotyping of raw sequencing data, to population genetic analysis and final plotting of the figures presented in the publication.<br> 
+It covers image analysis steps from color-corrected and aligned photographs. Color correction and aligment of photographs were performed in MATLAB and in a customed alignment software separately.<br> 
 
 There are four more accompanying repositories for this publication:
 
 - Raw sequencing data can be downloaded on ENA: [PRJEB61240](https://www.ebi.ac.uk/ena/browser/view/PRJEB61240)
-- The photographs repository which contains all raw photographs used in the paper and for the image analysis: ___
-- Code for image correction in MatLab developped by [Derya Akkaynak](https://github.com/dakkaynak): [matlab](https://github.com/florianecoulmance/hamlet_color/tree/main/matlab)
-- Software for image alignment developped by Yann Le Poul is adapted from previous version available [**Le Poul, Y., Whibley, A., Chouteau, M., Prunier, F., Llaurens, V., & Joron, M. (2014). Evolution of dominance mechanisms at a butterfly mim- icry supergene. Nature Communications, 5, 1–8.**](https://doi.org/10.1038/ncomms6644), for code and guidance please contact *yann.le.poul@ens-lyon*
+- The phenotype repository where you can download the 113 raw photographs used in the image analysis: [https://doi.org/10.1594/PANGAEA.974445](https://doi.org/10.1594/PANGAEA.974445)
+- Code for color correction in MATLAB developped by [Derya Akkaynak](https://github.com/dakkaynak): [matlab](https://github.com/florianecoulmance/hamlet_color/tree/main/matlab)
+- Software for image alignment developped by Yann Le Poul is adapted from previous version available [**Le Poul, Y., Whibley, A., Chouteau, M., Prunier, F., Llaurens, V., & Joron, M. (2014). Evolution of dominance mechanisms at a butterfly mim- icry supergene. Nature Communications, 5, 1–8.**](https://doi.org/10.1038/ncomms6644), for code and guidance please contact *floriane.coulmance@unil.ch*
 
 
 ## Setup
